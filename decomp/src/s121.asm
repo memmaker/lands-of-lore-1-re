@@ -22,7 +22,7 @@ _fn_2124_0002	proc	far
 	push	dx
 	mov	ah,19h
 	int	21h
-	mov	_g_abdf,al
+	mov	byte ptr _g_abdf,al
 	mov	dl,al
 	mov	ah,0eh
 	int	21h
@@ -39,7 +39,7 @@ L0018:	mov	bl,dl
 	dec	dx
 	jmp	short L0018
 L002a:	mov	ax,dx
-	mov	_g_abe0,al
+	mov	byte ptr _g_abe0,al
 	pop	dx
 	pop	bx
 	pop	ax

@@ -15,7 +15,7 @@ _BSS	ends
 	extrn	_fn_215f_001d:far, _fn_226d_0007:far, _fn_226d_004e:far, _fn_232c_000c:far
 
 S103_TEXT	segment word public use16 'CODE'
-	public	_fn_1fd6_000a, _fn_1fd6_0436
+	public	_fn_1fd6_000a
 
 _fn_1fd6_000a	proc	far
 	enter	5ah,0h
@@ -80,15 +80,15 @@ L00a4:	test	word ptr [bp+12h],200h
 	inc	word ptr fs:_g_35b6
 	and	word ptr fs:_g_35b6,0fh
 	mov	bx,35b8h
-	add	bx,fs:_g_35b6
+	add	bx,word ptr fs:_g_35b6
 	mov	ax,fs:[bx]
-	mov	fs:_g_35c8,ax
+	mov	word ptr fs:_g_35c8,ax
 	mov	word ptr fs:_g_35cc,0h
 	mov	word ptr fs:_g_35ca,100h
 L00d8:	test	word ptr [bp+12h],4000h
 	jz	short L00e9
 	mov	ax,[bp+di+12h]
-	mov	fs:_g_35ca,ax
+	mov	word ptr fs:_g_35ca,ax
 	add	di,2h
 L00e9:	test	word ptr [bp+12h],800h
 	jz	short L00f9
@@ -115,17 +115,17 @@ L0126:	mov	word ptr [bp-4eh],0h
 	and	bl,0fh
 	shl	bl,1
 	shl	bl,1
-	mov	eax,fs:_g_2b30[bx]
+	mov	eax,dword ptr fs:_g_2b30[bx]
 	mov	[bp-8h],eax
-	mov	eax,fs:_g_2b50[bx]
+	mov	eax,dword ptr fs:_g_2b50[bx]
 	mov	[bp-0ch],eax
-	mov	eax,fs:_g_2b70[bx]
+	mov	eax,dword ptr fs:_g_2b70[bx]
 	mov	[bp-10h],eax
 	mov	bl,[bp+13h]
 	and	bl,3fh
 	shl	bl,1
 	shl	bl,1
-	mov	eax,fs:_g_2b90[bx]
+	mov	eax,dword ptr fs:_g_2b90[bx]
 	mov	[bp-4h],eax
 	push	word ptr [bp+6h]
 	call	far ptr _fn_215f_001d
@@ -214,14 +214,14 @@ L023f:	test	word ptr [bp-30h],2h
 	push	bx
 	mov	bx,ds
 	mov	ds,[bp-52h]
-	les	di,_g_35ac
+	les	di,dword ptr _g_35ac
 	push	es
 	push	di
 	push	bx
 	push	si
 	call	far ptr _fn_232c_000c
 	add	sp,0ah
-	lds	si,_g_35ac
+	lds	si,dword ptr _g_35ac
 	pop	di
 	pop	es
 L0264:	test	word ptr [bp+12h],2h
@@ -244,7 +244,7 @@ L028b:	mov	word ptr [bp-54h],0h
 	mov	cx,[bp-38h]
 	mov	[bp-3ah],cx
 	xor	dx,dx
-	call	far ptr [bp-0ch]
+	call	dword ptr [bp-0ch]
 	mov	ax,[bp-4ch]
 	add	[bp-4eh],ax
 	test	word ptr [bp-4eh],0ff00h
@@ -316,7 +316,7 @@ L034c:	mov	word ptr [bp-50h],140h
 	add	bx,[bp-32h]
 	dec	bx
 L0367:	shl	bx,1
-	lds	si,_g_3940
+	lds	si,dword ptr _g_3940
 	mov	ax,[bx+si]
 	pop	ds
 	pop	si
@@ -354,7 +354,7 @@ L03be:	xor	dx,dx
 	jnz	short L03d8
 	mov	cx,[bp-38h]
 	mov	[bp-3ah],cx
-	call	far ptr [bp-0ch]
+	call	dword ptr [bp-0ch]
 	jmp	short L03be
 L03d8:	mov	[bp-18h],si
 	mov	[bp-16h],ds
@@ -363,15 +363,15 @@ L03de:	mov	ax,[bp-38h]
 	xor	dx,dx
 	xor	ax,ax
 	mov	cx,[bp-3ch]
-	call	far ptr [bp-8h]
+	call	dword ptr [bp-8h]
 	cmp	word ptr [bp-3ah],0h
 	jz	short L0404
 	add	cx,[bp-34h]
 	jng	short L03fc
-	call	far ptr [bp-10h]
+	call	dword ptr [bp-10h]
 L03fc:	add	cx,[bp-3eh]
 	jcxz	L0404
-	call	far ptr [bp-0ch]
+	call	dword ptr [bp-0ch]
 L0404:	mov	ax,[bp-50h]
 	add	[bp-40h],ax
 	mov	di,[bp-40h]
@@ -396,11 +396,8 @@ L041c:	pop	fs
 	pop	eax
 	leave
 	retf
+	retf			; stray second retf (original bytes)
 _fn_1fd6_000a	endp
-
-_fn_1fd6_0436	proc	far
-	retf
-_fn_1fd6_0436	endp
 
 S103_TEXT	ends
 	end

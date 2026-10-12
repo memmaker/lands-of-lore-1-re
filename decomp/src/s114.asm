@@ -21,7 +21,7 @@ _fn_2037_0002	proc	far
 	push	ebx
 	mov	ax,[bp+6h]
 	mov	dx,[bp+8h]
-	cmp	dx,_g_2af8
+	cmp	dx,word ptr _g_2af8
 	jz	short L001a
 	cmp	dx,0f000h
 	jc	short L0022

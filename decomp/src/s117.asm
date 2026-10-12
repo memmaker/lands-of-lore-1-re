@@ -1,14 +1,16 @@
 ; s117: WW library
+; FIXUP-ORDER: 12c 8e 9d ad c5 13d 1d9 1e8 277 1f8 210 288
 
 	.386
 	locals
 S117_TEXT	segment word public use16 'CODE'
 S117_TEXT	ends
+DGROUP	group	_DATA,_BSS
 _DATA	segment word public use16 'DATA'
 _DATA	ends
 _BSS	segment word public use16 'BSS'
 _BSS	ends
-	assume	cs:S117_TEXT
+	assume	cs:S117_TEXT,ds:DGROUP
 
 	extrn	_fn_19ba_0086:far, _fn_1f6a_0002:far, _fn_215f_001d:far, _fn_226d_0007:far, _fn_226d_004e:far
 
@@ -138,9 +140,6 @@ L0144:	mov	ax,[bp-2h]
 	leave
 	retf
 _fn_2096_0000	endp
-S117_TEXT	ends
-DGROUP	group	_DATA,_BSS
-S117_TEXT	segment word public use16 'CODE'
 
 _fn_2096_014b	proc	far
 	enter	4h,0h

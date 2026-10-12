@@ -23,6 +23,8 @@ fi
 tools/dosrun.sh $W B.BAT </dev/null
 tr -d '\r' < $W/OUT.LOG | grep -iE "error|warning" | grep -v "messages: *None" | head -30
 [ -f $W/$U.OBJ ] || { echo "no OBJ"; exit 1; }
+# asm modules may pin the original assembler's fixup order (EXE relocation order): `; FIXUP-ORDER: hex offsets`
+FO=$(sed -n 's/^; FIXUP-ORDER://p' src/$N.asm 2>/dev/null); [ -n "$FO" ] && python3 -I tools/fixorder.py $W/$U.OBJ $FO
 cp $W/$U.OBJ $W/$U.RAW; [ -f src/$N.c ] && python3 -I tools/objfix.py $W/$U.OBJ $N
 python3 -I tools/segoff.py $N | { read OFF; python3 -I tools/cmpobj.py $W/$U.OBJ orig/MAIN.EXE $OFF; }
 cp $W/$U.RAW $W/$U.OBJ

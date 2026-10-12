@@ -9,270 +9,11 @@ _DATA	ends
 _BSS	segment word public use16 'BSS'
 _BSS	ends
 S044_TEXT	segment
-	public	_fn_1b79_0000, _fn_1b79_025c, _fn_1b79_0261, _fn_1b79_027f, _fn_1b79_0284, _fn_1b79_02ac, _fn_1b79_02b1, _fn_1b79_02dd, _fn_1b79_02e3, _fn_1b79_02ef, _fn_1b79_0301, _fn_1b79_035b, _fn_1b79_0367, _fn_1b79_0450, _fn_1b79_0456
-_fn_1b79_0000	proc	far
-	add	[bx+si],al		; 0
-	push	sp		; 2
-	db	65h, 73h, 74h	; 3: gs jnc 0x7a
-	add	[bx+si],al		; 6
-	add	[bx+si],al		; 8
-	add	[bx+si],al		; a
-	add	[bx+si],al		; c
-	add	[bx+si],al		; e
-	add	[bx+si],al		; 10
-	add	[bx+si],al		; 12
-	add	[bx+si],al		; 14
-	add	[bx+si],al		; 16
-	add	[bx+si],al		; 18
-	add	[bx+si],al		; 1a
-	add	[bx+si],al		; 1c
-	add	[bx+si],al		; 1e
-	add	[bx+si],al		; 20
-	add	[bx+si],al		; 22
-	add	[bx+si],al		; 24
-	add	[bx+si],al		; 26
-	add	[bx+si],al		; 28
-	add	[bx+si],al		; 2a
-	add	[bx+si],al		; 2c
-	add	[bx+si],al		; 2e
-	add	[bx+si],al		; 30
-	add	[bx+si],al		; 32
-	add	[bx+si],al		; 34
-	add	[bx+si],al		; 36
-	add	[bx+si],al		; 38
-	add	[bx+si],al		; 3a
-	add	[bx+si],al		; 3c
-	add	[bx+si],al		; 3e
-	add	[bx+si],al		; 40
-	add	[bx+si],al		; 42
-	add	[bx+si],al		; 44
-	add	[bx+si],al		; 46
-	add	[bx+si],al		; 48
-	add	[bx+si],al		; 4a
-	add	[bx+si],al		; 4c
-	add	[bx+si],al		; 4e
-	add	[bx+si],al		; 50
-	add	[bx+si],al		; 52
-	add	[bx+si],al		; 54
-	add	[bx+si],al		; 56
-	add	[bx+si],al		; 58
-	add	[bx+si],al		; 5a
-	add	[bx+si],al		; 5c
-	add	[bx+si],al		; 5e
-	add	[bx+si],al		; 60
-	add	[bx+si],al		; 62
-	add	[bx+si],al		; 64
-	add	[bx+si],al		; 66
-	add	[bx+si],al		; 68
-	add	[bx+si],al		; 6a
-	add	[bx+si],al		; 6c
-	add	[bx+si],al		; 6e
-	add	[bx+si],al		; 70
-	add	[bx+si],al		; 72
-	add	[bx+si],al		; 74
-	add	[bx+si],al		; 76
-	add	[bx+si],al		; 78
-	add	[bx+si],al		; 7a
-	add	[bx+si],al		; 7c
-	add	[bx+si],al		; 7e
-	add	[bx+si],al		; 80
-	add	[bx+si],al		; 82
-	add	[bx+si],al		; 84
-	add	[bx+si],al		; 86
-	add	[bx+si],al		; 88
-	add	[bx+si],al		; 8a
-	add	[bx+si],al		; 8c
-	add	[bx+si],al		; 8e
-	add	[bx+si],al		; 90
-	add	[bx+si],al		; 92
-	add	[bx+si],al		; 94
-	add	[bx+si],al		; 96
-	add	[bx+si],al		; 98
-	add	[bx+si],al		; 9a
-	add	[bx+si],al		; 9c
-	add	[bx+si],al		; 9e
-	add	[bx+si],al		; a0
-	add	[bx+si],al		; a2
-	add	[bx+si],al		; a4
-	add	[bx+si],al		; a6
-	add	[bx+si],al		; a8
-	add	[bx+si],al		; aa
-	add	[bx+si],al		; ac
-	add	[bx+si],al		; ae
-	add	[bx+si],al		; b0
-	add	[bx+si],al		; b2
-	add	[bx+si],al		; b4
-	add	[bx+si],al		; b6
-	add	[bx+si],al		; b8
-	add	[bx+si],al		; ba
-	add	[bx+si],al		; bc
-	add	[bx+si],al		; be
-	add	[bx+si],al		; c0
-	add	[bx+si],al		; c2
-	add	[bx+si],al		; c4
-	add	[bx+si],al		; c6
-	add	[bx+si],al		; c8
-	add	[bx+si],al		; ca
-	add	[bx+si],al		; cc
-	add	[bx+si],al		; ce
-	add	[bx+si],al		; d0
-	add	[bx+si],al		; d2
-	add	[bx+si],al		; d4
-	add	[bx+si],al		; d6
-	add	[bx+si],al		; d8
-	add	[bx+si],al		; da
-	add	[bx+si],al		; dc
-	add	[bx+si],al		; de
-	add	[bx+si],al		; e0
-	add	[bx+si],al		; e2
-	add	[bx+si],al		; e4
-	add	[bx+si],al		; e6
-	add	[bx+si],al		; e8
-	add	[bx+si],al		; ea
-	add	[bx+si],al		; ec
-	add	[bx+si],al		; ee
-	add	[bx+si],al		; f0
-	add	[bx+si],al		; f2
-	add	[bx+si],al		; f4
-	add	[bx+si],al		; f6
-	add	[bx+si],al		; f8
-	add	[bx+si],al		; fa
-	add	[bx+si],al		; fc
-	add	[bx+si],al		; fe
-	add	[bx+si],al		; 100
-	add	[bx+si],al		; 102
-	add	[bx+si],al		; 104
-	add	[bx+si],al		; 106
-	add	[bx+si],al		; 108
-	add	[bx+si],al		; 10a
-	add	[bx+si],al		; 10c
-	add	[bx+si],al		; 10e
-	add	[bx+si],al		; 110
-	add	[bx+si],al		; 112
-	add	[bx+si],al		; 114
-	add	[bx+si],al		; 116
-	add	[bx+si],al		; 118
-	add	[bx+si],al		; 11a
-	add	[bx+si],al		; 11c
-	add	[bx+si],al		; 11e
-	add	[bx+si],al		; 120
-	add	[bx+si],al		; 122
-	add	[bx+si],al		; 124
-	add	[bx+si],al		; 126
-	add	[bx+si],al		; 128
-	add	[bx+si],al		; 12a
-	add	[bx+si],al		; 12c
-	add	[bx+si],al		; 12e
-	add	[bx+si],al		; 130
-	add	[bx+si],al		; 132
-	add	[bx+si],al		; 134
-	add	[bx+si],al		; 136
-	add	[bx+si],al		; 138
-	add	[bx+si],al		; 13a
-	add	[bx+si],al		; 13c
-	add	[bx+si],al		; 13e
-	add	[bx+si],al		; 140
-	add	[bx+si],al		; 142
-	add	[bx+si],al		; 144
-	add	[bx+si],al		; 146
-	add	[bx+si],al		; 148
-	add	[bx+si],al		; 14a
-	add	[bx+si],al		; 14c
-	add	[bx+si],al		; 14e
-	add	[bx+si],al		; 150
-	add	[bx+si],al		; 152
-	add	[bx+si],al		; 154
-	add	[bx+si],al		; 156
-	add	[bx+si],al		; 158
-	add	[bx+si],al		; 15a
-	add	[bx+si],al		; 15c
-	add	[bx+si],al		; 15e
-	add	[bx+si],al		; 160
-	add	[bx+si],al		; 162
-	add	[bx+si],al		; 164
-	add	[bx+si],al		; 166
-	add	[bx+si],al		; 168
-	add	[bx+si],al		; 16a
-	add	[bx+si],al		; 16c
-	add	[bx+si],al		; 16e
-	add	[bx+si],al		; 170
-	add	[bx+si],al		; 172
-	add	[bx+si],al		; 174
-	add	[bx+si],al		; 176
-	add	[bx+si],al		; 178
-	add	[bx+si],al		; 17a
-	add	[bx+si],al		; 17c
-	add	[bx+si],al		; 17e
-	add	[bx+si],al		; 180
-	add	[bx+si],al		; 182
-	add	[bx+si],al		; 184
-	add	[bx+si],al		; 186
-	add	[bx+si],al		; 188
-	add	[bx+si],al		; 18a
-	add	[bx+si],al		; 18c
-	add	[bx+si],al		; 18e
-	add	[bx+si],al		; 190
-	add	[bx+si],al		; 192
-	add	[bx+si],al		; 194
-	add	[bx+si],al		; 196
-	add	[bx+si],al		; 198
-	add	[bx+si],al		; 19a
-	add	[bx+si],al		; 19c
-	add	[bx+si],al		; 19e
-	add	[bx+si],al		; 1a0
-	add	[bx+si],al		; 1a2
-	add	[bx+si],al		; 1a4
-	add	[bx+si],al		; 1a6
-	add	[bx+si],al		; 1a8
-	add	[bx+si],al		; 1aa
-	add	[bx+si],al		; 1ac
-	add	[bx+si],al		; 1ae
-	add	[bx+si],al		; 1b0
-	add	[bx+si],al		; 1b2
-	add	[bx+si],al		; 1b4
-	add	[bx+si],al		; 1b6
-	add	[bx+si],al		; 1b8
-	add	[bx+si],al		; 1ba
-	add	[bx+si],al		; 1bc
-	add	[bx+si],al		; 1be
-	add	[bx+si],al		; 1c0
-	add	[bx+si],al		; 1c2
-	add	[bx+si],al		; 1c4
-	add	[bx+si],al		; 1c6
-	add	[bx+si],al		; 1c8
-	add	[bx+si],al		; 1ca
-	add	[bx+si],al		; 1cc
-	add	[bx+si],al		; 1ce
-	add	[bx+si],al		; 1d0
-	add	[bx+si],al		; 1d2
-	add	[bx+si],al		; 1d4
-	add	[bx+si],al		; 1d6
-	add	[bx+si],al		; 1d8
-	add	[bx+si],al		; 1da
-	add	[bx+si],al		; 1dc
-	add	[bx+si],al		; 1de
-	add	[bx+si],al		; 1e0
-	add	[bx+si],al		; 1e2
-	add	[bx+si],al		; 1e4
-	add	[bx+si],al		; 1e6
-	add	[bx+si],al		; 1e8
-	add	[bx+si],al		; 1ea
-	add	[bx+si],al		; 1ec
-	add	[bx+si],al		; 1ee
-	add	[bx+si],al		; 1f0
-	add	[bx+si],al		; 1f2
-	add	[bx+si],al		; 1f4
-	add	[bx+si],al		; 1f6
-	add	[bx+si],al		; 1f8
-	add	[bx+si],al		; 1fa
-	add	[bx+si],al		; 1fc
-	add	[bx+si],al		; 1fe
-	add	[bx+si],al		; 200
-	add	[bx+si],al		; 202
-	add	[bx+si],al		; 204
-	add	[bx+si],al		; 206
-	add	[bx+si],al		; 208
-L020A:
+	public	_fn_1b79_020a, _fn_1b79_025c, _fn_1b79_0261, _fn_1b79_027f, _fn_1b79_0284, _fn_1b79_02ac, _fn_1b79_02b1, _fn_1b79_02dd, _fn_1b79_02e3, _fn_1b79_02ef, _fn_1b79_0301, _fn_1b79_035b, _fn_1b79_0367, _fn_1b79_0450, _fn_1b79_0456
+L0000	label	byte
+	db	0h, 0h, 54h, 65h, 73h, 74h	; 0
+	db	516 dup (0h)	; 6
+_fn_1b79_020a	proc	far
 	push	es		; 20a
 	cmp	bx,+10h		; 20b
 	jnc	short L0235		; 20e
@@ -292,21 +33,21 @@ L021E:
 	mov	ax,0h		; 22d
 	mov	dx,0h		; 230
 	pop	es		; 233
-	db	0c3h	; 234: ret
+	retn		; 234
 L0235:
 	mov	ax,0h		; 235
 	mov	dx,0h		; 238
 	pop	es		; 23b
-	db	0c3h	; 23c: ret
+	retn		; 23c
 L023D:
 	mov	ax,es:[bx+2h]		; 23d
 	mov	dx,es		; 241
 	pop	es		; 243
-	db	0c3h	; 244: ret
+	retn		; 244
 L0245:
 	mov	bx,sp		; 245
 	mov	bx,ss:[bx+4h]		; 247
-	call	L020A		; 24b
+	call	near ptr _fn_1b79_020a		; 24b
 	cmp	ax,0h		; 24e
 	jnz	short L0258		; 251
 	cmp	dx,+0h		; 253
@@ -317,7 +58,7 @@ L0258:
 	retf		; 25a
 L025B:
 	retf		; 25b
-_fn_1b79_0000	endp
+_fn_1b79_020a	endp
 
 _fn_1b79_025c	proc	far
 	mov	ax,78h		; 25c
@@ -528,11 +269,11 @@ L042C:
 	iret		; 444
 L0445:
 	sti		; 445
-	db	0cch	; 446: int3
+	int	3		; 446
 	jmp	short L0445		; 447
 	pushf		; 449
 	call	dword ptr es:[2da6h]		; 44a
-	db	0c3h	; 44f: ret
+	retn		; 44f
 _fn_1b79_0367	endp
 
 _fn_1b79_0450	proc	far
