@@ -235,14 +235,16 @@ void fn_1809_058d(int h)
     if (idx != -1) {
         if ((ent->flags & 0xff) == 1) keep = 1;
         else ent->flags &= 0xff00;
-        refs = --ent->refs;
+        ent->refs--;
+        refs = ent->refs;
         fn_1981_031f(idx, &buf1);
         if (ent->flags & 0x1000) {
             pak = fn_1981_02c0(ent->pak, &buf2);
             if (pak->data == ent->data) {
                 if ((pak->flags & 0xff) == 1) keep = 1;
                 else pak->flags &= 0xff00;
-                refs = --pak->refs;
+                pak->refs--;
+                refs = pak->refs;
                 fn_1981_031f(ent->pak, &buf2);
             }
         }
