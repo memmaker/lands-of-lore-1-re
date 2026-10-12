@@ -143,13 +143,14 @@ fail:
     return 1;
 }
 
+#pragma option -O-
 int ovr_2db6_002a(void)
 {
     char far *p;
 
     p = g_2938;
     if (p == 0) return 0;
-    while (*(unsigned far *)p != 0xffffU) p = (char far *)p + 1;
+    while (*(int far *)p != -1) p++;
     g_2952 = (struct sbstate far *)p;
     g_2952->ds = _DS;
     g_2952->on = 1;

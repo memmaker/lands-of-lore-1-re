@@ -52,7 +52,7 @@ void ovr_2d15_002a(int type)
     int old;
     int opened;
     struct anim far *p;
-    int blk, id;
+    int v;
 
     opened = 0;
     if (g_0a6c != 1) {
@@ -81,18 +81,17 @@ void ovr_2d15_002a(int type)
         int far *n;
         struct Monster far *m;
         int save;
-        int blk2;
 
-        blk = fn_09aa_0183(g_7fd0, g_7fdf);
-        blk2 = fn_09aa_0183(blk, g_7fdf);
-        if (!fn_0845_0cf7(blk2, 0, 4) && !(g_8203[blk2].mon & 0x8000)) {
-            fn_0845_046c(blk);
-            id = g_8203[blk].mon;
-            while (id & 0x8000) {
-                save = id;
-                m = &f_2803_15fa[id & 0x7fff];
-                n = fn_080e_000b(id);
-                id = *n;
+        type = fn_09aa_0183(g_7fd0, g_7fdf);
+        v = fn_09aa_0183(type, g_7fdf);
+        if (!fn_0845_0cf7(v, 0, 4) && !(g_8203[v].mon & 0x8000)) {
+            fn_0845_046c(type);
+            type = g_8203[type].mon;
+            while (type & 0x8000) {
+                save = type;
+                m = &f_2803_15fa[type & 0x7fff];
+                n = fn_080e_000b(type);
+                type = *n;
                 fn_0d6c_0004(m->x, m->y, &x, &y, g_7fdf * 2);
                 fn_0d6c_0004(x, y, &x, &y, g_7fdf * 2);
                 fn_0d6c_0004(x, y, &x, &y, g_7fdf * 2);
@@ -102,7 +101,7 @@ void ovr_2d15_002a(int type)
                 fn_0d6c_0004(x, y, &x, &y, g_7fdf * 2);
                 fn_0d6c_0004(x, y, &x, &y, g_7fdf * 2);
                 fn_0d6c_0742(m, x, y);
-                fn_0845_1343(blk2, 0x800, -1, save, 0, 0);
+                fn_0845_1343(v, 0x800, -1, save, 0, 0);
             }
         }
     } else {
@@ -110,14 +109,15 @@ void ovr_2d15_002a(int type)
         int save;
         int r;
 
-        blk = fn_09aa_0183(g_7fd0, g_7fdf);
-        fn_0845_046c(blk);
-        id = g_8203[blk].mon;
-        while (id & 0x8000) {
-            save = id;
-            n = fn_080e_000b(id);
-            id = *n;
-            r = fn_070c_06a3(-1, save, g_0a62[type], 0x80, 1);
+        v = fn_09aa_0183(g_7fd0, g_7fdf);
+        fn_0845_046c(v);
+        v = g_8203[v].mon;
+        while (v & 0x8000) {
+            save = v;
+            n = fn_080e_000b(v);
+            v = *n;
+            r = g_0a62[type];
+            r = fn_070c_06a3(-1, save, r, 0x80, 1);
             fn_070c_07f5(save, r, -1, 2, 0x80);
         }
     }
