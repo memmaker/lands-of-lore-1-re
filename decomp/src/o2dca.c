@@ -9,7 +9,6 @@ extern char g_2994;
 extern int g_2990;
 extern int g_2a6f;
 extern char far *g_2a37[5];
-extern char far *g_2a47;
 extern unsigned long g_2a4b;
 extern unsigned long g_2a4f[5];
 extern void far *g_2a71;
@@ -106,7 +105,7 @@ long ovr_2dca_0025(unsigned long size, unsigned long thr)
     g_2a71 = mem;
     g_2a7d = g_2952->nblk = n;
     g_2952->blk = 0x455;
-    g_2a79 = fn_2037_0002(g_2a47, 0x456L);
+    g_2a79 = fn_2037_0002(g_2a37[4], 0x456L);
     g_2a75 = (char far * far *)fn_2037_0002(g_2a79, (long)n);
     off = 0;
     for (i = 0; i < n; i++) {
