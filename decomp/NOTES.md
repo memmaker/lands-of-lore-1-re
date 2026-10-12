@@ -39,3 +39,16 @@ Every fact below was needed to get the relinked MAIN.EXE byte-identical:
 - The 13 bytes after `_EXEINFO_`'s table are a stale filename buffer + the link **date**: `main.exe\0\0\0` +
   first letter of the map file name ('p') + DOS date 1994-02-10. relink.sh runs `date 02/10/1994` in DOSBox-X
   (format with slashes; `02-10-1994` is silently ignored).
+
+## Compiling game modules (tools/mc.sh NAME → run/m/NAME/NAME.OBJ; tools/relink.sh NAME)
+- Flags `bcc -c -ml -3 -O -Z -Oe -Ol` (-Oe/-Ol fix register-variable and loop-rotation choices; -Ob -Om -Ov -Oi -Op
+  -Ot -O2 -Ox -r- -k- -2 all worse; -Oc -Og -Oa -Os neutral). BC++ 4.0 BCC: 0/49 (saves si/di everywhere);
+  TC++ 3.0 and the BC 3.0 patch disk have no -3. BCPP31.ZIP's BCC.EXE is byte-identical to ours.
+- The original BCC never emitted ENTER (558 `push bp; mov bp,sp; sub sp,N`, still `leave`); ours always does.
+  tools/objfix.py rewrites ENTER into the long frame (+2 / +3 bytes) and re-chunks the code LEDATAs.
+- BCC OBJ layout: fixups of a FIXUPP in descending offset order, no threads. The original compiler's code LEDATAs are
+  cut every 1024 bytes *across* function boundaries (no flush at function end — s001's reloc order proves it;
+  objfix.FLUSH_AT_END=False). Reloc order in the EXE = descending within each 1024-byte chunk.
+- Locals: declare in frame order (first declared = highest bp offset).
+- Functions that won't match get `/* NONMATCHING reason */` above them: mc.sh still compiles/compares the C, then
+  objfix.py transplants the original bytes (relocations → fixups) into the link OBJ, so the EXE stays identical.
