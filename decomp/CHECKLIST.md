@@ -42,7 +42,8 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
   - [x] s016 1/1, s017 monster AI 25/28 (MonType spells/think delay, Monster tdir/c1f decoded)
   - [x] s018 EMC interpreter 7/8
   - [x] s019 EMC opcodes 135/140 + opcode table
-  - [ ] s020–s047 game modules (28 left)
+  - [x] s020 speech text, TIM anim slots 12/13
+  - [ ] s021–s047 game modules (27 left)
   - [ ] s049–s149 WW library (~100 small modules, maybe TASM)
   - [ ] 80 overlays (objfix needs overlay support)
 - [ ] Data/BSS modules generated as readable C

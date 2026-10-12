@@ -141,6 +141,21 @@ int fn_0f28_04a0(struct EmcState far *s);
 extern struct Char far f_2803_362d[];
 extern struct Monster far f_2803_15fa[];
 
+struct Anim {               /* 0xb5 bytes, g_4ee0[6]: TIM/WSA animation slots */
+    char far *wsa;
+    int x, y;                /* +04 */
+    unsigned long next;      /* +08 tick of the next frame */
+    char cc;                 /* +0c playing */
+    char cd;                 /* +0d stop requested */
+    char ce;                 /* +0e frame delay */
+    char cf;                 /* +0f current sequence */
+    char frame;              /* +10 */
+    char loops;              /* +11 */
+    unsigned flags;          /* +12 */
+    char c14;                /* +14 last finished sequence */
+    int frames[10][8];       /* +15 sequences: first, last, loops, next, delay, w5, snd, sndFrame */
+};
+
 struct Fly {                /* 0x11 bytes, g_4dcc[8]: flying objects (thrown items, missiles) */
     char active;
     char type;
