@@ -1,5 +1,4 @@
 /* o2da3: voice / sound index files (load index, map a sound id to its length, release) */
-/* FLAGS: -ml -3 -Y */
 #include <stdio.h>
 #include <ctype.h>
 #include <mem.h>
@@ -14,7 +13,7 @@ extern void far *g_abc6;
 extern unsigned long g_abca, g_abce;
 extern int g_4b92;
 extern char g_81fe, g_81ff;
-extern struct XY g_2862;
+extern int g_2862, g_2864;
 void far *fn_215f_0003(int p);
 void fn_2279_025b(void far *d, void far *s, long n);
 int fn_154c_0136(void);
@@ -26,15 +25,15 @@ void fn_1809_058d(int fh);
 void far *fn_2037_0002(void far *p, long off);
 void fn_130a_0784(void);
 void fn_154c_029f(void far *p, long n, int a, long b);
-unsigned fn_154c_040d(struct Rec *key, struct XY id);
+unsigned fn_154c_040d(struct Rec *key, int a, int b);
 long ovr_2da3_0034(char far *name, char far *dst, int mode);
 void ovr_2da3_0039(void far *p);
 
 void ovr_2da3_0020(int id)
 {
     char name[14];
-    char far *buf;
     unsigned long sz;
+    char far *buf;
     unsigned i;
 
     sprintf(name, g_1572, id);
@@ -103,12 +102,12 @@ long ovr_2da3_002f(void)
     unsigned long n;
     void far *q;
 
-    if (g_2862.a == -1) return 0;
-    n = fn_154c_040d(&key, g_2862);
+    if (g_2862 == -1) return 0;
+    n = fn_154c_040d(&key, g_2862, g_2864);
     if (n == 0) return 0;
     do {
         n += 8;
-        q = fn_2037_0002((g_2862.a & 0x4000) ? g_abc6 : g_abc2, n);
+        q = fn_2037_0002((g_2862 & 0x4000) ? g_abc6 : g_abc2, n);
         fn_2279_025b(q, &r, 8L);
     } while (r.a == key.a && r.b == key.b);
     return (r.off - key.off) * 60 / 22000;
@@ -153,7 +152,7 @@ long ovr_2da3_0034(char far *name, char far *dst, int mode)
         }
         rec.c -= '0';
         fn_2279_025b(&rec, fn_2037_0002(dst, pos), 8L);
-        pos += 8;
+        pos = pos + 8;
         prev = off;
         hdr.count++;
         fn_1809_084d(fh, &off, 4L);

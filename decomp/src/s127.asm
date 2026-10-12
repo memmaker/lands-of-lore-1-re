@@ -1,6 +1,7 @@
 ; s127: WW library -- keyboard (INT 9 handler, key buffer, scan code to ASCII tables in the code segment)
 ; segment 2169 (TASM module). The six `db` instructions use a 16-bit displacement < 80h, which TASM
 ; always shortens to disp8.
+; FIXUP-ORDER: b00 b13 b18 bd6 c6e
 	.386
 S127_TEXT	segment word public use16 'CODE'
 S127_TEXT	ends
