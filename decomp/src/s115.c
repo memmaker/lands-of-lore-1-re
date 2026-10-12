@@ -126,6 +126,8 @@ void fn_203b_0203(char far *p)
     g_3642--;
 }
 
+/* only diff: original has `add al,0ffh` where BCC emits `dec al` */
+/* NONMATCHING */
 void far *fn_203b_02dc(char far *p, unsigned long size)
 {
     char far *hdr;
