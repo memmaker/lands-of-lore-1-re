@@ -57,7 +57,10 @@ void fn_2253_0076(unsigned char far *p, int n, int y)
         for (i = 0; i < cnt; i++) {
             buf[0] = *q;
             q++;
-            fn_0845_0f81(!buf[0] || buf[0] >= 7 && buf[0] <= 13 ? (char far *)g_3615 : (char far *)buf);
+            if (!buf[0] || buf[0] >= 7 && buf[0] <= 13)
+                fn_0845_0f81(g_3615);
+            else
+                fn_0845_0f81(buf);
         }
     }
 }
