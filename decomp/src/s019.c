@@ -151,6 +151,10 @@ int fn_2169_0790(void);
 void fn_2169_0945(int k);
 void fn_2169_062e(void);
 void fn_14b3_0215(void);
+void ovr_2ce1_007f(char far *msg);
+extern char g_27af[];
+int fn_0a21_0997(int ch, int type);
+extern int g_2794, g_4bde, g_4be0, g_4bb2, g_4bb4;
 struct Win { int a, b; char pad[12]; };
 extern struct Win g_1f47[];
 int fn_0b6b_032f(int type, int item, int x, int y, int power, int dir, int unused, int owner, int e);
@@ -1292,4 +1296,124 @@ int fn_0fbe_269d(struct EmcState far *s)
     }
     fn_130a_0a7c(w, fn_0845_06f8(ARG(s, 2)), s, 0, 3);
     return 1;
+}
+
+int fn_0fbe_2725(struct EmcState far *s)
+{
+    struct Monster far *m;
+    int mask;
+    int n;
+    int i;
+
+    for (i = mask = 0; ARG(s, i) != -1; i++)
+        mask |= 1 << ARG(s, i);
+    for (m = f_2803_15fa, n = i = 0; i < 30; i++, m++)
+        if ((mask & (1 << m->c20)) && m->mode < 14) n++;
+    return n;
+}
+
+int fn_0fbe_2798(struct EmcState far *s)
+{
+    int far *p;
+
+    p = &ARG(s, 0);
+    if (p[3] > 0x61) ovr_2ce1_007f(g_27af);
+    fn_130a_0360(p[0], p[1], (p + 4)[(unsigned)p[2] % (unsigned)p[3]]);
+    return 0;
+}
+
+int fn_0fbe_27f6(struct EmcState far *s)
+{
+    int hi;
+    int a;
+    int c;
+    register int i;
+    register int type;
+    int lo;
+
+    a = ARG(s, 0);
+    type = ARG(s, 1);
+    c = ARG(s, 2);
+    if (c == 0) {
+        for (i = 0; i < 0x30; i++)
+            if (g_7fe6[i] && f_2803_1cfd[g_7fe6[i]].type == type) return 1;
+        if (f_2803_1cfd[fn_0845_0ac7()].type == type) return 1;
+    }
+    if (a == -1) {
+        lo = 0;
+        hi = 3;
+    } else
+        lo = hi = a;
+    for (i = lo; i <= hi; i++)
+        if (fn_0a21_0997(i, type)) return 1;
+    return 0;
+}
+
+int fn_0fbe_28b5(struct EmcState far *s)
+{
+    return g_4be0 = ARG(s, 0);
+}
+
+int fn_0fbe_28cc(struct EmcState far *s)
+{
+    struct TimHdr far *t;
+
+    t = g_20fc[ARG(s, 0)];
+    t->stop = 0;
+    g_4bb2 = 0;
+    t->numStart = g_4bde ? g_4bde : 1;
+    g_4bb4 = -1;
+    return 1;
+}
+
+int fn_0fbe_2922(struct EmcState far *s)
+{
+    int x;
+    int y;
+
+    x = ARG(s, 1);
+    if (x != -1) x &= 0xff;
+    y = ARG(s, 2);
+    if (y != -1) y &= 0xff;
+    if (ARG(s, 3) || g_2794 == -1)
+        g_2794 = g_8203[ARG(s, 0)].mon;
+    else
+        g_2794 = g_8203[g_2794].mon;
+    while (g_2794) {
+        if (!(g_2794 & 0x8000)
+            && (x == -1 || (f_2803_1cfd[g_2794].x & 0xff) == x)
+            && (y == -1 || (f_2803_1cfd[g_2794].y & 0xff) == y))
+            return g_2794;
+        g_2794 = g_8203[g_2794 & 0x7fff].mon;
+    }
+    return 0;
+}
+
+int fn_0fbe_29f0(struct EmcState far *s)
+{
+    fn_07bc_0367(ARG(s, 0), ARG(s, 1));
+    return 1;
+}
+
+int fn_0fbe_2a1f(struct EmcState far *s)
+{
+    struct Item far *p;
+    int b;
+    register int id;
+    int m;
+
+    b = ARG(s, 0);
+    m = ARG(s, 1);
+    if (m == -1)
+        id = g_8203[b].mon;
+    else {
+        p = fn_080e_000b(m | 0x8000);
+        id = p->next;
+    }
+    while (id) {
+        p = fn_080e_000b(id);
+        if (id & 0x8000) return id & 0x7fff;
+        id = p->next;
+    }
+    return -1;
 }
