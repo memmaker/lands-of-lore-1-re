@@ -4,7 +4,12 @@
 	locals
 S117_TEXT	segment word public use16 'CODE'
 S117_TEXT	ends
-	assume	cs:S117_TEXT
+DGROUP	group	_DATA,_BSS
+_DATA	segment word public use16 'DATA'
+_DATA	ends
+_BSS	segment word public use16 'BSS'
+_BSS	ends
+	assume	cs:S117_TEXT,ds:DGROUP
 
 	extrn	_fn_19ba_0086:far, _fn_1f6a_0002:far, _fn_215f_001d:far, _fn_226d_0007:far, _fn_226d_004e:far
 
@@ -120,7 +125,7 @@ L0118:	push	cx
 	add	di,dx
 	pop	cx
 	loop	L0118
-L012b:	mov	ax,2e2dh	; FIXUP []
+L012b:	mov	ax,DGROUP
 	mov	ds,ax
 	popad
 	cmp	word ptr [bp-4h],0h
@@ -244,7 +249,7 @@ L0263:	push	cx
 	add	si,dx
 	pop	cx
 	loop	L0263
-L0276:	mov	ax,2e2dh	; FIXUP []
+L0276:	mov	ax,DGROUP
 	mov	ds,ax
 	popad
 	cmp	word ptr [bp-4h],0h

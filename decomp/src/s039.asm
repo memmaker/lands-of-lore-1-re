@@ -9,13 +9,11 @@ _DATA	ends
 _BSS	segment word public use16 'BSS'
 _BSS	ends
 S039_TEXT	segment
-	public	_fn_1afa_0000, _fn_1afa_0010
-_fn_1afa_0000	proc	far
+	public	_fn_1afa_0010
+L0000	label	byte
 	db	1h, 2h, 1h, 0h, 7h, 6h, 7h, 0h, 3h, 2h, 3h, 4h, 5h, 6h, 5h, 4h	; 0
-_fn_1afa_0000	endp
-
 _fn_1afa_0010	proc	far
-	db	0c8h, 0h, 0h, 0h	; 10: enter 0x0,0x0
+	enter	0h,0h		; 10
 	push	bx		; 14
 	push	cx		; 15
 	push	dx		; 16
@@ -46,7 +44,7 @@ L003B:
 	cmp	cx,ax		; 42
 	rcl	bx,1		; 44
 	xor	ax,ax		; 46
-	mov	al,cs:[bx+0h]		; 48
+	mov	al,cs:L0000[bx]		; 48
 	pop	dx		; 4d
 	pop	cx		; 4e
 	pop	bx		; 4f
