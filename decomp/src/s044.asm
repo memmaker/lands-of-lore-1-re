@@ -292,17 +292,17 @@ L021E:
 	mov	ax,0h		; 22d
 	mov	dx,0h		; 230
 	pop	es		; 233
-	ret		; 234
+	db	0c3h	; 234: ret
 L0235:
 	mov	ax,0h		; 235
 	mov	dx,0h		; 238
 	pop	es		; 23b
-	ret		; 23c
+	db	0c3h	; 23c: ret
 L023D:
 	mov	ax,es:[bx+2h]		; 23d
 	mov	dx,es		; 241
 	pop	es		; 243
-	ret		; 244
+	db	0c3h	; 244: ret
 L0245:
 	mov	bx,sp		; 245
 	mov	bx,ss:[bx+4h]		; 247
@@ -532,7 +532,7 @@ L0445:
 	jmp	short L0445		; 447
 	pushf		; 449
 	call	dword ptr es:[2da6h]		; 44a
-	ret		; 44f
+	db	0c3h	; 44f: ret
 _fn_1b79_0367	endp
 
 _fn_1b79_0450	proc	far

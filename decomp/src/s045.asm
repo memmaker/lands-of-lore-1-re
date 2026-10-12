@@ -182,7 +182,7 @@ _fn_1bbe_000c	proc	far
 	or	cx,[si]		; 15d
 	or	ax,0e0dh		; 15f
 	db	0fh		; 162
-	movups	xmm2,oword [bx+di]		; 163
+	db	0fh, 10h, 11h	; 163: movups xmm2,oword [bx+di]
 	adc	[bp+si],dx		; 166
 	adc	dx,[bp+di]		; 168
 	adc	al,15h		; 16a
@@ -270,23 +270,23 @@ _fn_1bbe_000c	proc	far
 	popa		; 1dd
 	popa		; 1de
 	bound	sp,[bp+di+63h]		; 1df
-	gs	push dword 6b6a6969h		; 1e2
+	db	64h, 65h, 65h, 66h, 67h, 67h, 68h, 69h, 69h, 6ah, 6bh	; 1e2: gs push dword 0x6b6a6969
 	imul	bp,[si+6dh],+6dh		; 1ed
 	outsb		; 1f1
 	outsw		; 1f2
 	outsw		; 1f3
-	jo	short L0267		; 1f4
-	jno	short L026A		; 1f6
-	jnc	short L026D		; 1f8
-	jz	short L0271		; 1fa
-	jnz	short L0274		; 1fc
-	ja	short L0277		; 1fe
-	js	short L027B		; 200
+	db	70h, 71h	; 1f4: jo 0x267
+	db	71h, 72h	; 1f6: jno 0x26a
+	db	73h, 73h	; 1f8: jnc 0x26d
+	db	74h, 75h	; 1fa: jz 0x271
+	db	75h, 76h	; 1fc: jnz 0x274
+	db	77h, 77h	; 1fe: ja 0x277
+	db	78h, 79h	; 200: js 0x27b
 	jns	short L027E		; 202
 	jpo	short L0281		; 204
-	jl	short L0285		; 206
+	db	7ch, 7dh	; 206: jl 0x285
 	jnl	short L0288		; 208
-	jg	short L028B		; 20a
+	db	7fh, 7fh	; 20a: jg 0x28b
 	add	byte ptr [bx+di-7d7fh],83h		; 20c
 	add	word ptr [si-7a7bh],-7ah		; 211
 	xchg	ax,[bx-7678h]		; 216
@@ -309,7 +309,7 @@ _fn_1bbe_000c	proc	far
 	cbw		; 230
 	cwd		; 231
 	cwd		; 232
-	call	9d9ch:9b9bh		; 233
+	db	9ah, 9bh, 9bh, 9ch, 9dh	; 233: call 0x9d9c:0x9b9b
 	popf		; 238
 	sahf		; 239
 	lahf		; 23a
@@ -341,10 +341,10 @@ _fn_1bbe_000c	proc	far
 	mov	dx,0bbbbh		; 263
 	mov	sp,0bdbdh		; 266
 	mov	si,0bfbfh		; 269
-	rol	cl,byte 0c1h		; 26c
-	ret	0c3c3h		; 26f
+	db	0c0h, 0c1h, 0c1h	; 26c: rol cl,byte 0xc1
+	db	0c2h, 0c3h, 0c3h	; 26f: ret 0xc3c3
 	db	0c4h		; 272
-	vshufpd	ymm0,ymm7,ymm7,byte 0c7h		; 273
+	db	0c5h, 0c5h, 0c6h, 0c7h, 0c7h	; 273: vshufpd ymm0,ymm7,ymm7,byte 0xc7
 	enter	0c9c9h,0cah		; 278
 	retf		; 27c
 _fn_1bbe_000c	endp
@@ -352,7 +352,7 @@ _fn_1bbe_000c	endp
 _fn_1bbe_027d	proc	far
 	retf		; 27d
 L027E:
-	int3		; 27e
+	db	0cch	; 27e: int3
 	int	0cdh		; 27f
 L0281:
 	into		; 281
@@ -370,22 +370,22 @@ L0288:
 	aad	0d6h		; 28c
 	xlatb		; 28e
 	xlatb		; 28f
-	fcomp	st1		; 290
+	db	0d8h, 0d9h	; 290: fcomp st1
 	db	0d9h		; 292
-	fcmovu	st3		; 293
-	fcmovnu	st4		; 295
-	fstp	st5		; 297
+	db	0dah, 0dbh	; 293: fcmovu st3
+	db	0dbh, 0dch	; 295: fcmovnu st4
+	db	0ddh, 0ddh	; 297: fstp st5
 L0299:
 	db	0deh		; 299
 	db	0dfh		; 29a
 	fnstsw	ax		; 29b
-	loope	short L0280		; 29d
+	db	0e1h, 0e1h	; 29d: loope 0x280
 	loop	short L0284		; 29f
-	jcxz	short L0287		; 2a1
+	db	0e3h, 0e4h	; 2a1: jcxz 0x287
 	in	ax,0e5h		; 2a3
 	out	0e7h,al		; 2a5
 	out	0e8h,ax		; 2a7
-	jmp	near ptr LED95		; 2a9
+	db	0e9h, 0e9h, 0eah	; 2a9: jmp 0xed95
 	jmp	short L0299		; 2ac
 	in	al,dx		; 2ae
 	in	ax,dx		; 2af
@@ -393,9 +393,9 @@ L0299:
 	out	dx,al		; 2b1
 	out	dx,ax		; 2b2
 	out	dx,ax		; 2b3
-	lock	int1		; 2b4
-	int1		; 2b6
-	rep	hlt		; 2b7
+	db	0f0h, 0f1h	; 2b4: lock int1
+	db	0f1h	; 2b6: int1
+	db	0f2h, 0f3h, 0f3h, 0f4h	; 2b7: rep hlt
 	cmc		; 2bb
 	cmc		; 2bc
 	div	bh		; 2bd
@@ -742,7 +742,7 @@ L0299:
 	or	cl,[bp+si]		; 41a
 	or	al,0ch		; 41c
 	or	ax,0f0dh		; 41e
-	movups	xmm2,oword [bx+si]		; 421
+	db	0fh, 10h, 10h	; 421: movups xmm2,oword [bx+si]
 	adc	dl,[bp+si]		; 424
 	adc	dx,[bp+di]		; 426
 	adc	ax,1615h		; 428
@@ -768,7 +768,7 @@ L0299:
 	xor	[bx+di],si		; 44e
 	xor	si,[bp+di]		; 450
 	xor	al,34h		; 452
-	ss	aaa		; 454
+	db	36h, 36h, 37h	; 454: ss aaa
 	aaa		; 457
 	cmp	[bx+di],di		; 458
 	cmp	bh,[bp+si]		; 45a
@@ -839,14 +839,14 @@ L0299:
 	mov	dx,0bbbbh		; 4ad
 	mov	bp,0bebdh		; 4b0
 	mov	si,0c0c0h		; 4b3
-	rol	cx,byte 0c3h		; 4b6
-	ret		; 4b9
+	db	0c1h, 0c1h, 0c3h	; 4b6: rol cx,byte 0xc3
+	db	0c3h	; 4b9: ret
 _fn_1bbe_0283	endp
 
 _fn_1bbe_04ba	proc	far
 	db	0c4h		; 4ba
 	db	0c4h		; 4bb
-	mov	dh,0c7h		; 4bc
+	db	0c6h, 0c6h, 0c7h	; 4bc: mov dh,0xc7
 	db	0c7h		; 4bf
 	leave		; 4c0
 	leave		; 4c1
@@ -854,7 +854,7 @@ _fn_1bbe_04ba	proc	far
 _fn_1bbe_04ba	endp
 
 _fn_1bbe_04c5	proc	far
-	int3		; 4c5
+	db	0cch	; 4c5: int3
 L04C6:
 	int	0cdh		; 4c6
 	iret		; 4c8
@@ -869,30 +869,30 @@ _fn_1bbe_04ca	proc	far
 	rcl	dl,cl		; 4cc
 	rcl	bx,cl		; 4ce
 	aad	0d5h		; 4d0
-	salc		; 4d2
-	salc		; 4d3
-	fcomp	st0		; 4d4
+	db	0d6h	; 4d2: salc
+	db	0d6h	; 4d3: salc
+	db	0d8h, 0d8h	; 4d4: fcomp st0
 	db	0d9h		; 4d6
 	db	0d9h		; 4d7
-	fcmovnu	st3		; 4d8
+	db	0dbh, 0dbh	; 4d8: fcmovnu st3
 	db	0dch		; 4da
 	db	0dch		; 4db
 	db	0deh		; 4dc
 	db	0deh		; 4dd
 	db	0dfh		; 4de
 	db	0dfh		; 4df
-	loope	short L04C3		; 4e0
+	db	0e1h, 0e1h	; 4e0: loope 0x4c3
 	loop	short L04C6		; 4e2
 	in	al,0e4h		; 4e4
 	in	ax,0e5h		; 4e6
 	out	0e7h,ax		; 4e8
-	call	LEFD5		; 4ea
-	jmp	0ededh:0ebebh		; 4ed
+	db	0e8h, 0e8h, 0eah	; 4ea: call 0xefd5
+	db	0eah, 0ebh, 0ebh, 0edh, 0edh	; 4ed: jmp 0xeded:0xebeb
 	out	dx,al		; 4f2
 	out	dx,al		; 4f3
-	lock	int1		; 4f4
-	int1		; 4f7
-	rep	hlt		; 4f8
+	db	0f0h, 0f0h, 0f1h	; 4f4: lock int1
+	db	0f1h	; 4f7: int1
+	db	0f3h, 0f3h, 0f4h	; 4f8: rep hlt
 	hlt		; 4fb
 	div	dh		; 4fc
 	div	di		; 4fe
@@ -906,7 +906,7 @@ _fn_1bbe_04ca	proc	far
 	std		; 507
 	db	0ffh		; 508
 	inc	word ptr [bx+si]		; 509
-	add	al,cl		; 50b
+	db	0h, 0c8h	; 50b: add al,cl
 	add	[bx+si],al		; 50d
 	add	[bp+di+51h],dl		; 50f
 	push	dx		; 512
@@ -1054,7 +1054,7 @@ _fn_1bbe_05e1	proc	far
 	mov	[bp-2h],ax		; 5f8
 	xor	ah,ah		; 5fb
 	cmp	word ptr ds:[3749h],+4h		; 5fd
-	jz	short L062D		; 602
+	db	74h, 29h	; 602: jz 0x62d
 	lds	si,[bp+6h]		; 604
 	les	di,[bp+0ah]		; 607
 L060A:
@@ -1069,11 +1069,11 @@ L060A:
 	add	si,dx		; 61a
 	mov	al,[si]		; 61c
 	add	bx,ax		; 61e
-	mov	al,cs:[bx+0ch]		; 620
+	db	2eh, 8ah, 87h, 0ch, 0h	; 620: mov al,[cs:bx+0xc]
 	stosb		; 625
 	sub	si,[bp-2h]		; 626
 	loop	short L060A		; 629
-	jmp	short L0656		; 62b
+	db	0ebh, 29h	; 62b: jmp short 0x656
 L062D:
 	lds	si,[bp+6h]		; 62d
 	les	di,[bp+0ah]		; 630
