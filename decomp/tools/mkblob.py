@@ -210,6 +210,37 @@ def build(n):
 wanted = {}
 
 
+def build_frag(n, lo, hi, pub, part):
+    """original bytes [lo, hi) of root module n's code segment as one OBJ contributing to segment N_TEXT (the rest
+    of the module is C); calls into the module outside the range go through the C parts' publics"""
+    m = Module(part)
+    i = dict(layout.ROOT)[n]
+    seg, mx, fl, mn = st[i]
+    a, b = seg * 16 + lo, seg * 16 + hi
+    sname = n.upper() + '_TEXT'
+    code = bytearray(img[a:b])
+    fx = [(r - a, target(struct.unpack_from('<H', img, r)[0], struct.unpack_from('<H', img, r - 2)[0], n))
+          for r in relocs if a <= r < b]
+    fx_self = []
+    for mm in re.finditer(rb'\x90\x0e\xe8', bytes(code)):
+        q = mm.start()
+        tgt = (q + lo + 5 + struct.unpack_from('<h', code, q + 3)[0]) & 0xffff
+        if any(q <= f - a < q + 5 for f in relocs): continue
+        code[q:q + 5] = b'\x9a' + struct.pack('<H', tgt - lo if lo <= tgt < hi else 0) + b'\0\0'
+        fx_self.append((q + 1, tgt))
+    s = m.seg(sname, 'CODE', 'byte', bytes(code))
+    for off, (loc, kind, sym) in fx:
+        if loc == 'ptr': off -= 2
+        s['fixups'].append((off, loc, kind, sym))
+    for q, tgt in fx_self:
+        if lo <= tgt < hi:
+            s['fixups'].append((q, 'ptr', 'seg', (sname, tgt - lo)))
+        else:
+            s['fixups'].append((q, 'ptr', 'ext', '_fn_%04x_%04x' % (seg, tgt)))
+    m.pubs.append((pub, sname, 0))
+    return m
+
+
 def owner(sym):
     """(module, segname, offset) of a symbol imported by a given OBJ; None for RTL names"""
     mm = re.match(r'_g_([0-9a-f]{4})$', sym)
@@ -243,15 +274,29 @@ def pubsort(buf):
 
 def main():
     out = sys.argv[1]
-    objs = {os.path.basename(p).rsplit('.', 1)[0].lower(): p for p in sys.argv[2:]}
-    defined, imported = set(), set()
-    for n, p in objs.items():
+    objs, parts, frags = {}, {}, []
+    for p in sys.argv[2:]:
+        if os.path.basename(p) == 'PARTS':   # split module: C parts + original-byte fragments, in link order
+            n = os.path.basename(os.path.dirname(os.path.dirname(p))).lower(); d = os.path.dirname(p)
+            parts[n] = []
+            for l in open(p).read().splitlines():
+                f = l.split()
+                if f[0] == 'C': parts[n].append(('C', os.path.join(d, f[1] + '.OBJ'), f[1]))
+                else:
+                    pn = '%s_F%d' % (n.upper(), len(parts[n]) + 1)
+                    parts[n].append(('F', (int(f[1], 16), int(f[2], 16), f[3]), pn)); frags.append(f[3])
+            objs[n] = None
+        else:
+            objs[os.path.basename(p).rsplit('.', 1)[0].lower()] = p
+    defined, imported = set(frags), set()
+    paths = [(n, p) for n, p in objs.items() if p] + [(n, q[1]) for n, v in parts.items() for q in v if q[0] == 'C']
+    for n, p in paths:
         mod = omf.modules(p)[0]
         code = [k for k, sg in enumerate(mod['segs']) if sg.get('cls') == 'CODE']
         defined |= {q[0] for q in mod['pubs']}
         imported |= set(mod['exts'])
         cp = [q[0] for q in mod['pubs'] if q[1] in code]
-        if cp: seg_sym[n] = cp[0]
+        if cp and n not in seg_sym: seg_sym[n] = cp[0]
     for sym in sorted(imported - defined):
         o = owner(sym)
         if o:
@@ -259,12 +304,17 @@ def main():
             wanted.setdefault(o[0], []).append((sym,) + o[1:])
     for n in layout.order() + layout.lib_order():
         dst = os.path.join(out, n.upper() + '.OBJ')
-        if n in objs:
+        if n in parts:
+            for kind, src, pn in parts[n]:
+                d2 = os.path.join(out, pn + '.OBJ')
+                if kind == 'C': open(d2, 'wb').write(open(src, 'rb').read())
+                else: open(d2, 'wb').write(build_frag(n, src[0], src[1], src[2], pn).bytes())
+        elif n in objs:
             b = open(objs[n], 'rb').read()
             open(dst, 'wb').write(pubsort(b) if n in dict(layout.OVR) else b)
         else:
             open(dst, 'wb').write(build(n).bytes())
-    open(os.path.join(out, 'LINK.RSP'), 'w').write(layout.rsp())
+    open(os.path.join(out, 'LINK.RSP'), 'w').write(layout.rsp({n: [q[2] for q in v] for n, v in parts.items()}))
     open(os.path.join(out, 'TLIB.RSP'), 'w').write(layout.tlib_rsp())
 
 

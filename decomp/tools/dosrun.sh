@@ -11,7 +11,7 @@ core=normal
 cycles=max
 [autoexec]
 mount c "$D"
-mount d "$PWD/toolchain/bcpp31"
+mount d "$PWD/toolchain/${TC:-bcpp31}"
 c:
 call $2
 exit
