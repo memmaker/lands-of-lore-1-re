@@ -108,9 +108,35 @@ struct Item {               /* 16 bytes, f_2803_1cfd[400] */
     unsigned flags;          /* +0e 0x4000 on floor, 0x8000 free */
 };
 
-struct ItemType { int name; unsigned char shape; unsigned flags; char pad5[2]; unsigned char script; unsigned char w8; char c9; unsigned char ca; char padb[2]; };   /* 13 bytes */
+struct ItemType { int name; unsigned char shape; unsigned flags; int w5; unsigned char script; unsigned char w8; unsigned char c9; unsigned char ca; int wb; };   /* 13 bytes */
 
 struct Emc { int far *ip; char pad04[8]; int sp; int regs[15]; int stack[101]; };   /* EMC2 script state */
+
+struct EmcState;
+
+struct EmcData {
+    int far *text;           /* +00 TEXT chunk: strings */
+    int far *data;           /* +04 DATA chunk: bytecode */
+    int far *ordr;           /* +08 function entry points */
+    int dataSize;            /* +0c in words */
+    int (far * far *opcodes)(struct EmcState far *s);  /* +0e */
+    char alloc;              /* +12 buffers were allocated here */
+};
+
+struct EmcState {
+    int far *ip;             /* +00 */
+    struct EmcData far *dat; /* +04 */
+    int retValue;            /* +08 */
+    int bp;                  /* +0a */
+    int sp;                  /* +0c */
+    int regs[15];            /* +0e */
+    int stack[100];          /* +2c */
+    int running;             /* +f4 */
+};
+void fn_0f28_032c(struct EmcState far *s, struct EmcData far *d);
+void fn_0f28_035f(struct EmcState far *s, int fn);
+int fn_0f28_04a0(struct EmcState far *s);
+#define ARG(s, n) ((s)->stack[(s)->sp + (n)])
 
 extern struct Char far f_2803_362d[];
 extern struct Monster far f_2803_15fa[];
