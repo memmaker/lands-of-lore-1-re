@@ -15,7 +15,7 @@ _BSS	ends
 	extrn	_fn_1ebc_0245:far
 	extrn	_fn_2169_0945:far
 S046_TEXT	segment
-	public	_fn_1c24_0000, _fn_1c24_0161, _fn_1c24_0290, _fn_1c24_034f, _fn_1c24_049a, _fn_1c24_04eb, _fn_1c24_05ab, _fn_1c24_05e3, _fn_1c24_0626, _fn_1c24_0628
+	public	_fn_1c24_0000, _fn_1c24_0169, _fn_1c24_0290, _fn_1c24_034f, _fn_1c24_049a, _fn_1c24_04eb, _fn_1c24_05ab, _fn_1c24_05e3, _fn_1c24_0626, _fn_1c24_0628
 _fn_1c24_0000	proc	far
 	push	ax		; 0
 	push	cx		; 1
@@ -55,7 +55,7 @@ L0050:
 	pop	dx		; 54
 	pop	cx		; 55
 	pop	ax		; 56
-	db	0c3h	; 57: ret
+	retn		; 57
 L0058:
 	enter	2h,0h		; 58
 	push	ax		; 5c
@@ -64,7 +64,7 @@ L0058:
 	mov	ax,ds:[2f91h]		; 5f
 	and	ax,7h		; 62
 	mov	bx,161h		; 65
-	db	2eh, 0d7h	; 68: cs xlatb
+	xlat	byte ptr cs:[bx]		; 68
 	mov	bx,ax		; 6a
 	xor	bl,ds:[2f45h]		; 6c
 	jz	short L00A7		; 70
@@ -175,14 +175,13 @@ L015C:
 	pop	bx		; 15d
 	pop	ax		; 15e
 	leave		; 15f
-	ret		; 160
+	retn		; 160
+L0161	label	byte
+	db	0h, 2h, 4h, 6h, 1h, 3h, 5h, 7h	; 161
 _fn_1c24_0000	endp
 
-_fn_1c24_0161	proc	far
-	add	[bp+si],al		; 161
-	add	al,6h		; 163
-	add	[bp+di],ax		; 165
-	add	ax,5007h		; 167
+_fn_1c24_0169	proc	far
+	push	ax		; 169
 	push	bx		; 16a
 	push	cx		; 16b
 	push	dx		; 16c
@@ -194,7 +193,7 @@ _fn_1c24_0161	proc	far
 	mov	ax,DGROUP		; 173
 	mov	ds,ax		; 176
 	cmp	byte ptr ds:[2f43h],0h		; 178
-	db	0fh, 85h, 6h, 1h	; 17d: jnz near 0x287
+	jnz	near ptr L0287		; 17d
 	cmp	byte ptr ds:[2f44h],0h		; 181
 	jz	near ptr L0287		; 186
 	cmp	word ptr ds:[2f0ah],+0h		; 18a
@@ -204,14 +203,14 @@ _fn_1c24_0161	proc	far
 	cmp	byte ptr ds:[0abdeh],0h		; 19a
 	jnz	near ptr L0287		; 19f
 L01A3:
-	call	_fn_1c24_0000		; 1a3
+	call	near ptr _fn_1c24_0000		; 1a3
 	mov	cx,ds:[2f0ch]		; 1a6
 	mov	dx,ds:[2f0eh]		; 1aa
 	cmp	byte ptr ds:[35eeh],0h		; 1ae
 	jnz	short L01C0		; 1b3
 	test	word ptr ds:[35e6h],1000h		; 1b5
 	jnz	short L01C0		; 1bb
-	call	L0058		; 1bd
+	call	near ptr L0058		; 1bd
 L01C0:
 	cmp	byte ptr ds:[35eeh],2h		; 1c0
 	jz	near ptr L0287		; 1c5
@@ -249,7 +248,7 @@ L020E:
 	jz	short L022F		; 222
 	test	word ptr ds:[35e6h],1000h		; 224
 	jnz	short L022F		; 22a
-	call	L0058		; 22c
+	call	near ptr L0058		; 22c
 L022F:
 	cmp	word ptr ds:[2f16h],+0h		; 22f
 	jnz	short L027F		; 234
@@ -291,7 +290,7 @@ L0287:
 	pop	bx		; 28d
 	pop	ax		; 28e
 	retf		; 28f
-_fn_1c24_0161	endp
+_fn_1c24_0169	endp
 
 _fn_1c24_0290	proc	far
 	or	[bx+si],al		; 290
@@ -377,7 +376,7 @@ L034B:
 	pop	cx		; 34b
 	pop	bx		; 34c
 	leave		; 34d
-	db	0c3h	; 34e: ret
+	retn		; 34e
 _fn_1c24_0290	endp
 
 _fn_1c24_034f	proc	far
@@ -422,7 +421,7 @@ L03AB:
 	test	word ptr ds:[35e6h],1000h		; 3b2
 	jnz	short L03C3		; 3b8
 	push	word ptr [bp-4h]		; 3ba
-	call	L02F7		; 3bd
+	call	near ptr L02F7		; 3bd
 	add	sp,+2h		; 3c0
 L03C3:
 	cmp	byte ptr ds:[35eeh],2h		; 3c3
@@ -463,7 +462,7 @@ L0411:
 	test	word ptr ds:[35e6h],1000h		; 427
 	jnz	short L0438		; 42d
 	push	word ptr [bp-4h]		; 42f
-	call	L02F7		; 432
+	call	near ptr L02F7		; 432
 	add	sp,+2h		; 435
 L0438:
 	cmp	word ptr ds:[2f16h],+0h		; 438
@@ -580,7 +579,7 @@ _fn_1c24_04eb	proc	far
 L0526:
 	mov	ax,0h		; 526
 	mov	byte ptr ds:[2f42h],0h		; 529
-	db	0ebh, 76h	; 52e: jmp short 0x5a6
+	jmp	short L05A6		; 52e
 L0530:
 	mov	ax,0h		; 530
 	int	33h		; 533
@@ -590,9 +589,9 @@ L0530:
 	or	ax,ax		; 53f
 	jz	short L0561		; 541
 	push	cs		; 543
-	call	L029C		; 544
+	call	near ptr L029C		; 544
 	call	far ptr _fn_1ebc_0211		; 547
-	call	_fn_1c24_0000		; 54c
+	call	near ptr _fn_1c24_0000		; 54c
 	mov	word ptr ds:[2f14h],0h		; 54f
 	mov	byte ptr ds:[2f42h],1h		; 555
 	mov	byte ptr ds:[2f43h],1h		; 55a

@@ -17,11 +17,11 @@ S076_TEXT	segment word public use16 'CODE'
 	public	_fn_1f81_0004
 
 _fn_1f81_0004	proc	far
-	mov	bx,fs:_g_35cc
-	add	bx,fs:_g_35ca
+	mov	bx,word ptr fs:_g_35cc
+	add	bx,word ptr fs:_g_35ca
 	or	bh,bh
 	jnz	short L0021
-	mov	fs:_g_35cc,bx
+	mov	word ptr fs:_g_35cc,bx
 	push	ds
 	lds	bx,[bp-1ch]
 	xlatb
@@ -29,10 +29,10 @@ _fn_1f81_0004	proc	far
 	pop	ds
 	retf
 L0021:	xor	bh,bh
-	mov	fs:_g_35cc,bx
-	add	di,fs:_g_35c8
+	mov	word ptr fs:_g_35cc,bx
+	add	di,word ptr fs:_g_35c8
 	mov	al,es:[di]
-	sub	di,fs:_g_35c8
+	sub	di,word ptr fs:_g_35c8
 	mov	es:[di],al
 	retf
 _fn_1f81_0004	endp

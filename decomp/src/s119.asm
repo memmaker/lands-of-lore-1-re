@@ -4,18 +4,12 @@
 	locals
 S119_TEXT	segment word public use16 'CODE'
 S119_TEXT	ends
-DGROUP	group	_DATA,_BSS
-_DATA	segment word public use16 'DATA'
-_DATA	ends
-_BSS	segment word public use16 'BSS'
-_BSS	ends
-	assume	cs:S119_TEXT,ds:DGROUP
+	assume	cs:S119_TEXT
 
-	extrn	_g_0040:word
 	extrn	_fn_2279_02b5:far
 
 S119_TEXT	segment word public use16 'CODE'
-	public	_fn_20f7_0006, _fn_20f7_01a2
+	public	_fn_20f7_0006, _fn_20f7_01b2
 
 _fn_20f7_0006	proc	far
 	enter	0h,0h
@@ -58,7 +52,7 @@ L0056:	mov	cs:[1ach],di
 	mov	di,cs:[1a6h]
 	mov	word ptr cs:[1aeh],1h
 L0072:	mov	al,[si]
-	cmp	al,_g_0040[si]
+	cmp	al,[si+40h]
 	jnz	short L00b9
 	mov	bx,di
 	mov	di,si
@@ -180,15 +174,10 @@ L018d:	mov	ax,80h
 	retf
 _fn_20f7_0006	endp
 
-_fn_20f7_01a2	proc	far
-	add	[bx+si],al
-	add	[bx+si],al
-	add	[bx+si],al
-	add	[bx+si],al
-	add	[bx+si],al
-	add	[bx+si],al
-	add	[bx+si],al
-	add	[bx+si],al
+; self-modified variables of fn_20f7_0006 (cs:1a2 .. cs:1b1)
+	dw	8 dup (0)
+
+_fn_20f7_01b2	proc	far
 	enter	0ah,0h
 	push	es
 	push	ds
@@ -285,7 +274,7 @@ L028b:	popad
 	pop	es
 	leave
 	retf
-_fn_20f7_01a2	endp
+_fn_20f7_01b2	endp
 
 S119_TEXT	ends
 	end

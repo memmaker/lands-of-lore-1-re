@@ -17,18 +17,18 @@ S094_TEXT	segment word public use16 'CODE'
 	public	_fn_1fb3_0002
 
 _fn_1fb3_0002	proc	far
-	mov	bx,fs:_g_35cc
-	add	bx,fs:_g_35ca
+	mov	bx,word ptr fs:_g_35cc
+	add	bx,word ptr fs:_g_35ca
 	or	bh,bh
 	jnz	short L0019
-	mov	fs:_g_35cc,bx
+	mov	word ptr fs:_g_35cc,bx
 	mov	es:[di],al
 	retf
 L0019:	xor	bh,bh
-	mov	fs:_g_35cc,bx
-	add	di,fs:_g_35c8
+	mov	word ptr fs:_g_35cc,bx
+	add	di,word ptr fs:_g_35c8
 	mov	al,es:[di]
-	sub	di,fs:_g_35c8
+	sub	di,word ptr fs:_g_35c8
 	push	ax
 	push	ds
 	lds	bx,[bp-20h]

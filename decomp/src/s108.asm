@@ -15,7 +15,7 @@ _fn_2025_000c	proc	far
 L000e:	lodsb
 	or	al,al
 	jz	short L001b
-	call	far ptr [bp-4h]
+	call	dword ptr [bp-4h]
 	dec	di
 	loop	L000e
 	jmp	short L0022

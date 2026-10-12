@@ -8,7 +8,44 @@ _DATA	segment word public use16 'DATA'
 _DATA	ends
 _BSS	segment word public use16 'BSS'
 _BSS	ends
+	extrn	_fn_1f7f_000a:far
+	extrn	_fn_1f81_0004:far
+	extrn	_fn_1f84_000e:far
+	extrn	_fn_1f86_0008:far
+	extrn	_fn_1f88_0004:far
+	extrn	_fn_1f8b_0004:far
+	extrn	_fn_1f8c_000a:far
+	extrn	_fn_1f8f_0000:far
+	extrn	_fn_1f93_000e:far
+	extrn	_fn_1f94_0002:far
+	extrn	_fn_1f96_000c:far
+	extrn	_fn_1f99_0006:far
+	extrn	_fn_1f9e_0000:far
+	extrn	_fn_1fa0_0006:far
+	extrn	_fn_1fa3_000a:far
+	extrn	_fn_1faa_0006:far
+	extrn	_fn_1fac_0006:far
+	extrn	_fn_1faf_000a:far
+	extrn	_fn_1fb3_0002:far
+	extrn	_fn_1fb7_000c:far
+	extrn	_fn_1fba_0002:far
+	extrn	_fn_1fbd_0008:far
+	extrn	_fn_1fc4_0004:far
+	extrn	_fn_1fc6_0004:far
+	extrn	_fn_1fc9_000a:far
+	extrn	_fn_1fcd_0004:far
+	extrn	_fn_2019_0008:far
+	extrn	_fn_201d_000e:far
+	extrn	_fn_2022_0004:far
+	extrn	_fn_2023_000a:far
+	extrn	_fn_2025_000c:far
+	extrn	_fn_2027_0004:far
+	extrn	_fn_2029_0008:far
+	extrn	_fn_202c_0000:far
+	extrn	_fn_202e_0006:far
+	extrn	_fn_2032_000c:far
 	extrn	_fn_215f_001d:far
+	extrn	_fn_1b43_000e:far
 S040_TEXT	segment
 	public	_fn_1aff_0002, _fn_1aff_001c, _fn_1aff_00b9, _fn_1aff_02d2, _fn_1aff_030e, _fn_1aff_0341, _fn_1aff_0386, _fn_1aff_039a, _fn_1aff_03b4, _fn_1aff_03fd, _fn_1aff_0420, _fn_1aff_0434
 _fn_1aff_0002	proc	far
@@ -535,4 +572,152 @@ _fn_1aff_0434	proc	far
 	retf		; 44b
 _fn_1aff_0434	endp
 S040_TEXT	ends
+_DATA	segment
+	public	_g_2b8c, _g_2c12, _g_2c90, _g_2c92, _g_2c94, _g_2cd2, _g_2cd4, _g_2cd6, _g_2cf8, _g_2d18, _g_2d1a, _g_2d1c, _g_2d5e, _g_2d60, _g_2da2, _g_2da4, _g_2da6, _g_2da8, _g_2daa, _g_2dac, _g_2dae, _g_2db0, _g_2db2, _g_2db4, _g_2df2, _g_2e12, _g_2e36, _g_2e3c, _g_2e3e
+	dd	_fn_2023_000a	; 2b30
+	dd	_fn_2027_0004	; 2b34
+	dd	_fn_2023_000a	; 2b38
+	dd	_fn_2027_0004	; 2b3c
+	dd	_fn_201d_000e	; 2b40
+	dd	_fn_2019_0008	; 2b44
+	dd	_fn_201d_000e	; 2b48
+	dd	_fn_2019_0008	; 2b4c
+	dd	_fn_2023_000a	; 2b50
+	dd	_fn_2027_0004	; 2b54
+	dd	_fn_2023_000a	; 2b58
+	dd	_fn_2027_0004	; 2b5c
+	dd	_fn_202c_0000	; 2b60
+	dd	_fn_2029_0008	; 2b64
+	dd	_fn_202c_0000	; 2b68
+	dd	_fn_2029_0008	; 2b6c
+	dd	_fn_2022_0004	; 2b70
+	dd	_fn_2025_000c	; 2b74
+	dd	_fn_2022_0004	; 2b78
+	dd	_fn_2025_000c	; 2b7c
+	dd	_fn_202e_0006	; 2b80
+	dd	_fn_2032_000c	; 2b84
+	dd	_fn_202e_0006	; 2b88
+_g_2b8c	label	byte
+	dd	_fn_2032_000c	; 2b8c
+	dd	_fn_1f84_000e-4	; 2b90: 1f84:000a, s077 function
+	dd	_fn_1f84_000e	; 2b94
+	dd	_fn_1f88_0004	; 2b98
+	dd	_fn_1f86_0008	; 2b9c
+	dd	_fn_1f7f_000a-0ah	; 2ba0: 1f7f:0000, s074 function
+	dd	_fn_1f7f_000a	; 2ba4
+	dd	_fn_1f81_0004	; 2ba8
+	dd	_fn_1f86_0008	; 2bac
+	dd	_fn_1b43_000e-2	; 2bb0: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2bb4: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2bb8: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2bbc: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2bc0: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2bc4: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2bc8: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2bcc: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1fc4_0004	; 2bd0
+	dd	_fn_1fc6_0004	; 2bd4
+	dd	_fn_1fcd_0004	; 2bd8
+	dd	_fn_1fc9_000a	; 2bdc
+	dd	_fn_1fb7_000c	; 2be0
+	dd	_fn_1fba_0002	; 2be4
+	dd	_fn_1fbd_0008	; 2be8
+	dd	_fn_1fc9_000a	; 2bec
+	dd	_fn_1b43_000e-2	; 2bf0: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2bf4: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2bf8: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2bfc: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c00: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c04: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c08: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c0c: 1b43:000c, s041 retf (null draw handler)
+	dw	offset _fn_1f93_000e	; 2c10
+_g_2c12	label	byte
+	dw	seg _fn_1f93_000e
+	dd	_fn_1f94_0002	; 2c14
+	dd	_fn_1f99_0006	; 2c18
+	dd	_fn_1f96_000c	; 2c1c
+	dd	_fn_1f8b_0004	; 2c20
+	dd	_fn_1f8c_000a	; 2c24
+	dd	_fn_1f8f_0000	; 2c28
+	dd	_fn_1f96_000c	; 2c2c
+	dd	_fn_1b43_000e-2	; 2c30: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c34: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c38: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c3c: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c40: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c44: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c48: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c4c: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1faa_0006	; 2c50
+	dd	_fn_1fac_0006	; 2c54
+	dd	_fn_1fb3_0002	; 2c58
+	dd	_fn_1faf_000a	; 2c5c
+	dd	_fn_1f9e_0000	; 2c60
+	dd	_fn_1fa0_0006	; 2c64
+	dd	_fn_1fa3_000a	; 2c68
+	dd	_fn_1faf_000a	; 2c6c
+	dd	_fn_1b43_000e-2	; 2c70: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c74: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c78: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c7c: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c80: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c84: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c88: 1b43:000c, s041 retf (null draw handler)
+	dd	_fn_1b43_000e-2	; 2c8c: 1b43:000c, s041 retf (null draw handler)
+_g_2c90	label	byte
+	db	2 dup (0)	; 2c90
+_g_2c92	label	byte
+	db	2 dup (0)	; 2c92
+_g_2c94	label	byte
+	db	62 dup (0)	; 2c94
+_g_2cd2	label	byte
+	db	2 dup (0)	; 2cd2
+_g_2cd4	label	byte
+	db	2 dup (0)	; 2cd4
+_g_2cd6	label	byte
+	db	34 dup (0)	; 2cd6
+_g_2cf8	label	byte
+	db	32 dup (0)	; 2cf8
+_g_2d18	label	byte
+	db	2 dup (0)	; 2d18
+_g_2d1a	label	byte
+	db	2 dup (0)	; 2d1a
+_g_2d1c	label	byte
+	db	66 dup (0)	; 2d1c
+_g_2d5e	label	byte
+	db	2 dup (0)	; 2d5e
+_g_2d60	label	byte
+	db	66 dup (0)	; 2d60
+_g_2da2	label	byte
+	db	2 dup (0)	; 2da2
+_g_2da4	label	byte
+	db	2 dup (0)	; 2da4
+_g_2da6	label	byte
+	db	2 dup (0)	; 2da6
+_g_2da8	label	byte
+	db	2 dup (0)	; 2da8
+_g_2daa	label	byte
+	db	2 dup (0)	; 2daa
+_g_2dac	label	byte
+	db	2 dup (0)	; 2dac
+_g_2dae	label	byte
+	db	2 dup (0)	; 2dae
+_g_2db0	label	byte
+	db	2 dup (0)	; 2db0
+_g_2db2	label	byte
+	db	2 dup (0)	; 2db2
+_g_2db4	label	byte
+	db	62 dup (0)	; 2db4
+_g_2df2	label	byte
+	db	32 dup (0)	; 2df2
+_g_2e12	label	byte
+	db	36 dup (0)	; 2e12
+_g_2e36	label	byte
+	db	6 dup (0)	; 2e36
+_g_2e3c	label	byte
+	db	2 dup (0)	; 2e3c
+_g_2e3e	label	byte
+	db	0d3h, 000h	; 2e3e
+_DATA	ends
 	end

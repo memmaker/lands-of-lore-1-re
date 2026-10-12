@@ -22,7 +22,7 @@ L0014:	lodsb
 	add	dx,[bp-4ah]
 	jmp	short L000e
 L0021:	push	ax
-	call	far ptr [bp-4h]
+	call	dword ptr [bp-4h]
 	pop	ax
 	dec	di
 	dec	dh
