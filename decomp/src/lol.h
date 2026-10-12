@@ -64,11 +64,11 @@ struct Monster {             /* 0x2e bytes, f_2803_15fa[30] */
     char pad25[9];
 };
 
-struct Block { int items; int w2; int mon; char pad[3]; unsigned char flags; };   /* 10 bytes, g_8203[1024] */
+struct Block { int items; int w2; int mon; int draw; char drawDir; unsigned char flags; };   /* 10 bytes, g_8203[1024] */
 
 struct Item {               /* 16 bytes, f_2803_1cfd[400] */
     int next;
-    int w2;
+    int drawNext;            /* +02 */
     unsigned char sub;       /* +04 position inside the block */
     int block;               /* +05 */
     int x, y;                /* +07 */
