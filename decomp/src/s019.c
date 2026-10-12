@@ -46,16 +46,6 @@ int fn_07bc_012d(int type, int flags, int flags2);
 void fn_130a_0052(int it, int a, int b, int c, int d, int e);
 extern struct ItemType far *g_7fb2;
 
-struct Anim {               /* 0xb5 bytes, g_4ee0[]: TIM/WSA animation slots */
-    char far *wsa;
-    int x, y;                /* +04 */
-    char pad8[4];
-    char cc, cd;             /* +0c */
-    char pade[4];
-    unsigned flags;          /* +12 */
-    char c14;
-    int frames[10][8];       /* +15 */
-};
 extern struct Anim g_4ee0[];
 extern long g_384c;
 extern char far *g_4bec, far *g_4bf0, far *g_4edc;
