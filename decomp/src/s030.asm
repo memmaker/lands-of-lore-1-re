@@ -199,7 +199,9 @@ _fn_178d_0091	proc	far
    ;	
 	push	255
 	push	word ptr [bp+6]
-	call	far ptr _fn_178d_00a4
+	push	cs		; single-pass TASM: forward far call to the same segment
+	call	near ptr _fn_178d_00a4
+	nop
 	add	sp,4
    ;	
    ;	}
@@ -309,7 +311,9 @@ _fn_178d_00a4	proc	far
 	push	si
 	push	ds
 	push	offset DGROUP:_g_28fa
-	call	far ptr _fn_178d_01ef
+	push	cs		; single-pass TASM: forward far call to the same segment
+	call	near ptr _fn_178d_01ef
+	nop
 @4@282:
 	add	sp,8
 @4@310:
@@ -372,7 +376,9 @@ _fn_178d_015e	proc	far
 	push	large 0
 	push	ds
 	push	offset DGROUP:_g_28fa
-	call	far ptr _fn_178d_01ef
+	push	cs		; single-pass TASM: forward far call to the same segment
+	call	near ptr _fn_178d_01ef
+	nop
 	add	sp,8
 @5@170:
    ;	
@@ -420,7 +426,9 @@ _fn_178d_01b0	proc	far
 	push	large 1
 	push	ds
 	push	offset DGROUP:_g_28fa
-	call	far ptr _fn_178d_01ef
+	push	cs		; single-pass TASM: forward far call to the same segment
+	call	near ptr _fn_178d_01ef
+	nop
 @6@170:
 	add	sp,8
 @6@198:
@@ -618,11 +626,13 @@ _fn_178d_01ef	proc	far
    ;	
 	cmp	word ptr [bp+12],-1
 	jne short	@@8
-	jmp	@7@2018
+	jmp	short @7@2018
+	nop			; single-pass TASM reserved a near jmp
 @@8:
 	cmp	word ptr [bp-2],9
 	jne short	@@9
-	jmp	@7@2018
+	jmp	short @7@2018
+	nop			; single-pass TASM reserved a near jmp
 @@9:
    ;	
    ;	            g_2a9a = n;

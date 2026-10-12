@@ -263,7 +263,7 @@ void fn_1809_058d(int h)
         fn_1981_031f(idx, &buf1);
         if (pak) fn_1981_031f(ent->pak, &buf2);
         if (!keep && !freed && !refs && !(ent->flags & 0x6000)) {
-            for (idx = 0; (ent = fn_1981_02c0(idx, &buf1))->name; idx++) {
+            for (idx = 0; ent = fn_1981_02c0(idx, &buf1), *(long far *)ent; idx++) {
                 if (ent->data && !ent->refs && !(ent->flags & 0x6000)) {
                     if ((ent->flags & 0xff) == 0xff) {
                         fn_203b_0203(ent->data);
@@ -564,7 +564,7 @@ int fn_1809_1502(int idx, int h)
     {
     PakEnt buf1;
     ent = fn_1981_02c0(idx, &buf1);
-    if (!(ent->flags & 0x600) || ent->data) goto fail;
+    if ((ent->flags & 0x600) && !ent->data) {
     size = ent->size;
     mf = 0;
     if (fn_203b_03b4(0x42) >= size || fn_203b_0482(0x42) >= size) mf = 0x40;
@@ -584,7 +584,7 @@ int fn_1809_1502(int idx, int h)
         age = 0;
         best = -1;
         sum = avail;
-        for (i = 0; (ent = fn_1981_02c0(i, &buf1))->name; i++) {
+        for (i = 0; ent = fn_1981_02c0(i, &buf1), *(long far *)ent; i++) {
             if (ent->data && !ent->refs && !(ent->flags & 0x2000)) {
                 sum += ent->size;
                 if ((ent->flags & 0xff) > age) {
@@ -620,6 +620,7 @@ int fn_1809_1502(int idx, int h)
     fh->fd = 0;
     fn_1981_031f(idx, &buf1);
     return 1;
+    }
     }
 fail:
     return 0;
