@@ -12,13 +12,16 @@ struct Stats {
 
 struct Char {                /* 0x82 bytes, f_2803_362d[4] */
     unsigned flags;          /* +00 1 present, 8 dead, 0x1000 mute */
-    char name[0x10];         /* +02 */
+    char name[0x0c];         /* +02 */
+    int wE;                  /* +0e */
+    int w10;                 /* +10 */
     char voice;              /* +12 */
     struct Stats st;         /* +13 */
     int w37;                 /* +37 */
     int hp;                  /* +39 */
     int maxHp;               /* +3b */
-    char pad3d[5];
+    int w3d;                 /* +3d */
+    char pad3f[3];
     int lastDmg;             /* +42 */
     int dmgDealt;            /* +44 */
     int w46;                 /* +46 */
@@ -64,7 +67,8 @@ struct Monster {             /* 0x2e bytes, f_2803_15fa[30] */
     char pad25[9];
 };
 
-struct Block { int items; int w2; int mon; int draw; char drawDir; unsigned char flags; };   /* 10 bytes, g_8203[1024] */
+struct Block { int items; int w2; int mon; int draw; char drawDir; unsigned char flags; };   /* items/w2 overlay char walls[4] */
+#define WALL(b, d) (((char *)&g_8203[b])[d])   /* 10 bytes, g_8203[1024] */
 
 struct Item {               /* 16 bytes, f_2803_1cfd[400] */
     int next;
@@ -77,7 +81,7 @@ struct Item {               /* 16 bytes, f_2803_1cfd[400] */
     unsigned flags;          /* +0e 0x4000 on floor, 0x8000 free */
 };
 
-struct ItemType { char pad[3]; unsigned flags; char pad5[2]; unsigned char script; char pad8[5]; };   /* 13 bytes */
+struct ItemType { int name; unsigned char shape; unsigned flags; char pad5[2]; unsigned char script; char pad8[5]; };   /* 13 bytes */
 
 struct Emc { int far *ip; char pad04[8]; int sp; int regs[15]; int stack[101]; };   /* EMC2 script state */
 
