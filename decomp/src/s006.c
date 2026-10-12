@@ -1,4 +1,5 @@
 /* s006: items (allocation, placement on blocks, item scripts) */
+#pragma option -O-b
 #include <mem.h>
 #include "lol.h"
 

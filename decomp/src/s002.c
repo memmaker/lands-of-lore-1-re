@@ -1,5 +1,5 @@
 /* s002: TIM (timed animation script) loader and scheduler */
-#pragma option -O-l
+#pragma option -O-l -O-b
 
 struct TimHdr { int magic; int stop; int numStart; int offFuncs; int offWsa; int offAvtl; int offText; };
 struct TimCmd { int len; int delay; char op; char pad; int param[1]; };

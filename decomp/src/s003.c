@@ -83,7 +83,7 @@ void fn_067a_0003(void)
     g_1e91 = -1;
 }
 
-/* NONMATCHING branch layout */
+/* NONMATCHING */
 void fn_067a_003e(int n)
 {
     char name[20];
@@ -117,7 +117,7 @@ void fn_067a_003e(int n)
     g_1e91 = f_26a4_0000[n].song;
 }
 
-/* NONMATCHING si/di assignment of n/old */
+/* NONMATCHING */
 int fn_067a_01d1(int n)
 {
     int old;
@@ -136,6 +136,7 @@ int fn_067a_01d1(int n)
     return old;
 }
 
+/* NONMATCHING */
 void fn_067a_023d(void)
 {
     if (g_7fda & 2) {
@@ -153,7 +154,6 @@ void fn_067a_026b(int n)
     fn_067a_02f5(n, g_7fd0);
 }
 
-/* NONMATCHING dead jump after inner if/else */
 void fn_067a_027f(int n, int pos)
 {
     if (g_2144) {
@@ -174,7 +174,7 @@ void fn_067a_02c7(void)
         fn_067a_02f5(g_2148[i], g_215c[i]);
 }
 
-/* NONMATCHING si/di assignment */
+/* NONMATCHING */
 void fn_067a_02f5(int n, int pos)
 {
     int dir;
@@ -210,7 +210,7 @@ void fn_067a_0401(int n, int force)
     fn_067a_0417(n, 0xff, force);
 }
 
-/* NONMATCHING pan/v frame slots */
+/* NONMATCHING */
 void fn_067a_0417(int n, int vol, int force)
 {
     void far *p;
@@ -283,7 +283,7 @@ void fn_067a_0644(void)
 {
 }
 
-/* NONMATCHING si/di assignment */
+/* NONMATCHING */
 void far *fn_067a_0649(int n)
 {
     void far *p;
