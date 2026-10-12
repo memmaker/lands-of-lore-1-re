@@ -39,6 +39,10 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
   - [x] s002 4/4, s003 sound 10/16, s004 combat 11/18, s006 9/9, s007 9/9
   - [x] s008 UI/misc 46/57, s009 movement 12/14, s010 portraits 11/11, s011 view transitions 8/8
   - [x] s012 flying objects 6/6, s013 timers 17/18, s014 inventory 7/7, s015 main loop/buttons 18/19
+  - [x] s016 1/1, s017 monster AI 25/28 (MonType spells/think delay, Monster tdir/c1f decoded)
+  - [ ] s018–s047 game modules (30 left)
+  - [ ] s049–s149 WW library (~100 small modules, maybe TASM)
+  - [ ] 80 overlays (objfix needs overlay support)
 - [ ] Data/BSS modules generated as readable C
 - [ ] Full MAIN.EXE identical, independent of originals; tag raw-decompile-1.0
 - [ ] LOLCD.EXE identical

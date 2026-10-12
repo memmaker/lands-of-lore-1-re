@@ -41,14 +41,25 @@ struct Char {                /* 0x82 bytes, f_2803_362d[4] */
 };
 
 struct MonType {
-    char pad00[0x14];
+    char c00;
+    char size;               /* +01 radius in 1/256 block */
+    char pad02[0x12];
     struct Stats st;         /* +14 */
     int w38;                 /* +38 */
     int maxHp;               /* +3a */
-    char pad3c;
+    char c3c;                /* +3c think delay */
     char evade;              /* +3d */
     unsigned flags;          /* +3e */
-    char pad40[0x12];
+    char pad40[2];
+    int w42;                 /* +42 */
+    int nSpells;             /* +44 */
+    int spells[3];           /* +46 0x8000/0x4000 missile, 0x2000 none, else special */
+    char hitChance;          /* +4c */
+    char hitKind;            /* +4d */
+    char defChance;          /* +4e */
+    char defKind;            /* +4f */
+    unsigned char moveSnd;   /* +50 */
+    unsigned char atkSnd;    /* +51 */
     unsigned char sound;     /* +52 */
 };
 
@@ -58,18 +69,29 @@ struct Monster {             /* 0x2e bytes, f_2803_15fa[30] */
     int block;               /* +05 */
     int x;                   /* +07 */
     int y;                   /* +09 */
-    char pad0b[6];
+    char c0b;                /* +0b anim tick */
+    int tx;                  /* +0c target */
+    int ty;                  /* +0e */
+    char tdir;                /* +10 target dir */
     char dx;                 /* +11 */
     char dy;                 /* +12 */
-    char pad13;
+    char anim;               /* +13 */
     char mode;               /* +14 >= 13: dead */
-    char pad15[4];
+    char c15;                /* +15 */
+    char id;                 /* +16 */
+    char dir;                /* +17 0..7 */
+    char facing;             /* +18 0..3 */
     unsigned flags;          /* +19 */
     int hitDmg;              /* +1b */
     int hp;                  /* +1d */
-    int pad1f;
+    char c1f;                /* +1f think counter */
+    char c20;
     struct MonType far *type;/* +21 */
-    char pad25[9];
+    char c25;                /* +25 */
+    char c26;                /* +26 next spell */
+    char c27;                /* +27 */
+    int items;               /* +28 carried items */
+    char pad2a[4];
 };
 
 struct Block { int items; int w2; int mon; int draw; char drawDir; unsigned char flags; };   /* items/w2 overlay char walls[4] */
@@ -86,7 +108,7 @@ struct Item {               /* 16 bytes, f_2803_1cfd[400] */
     unsigned flags;          /* +0e 0x4000 on floor, 0x8000 free */
 };
 
-struct ItemType { int name; unsigned char shape; unsigned flags; char pad5[2]; unsigned char script; unsigned char w8; char pad9[4]; };   /* 13 bytes */
+struct ItemType { int name; unsigned char shape; unsigned flags; char pad5[2]; unsigned char script; unsigned char w8; char c9; unsigned char ca; char padb[2]; };   /* 13 bytes */
 
 struct Emc { int far *ip; char pad04[8]; int sp; int regs[15]; int stack[101]; };   /* EMC2 script state */
 

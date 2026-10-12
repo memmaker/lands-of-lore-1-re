@@ -71,3 +71,13 @@ Every fact below was needed to get the relinked MAIN.EXE byte-identical:
 - Ternary order is the branch order: `a <= b ? -2 : 2` puts the -2 on the fall-through path.
 - Far scalar globals at fixed offsets of a far segment: declare `extern char far f_2803_0000[];` and index it
   (`f_2803_0000[0x45]`) to get `mov ax,SEG; mov es,ax; cmp byte [es:0x45]`.
+
+### More BCC idioms (s015–s017)
+- `register` gives priority for si; plain ints are auto-allocated to si/di by usage.
+- `((char *)&px)[1]` gives `mov al,[bp-3]; cbw`; `(char)(px>>8)` does not.
+- `d = f(); if (!d)` tests dx/ax differently from `if (!(d = f()))`.
+- `push dword [g_7fd2]` (x,y passed together) means the original passed a `struct XY` by value; call through a cast prototype.
+- An unused local still stored to the stack (`mov [bp-2],ax`) needs `volatile` or BCC drops the store.
+- `ternary` as a call argument computes into ax then pushes; the original `push 3 / push 4` form is if/else with two full calls.
+- A char table indexed from 1 may start inside the previous variable (g_2480 = g_2481-1): define the real bytes and `#define` the base.
+- `c = (c & 0xff) | (n << 8)` on a char compiles to `and byte,0xff; shl al,8; or` (an original bug, kept).
