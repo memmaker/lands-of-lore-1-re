@@ -17,8 +17,7 @@ _fn_1dff_0008	proc	far
 	mov	ax,[bp+6]
 	and	ax,0fffeh
 	mov	bx,[bp+8]
-	db	81h,0e3h	; and bx,0fffeh in its long imm16 form (TASM would shorten it)
-	dw	0fffeh
+	and	bx,0fffeh
 	cmp	ax,bx
 	jz	short @@out
 	push	word ptr [bp+6]
