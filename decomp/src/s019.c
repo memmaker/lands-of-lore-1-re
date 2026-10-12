@@ -1,4 +1,5 @@
 /* s019: EMC script opcodes (game callbacks called through EmcData.opcodes) */
+#include <mem.h>
 #include "lol.h"
 
 extern unsigned char g_531e[];
@@ -76,6 +77,23 @@ void fn_231c_0048(int a);
 void fn_231c_0008(int a);
 void fn_09aa_0007(int a, int b);
 void fn_13e8_0358(int b, int open, int c);
+void fn_0845_03d4(int a);
+void fn_2279_025b(char far *d, char far *s, long n);
+void fn_0845_1430(char far *p);
+void ovr_2d5f_00f2(void);
+extern char far *g_adea;
+extern struct MonType far f_2803_1b5e[];
+extern int far f_2803_002c[];
+int fn_0d6c_0338(int x, int y, int size, int flags, int f);
+int fn_0845_1036(void);
+int fn_1aff_0420(int a, int b);
+int fn_070c_012a(int who, int dmg);
+void fn_0d6c_0995(struct Monster far *m, int mode);
+void fn_0d6c_0742(struct Monster far *m, int x, int y);
+void fn_0845_046c(int b);
+int fn_070c_0253(int a);
+int fn_070c_044a(int att, int def, int k);
+int fn_070c_07f5(int who, int dmg, int src, int k, int how);
 
 void fn_0fbe_000c(int fn)
 {
@@ -545,5 +563,155 @@ int fn_0fbe_0f94(struct EmcState far *s)
     b = ARG(s, 0);
     open = (g_531e[WALL(b, 0)] & 8) ? 0 : 1;
     fn_13e8_0358(b, open, ARG(s, 1));
+    return 1;
+}
+
+/* NONMATCHING original switches on bx (only the for-loop form gets bx, but then adds a jump to the test) */
+int fn_0fbe_0fe7(struct EmcState far *s)
+{
+    int it;
+    int ch;
+    int i;
+
+    ch = 0;
+    do {
+        if (f_2803_362d[ch].flags & 1) {
+            for (i = 0; i <= 3; i++) {
+                if ((it = f_2803_362d[ch].items[i]) != 0) {
+                    switch (g_7fb2[f_2803_1cfd[it].type].script) {
+                    case 0: case 2: return 1;
+                    default: break;
+                    }
+                }
+            }
+        }
+        ch++;
+    } while (ch < 4);
+    return 0;
+}
+
+int fn_0fbe_1063(struct EmcState far *s)
+{
+    int b;
+    int d;
+
+    b = ARG(s, 0);
+    d = ARG(s, 1);
+    if (d != -1) {
+        if (WALL(b, d) == ARG(s, 2))
+            fn_130a_0360(b, d, ARG(s, 3));
+        else
+            fn_130a_0360(b, d, ARG(s, 2));
+    } else {
+        d = WALL(b, 0) == ARG(s, 2) ? ARG(s, 3) : ARG(s, 2);
+        fn_130a_0360(b, -1, d);
+    }
+    return 0;
+}
+
+int fn_0fbe_1126(struct EmcState far *s)
+{
+    fn_1ebc_00e7();
+    fn_1dbc_0004(ARG(s, 0), ARG(s, 1), ARG(s, 2), ARG(s, 3), ARG(s, 4), ARG(s, 5), ARG(s, 6), ARG(s, 7));
+    fn_1ebc_00fe();
+    return 1;
+}
+
+int fn_0fbe_11cb(struct EmcState far *s)
+{
+    fn_0845_03d4(10);
+    return 1;
+}
+
+int fn_0fbe_11db(struct EmcState far *s)
+{
+    fn_2279_025b(g_adea + 0x180, g_4edc + 0x180, 0x180L);
+    fn_0845_1430(g_4edc);
+    fn_1ef2_0075(g_4edc, 10, 0, 0);
+    g_20d5 = 0;
+    return 1;
+}
+
+int fn_0fbe_122c(struct EmcState far *s)
+{
+    ovr_2d5f_00f2();
+    return 1;
+}
+
+int fn_0fbe_1239(struct EmcState far *s)
+{
+    struct Monster far *m;
+    int i;
+    int x;
+    int y;
+    int size;
+    register int type;
+    int j;
+    int stop;
+
+    fn_1aff_030e(&x, &y, ARG(s, 0), ARG(s, 1), ARG(s, 2));
+    type = ARG(s, 4);
+    size = f_2803_1b5e[type].size;
+    if (fn_0d6c_0338(x, y, size, 7, 7)) return -1;
+    for (m = f_2803_15fa, i = 0; i < 30; i++, m++) {
+        if (!m->hp && m->mode != 13) {
+            setmem(m, 0x2e, 0);
+            m->id = i;
+            m->x = x;
+            m->y = y;
+            m->facing = ARG(s, 3);
+            m->c20 = ARG(s, 4);
+            m->type = &f_2803_1b5e[type];
+            m->dir = m->facing << 1;
+            m->hp = fn_1aff_0420(m->type->maxHp, f_2803_002c[fn_0845_1036()]);
+            if (g_7fe5 != 12 || m->c20 != 2)
+                m->hp = fn_1aff_0420(m->hp, fn_0845_0636(1, 0x80) + 0xc0);
+            if (m->hp <= 0) m->hp = 1;
+            m->c25 = m->type->w42;
+            m->c27 = fn_0845_0636(1, fn_070c_012a(m->id | 0x8000, 8)) - 1;
+            m->c04 = 2;
+            m->flags = ARG(s, 5);
+            m->items = 0;
+            fn_0d6c_0995(m, ARG(s, 6));
+            fn_0d6c_0742(m, m->x, m->y);
+            m->tx = m->x;
+            m->ty = m->y;
+            m->tdir = m->dir;
+            for (stop = j = 0; j < 4; j++) {
+                if (s->stack[j + s->sp + 7] == 0) stop = 1;
+                if (!stop) m->c2a[j] = s->stack[j + s->sp + 7];
+                else m->c2a[j] = 0;
+            }
+            fn_0845_046c(m->block);
+            return i;
+        }
+    }
+    return -1;
+}
+
+int fn_0fbe_14fb(struct EmcState far *s)
+{
+    return fn_070c_0253(ARG(s, 0));
+}
+
+int fn_0fbe_1515(struct EmcState far *s)
+{
+    return 0;
+}
+
+int fn_0fbe_151c(struct EmcState far *s)
+{
+    return fn_070c_044a(ARG(s, 0), ARG(s, 1), ARG(s, 2));
+}
+
+int fn_0fbe_155a(struct EmcState far *s)
+{
+    register int ch;
+
+    if (ARG(s, 0) == -1) {
+        for (ch = 0; ch < 4; ch++)
+            fn_070c_07f5(ch, ARG(s, 1), ARG(s, 2), ARG(s, 3), ARG(s, 4));
+    } else
+        fn_070c_07f5(ARG(s, 0), ARG(s, 1), ARG(s, 2), ARG(s, 3), ARG(s, 4));
     return 1;
 }
