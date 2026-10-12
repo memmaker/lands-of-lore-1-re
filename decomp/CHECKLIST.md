@@ -47,7 +47,8 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
   - [x] s022 text window printer (13/13)
   - [x] s023 character speech playback (9/9)
   - [x] s024 paragraph heap allocator (11/11)
-  - [ ] s025–s047 game modules (23 left)
+  - [x] s025 GUI button list processing (5/5)
+  - [ ] s026–s047 game modules (22 left)
   - [ ] s049–s149 WW library (~100 small modules, maybe TASM)
   - [ ] 80 overlays (objfix needs overlay support)
 - [ ] Data/BSS modules generated as readable C
