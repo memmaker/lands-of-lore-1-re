@@ -1,0 +1,229 @@
+name	para	size	nfn	relocs	prologues	strings
+SEG_0000	0000	22522	406	9 asc	166	Divide error | Borland C++ - Copyright 1991 Borland Int |          !!!!!                   | .EXE | PATH | COMPAQ
+SEG_057f	057f	2968	46	63 desc	49	FINALE.EXE
+SEG_0638	0638	1059	14	15 desc	5	
+SEG_067a	067a	2346	39	73 desc	16	LORE%02d%c | LORESFX | OVERFLOWED QUEUED DELAY Sound Effect | %s.VOC | Unable to load voc file %s | EMPTY
+SEG_070c	070c	2830	42	73 desc	18	FINALE.EXE | Damage inflicted was %d | Borland C++ - Copyright 1991 Borland Int
+SEG_07bc	07bc	14	18	0 -	0	
+SEG_07bc	07bc	1323	18	47 desc	9	FINALE.EXE
+SEG_080e	080e	888	15	5 desc	9	FINALE.EXE | L_R_O: Object %d didn't exist. | RemoveIdx: Object didn't exist.
+SEG_0845	0845	5719	77	157 desc	57	A%c%d | %c%d | FINALE.EXE | %s %s | LANDS.EXE
+SEG_09aa	09aa	1915	14	48 desc	14	FINALE.EXE
+SEG_0a21	0a21	2735	11	90 desc	11	FINALE.EXE
+SEG_0acb	0acb	2566	8	125 desc	8	FINALE.EXE | Borland C++ - Copyright 1991 Borland Int
+SEG_0b6b	0b6b	1306	6	30 desc	6	FINALE.EXE
+SEG_0bbc	0bbc	2525	16	41 desc	18	FINALE.EXE
+SEG_0c59	0c59	1149	7	39 desc	7	FINALE.EXE | truth.wsa
+SEG_0ca0	0ca0	3263	17	137 desc	19	FINALE.EXE | Borland C++ - Copyright 1991 Borland Int | ;GVx
+SEG_0d6b	0d6b	20	1	0 -	1	
+SEG_0d6c	0d6c	7113	27	126 desc	28	FINALE.EXE | Borland C++ - Copyright 1991 Borland Int
+SEG_0f28	0f28	2412	10	22 desc	8	
+SEG_0fbe	0fbe	13505	130	296 desc	140	FINALE.EXE | Cmd_Animate_Wall: Too many anim frames p | %d HOMIE %d %s
+SEG_130a	130a	3557	12	82 desc	13	FINALE.EXE | Borland C++ - Copyright 1991 Borland Int
+SEG_13e8	13e8	3249	14	97 desc	14	FINALE.EXE
+SEG_14b3	14b3	2463	13	26 desc	13	
+SEG_154c	154c	1460	9	34 desc	9	FINALE.EXE
+SEG_15a7	15a7	2404	12	49 desc	11	
+SEG_163d	163d	2081	3	16 desc	5	Process_Mist_FX: Can't load _Mist FX
+SEG_16bf	16bf	267	3	3 asc	4	
+SEG_16cf	16cf	11	13	0 -	0	
+SEG_16cf	16cf	11	13	0 -	0	
+SEG_16cf	16cf	3047	13	36 desc	14	
+SEG_178d	178d	900	6	11 asc	7	Borland C++ - Copyright 1991 Borland Int
+SEG_17c5	17c5	278	1	6 asc	1	
+SEG_17d6	17d6	547	4	13 desc	4	
+SEG_17f8	17f8	272	1	6 asc	1	
+SEG_1809	1809	6026	13	166 desc	13	Borland C++ - Copyright 1991 Borland Int
+SEG_1981	1981	922	7	33 desc	7	.PAK
+SEG_19ba	19ba	239	18	0 -	18	
+SEG_19c9	19c9	0	23	0 -	0	
+SEG_19c9	19c9	4880	23	18 asc	0	
+SEG_1afa	1afa	82	1	0 -	0	
+SEG_1aff	1aff	1100	10	1 -	1	
+SEG_1b43	1b43	13	1	0 -	0	
+SEG_1b43	1b43	516	1	0 -	0	
+SEG_1b63	1b63	351	2	3 asc	0	
+SEG_1b79	1b79	1116	13	1 -	0	
+SEG_1bbe	1bbe	1631	3	0 -	0	
+SEG_1c24	1c24	1578	6	20 asc	0	Borland C++ - Copyright 1991 Borland Int
+SEG_1c86	1c86	112	0	0 -	0	
+SEG_1c8d	1c8d	4691	34	29 asc	14	Borland C++ - Copyright 1991 Borland Int
+SEG_1db2	1db2	164	1	4 desc	1	
+SEG_1dbc	1dbc	517	3	3 asc	0	
+SEG_1ddc	1ddc	567	0	2 desc	0	
+SEG_1dff	1dff	83	1	2 asc	0	
+SEG_1e04	1e04	61	0	1 -	0	
+SEG_1e07	1e07	665	3	1 -	0	
+SEG_1e30	1e30	577	5	1 -	0	
+SEG_1e54	1e54	92	1	4 desc	1	
+SEG_1e59	1e59	183	1	2 asc	0	
+SEG_1e64	1e64	186	2	2 desc	2	
+SEG_1e6f	1e6f	72	1	1 -	0	
+SEG_1e73	1e73	31	0	0 -	1	
+SEG_1e74	1e74	40	1	0 -	1	
+SEG_1e76	1e76	587	5	2 asc	0	
+SEG_1e9a	1e9a	82	1	1 -	1	
+SEG_1e9f	1e9f	476	1	14 asc	0	
+SEG_1ebc	1ebc	641	7	9 asc	0	
+SEG_1ee4	1ee4	229	2	0 -	0	
+SEG_1ef2	1ef2	735	6	7 desc	7	guardian.wsa
+SEG_1f20	1f20	64	0	1 -	0	
+SEG_1f24	1f24	146	1	1 -	0	
+SEG_1f2d	1f2d	145	1	1 -	1	
+SEG_1f36	1f36	834	10	23 desc	10	
+SEG_1f6a	1f6a	35	1	0 -	0	
+SEG_1f6c	1f6c	303	1	5 asc	0	Borland C++ - Copyright 1991 Borland Int
+SEG_1f7f	1f7f	10	0	0 -	0	
+SEG_1f7f	1f7f	35	0	0 -	0	
+SEG_1f81	1f81	57	0	0 -	0	
+SEG_1f84	1f84	14	0	0 -	0	
+SEG_1f84	1f84	39	0	0 -	0	
+SEG_1f86	1f86	36	0	0 -	0	
+SEG_1f88	1f88	51	0	0 -	0	
+SEG_1f8b	1f8b	25	0	0 -	0	
+SEG_1f8c	1f8c	48	0	0 -	0	
+SEG_1f8f	1f8f	77	0	0 -	0	
+SEG_1f93	1f93	18	0	0 -	0	
+SEG_1f94	1f94	43	0	0 -	0	
+SEG_1f96	1f96	53	0	0 -	0	
+SEG_1f99	1f99	79	0	0 -	0	
+SEG_1f9e	1f9e	37	0	0 -	0	
+SEG_1fa0	1fa0	58	0	0 -	0	
+SEG_1fa3	1fa3	117	0	0 -	0	
+SEG_1faa	1faa	37	0	0 -	0	
+SEG_1fac	1fac	58	1	0 -	0	
+SEG_1faf	1faf	65	0	0 -	0	
+SEG_1fb3	1fb3	76	0	0 -	0	
+SEG_1fb7	1fb7	49	0	0 -	0	
+SEG_1fba	1fba	56	0	0 -	0	
+SEG_1fbd	1fbd	115	0	0 -	0	
+SEG_1fc4	1fc4	35	0	0 -	0	
+SEG_1fc6	1fc6	58	0	0 -	0	
+SEG_1fc9	1fc9	67	0	0 -	0	
+SEG_1fcd	1fcd	78	0	0 -	0	
+SEG_1fd1	1fd1	89	2	0 -	0	
+SEG_1fd6	1fd6	1079	1	5 asc	0	
+SEG_2019	2019	78	0	0 -	0	
+SEG_201d	201d	84	0	0 -	0	
+SEG_2022	2022	25	0	0 -	0	
+SEG_2023	2023	44	0	0 -	0	
+SEG_2025	2025	35	0	0 -	0	
+SEG_2027	2027	40	0	0 -	0	
+SEG_2029	2029	48	0	0 -	0	
+SEG_202c	202c	37	0	0 -	0	
+SEG_202e	202e	75	0	0 -	0	
+SEG_2032	2032	81	0	0 -	0	
+SEG_2037	2037	71	1	0 -	0	
+SEG_203b	203b	1421	6	35 desc	6	
+SEG_2093	2093	47	1	0 -	0	
+SEG_2096	2096	662	2	12 asc	0	
+SEG_20bf	20bf	902	11	5 desc	11	
+SEG_20f7	20f7	663	0	2 asc	0	
+SEG_2120	2120	65	2	1 -	2	
+SEG_2124	2124	101	1	0 -	0	
+SEG_212a	212a	495	4	5 desc	4	
+SEG_2148	2148	371	10	9 desc	9	
+SEG_215f	215f	55	1	0 -	2	
+SEG_2162	2162	45	1	3 desc	2	
+SEG_2164	2164	92	0	2 asc	1	
+SEG_2169	2169	3759	15	9 asc	0	
+SEG_2253	2253	423	1	11 desc	2	%04x:%04x  | %04x-%04x  | %02X 
+SEG_226d	226d	7	2	0 -	0	
+SEG_226d	226d	119	2	4 desc	2	
+SEG_2274	2274	88	1	8 desc	2	
+SEG_2279	2279	722	8	26 asc	0	
+SEG_22a6	22a6	794	8	1 -	0	
+SEG_22d7	22d7	117	0	0 -	0	Borland C++ - Copyright 1991 Borland Int
+SEG_22de	22de	700	9	0 -	9	
+SEG_2309	2309	160	1	12 desc	1	
+SEG_2313	2313	39	1	1 -	0	
+SEG_2315	2315	47	3	0 -	0	
+SEG_2318	2318	72	0	1 -	0	
+SEG_231c	231c	267	4	0 -	4	
+SEG_232c	232c	399	1	2 asc	0	
+SEG_2345	2345	47	1	0 -	0	
+SEG_2347	2347	115	2	2 desc	2	
+SEG_234e	234e	108	2	2 desc	2	
+SEG_2354	2354	228	2	1 -	1	
+SEG_2362	2362	50	1	1 -	0	
+SEG_2365	2365	3215	15	13 desc	15	
+SEG_242d	242d	15	2	0 -	0	
+SEG_242d	242d	482	2	8 desc	2	
+SEG_2cda	2cda	0	6	0 -	0	
+OVR_2cda	2cda	9600	35	130 desc	28	Process_Mist_FX: Can't load _Mist FX | Borland C++ - Copyright 1991 Borland Int
+OVR_2ce1	2ce1	5380	26	158 desc	24	parch.cps | Borland C++ - Copyright 1991 Borland Int | autobut.shp | font6pn.fnt | font9pn.fnt | level%d.xxx
+OVR_2ceb	2ceb	1047	14	30 desc	12	
+OVR_2cef	2cef	910	9	35 desc	7	Process_Bezel_FX: Can't load _Bezel FX | bezel.wsa | Bezel: Unable to load bezel.wsa | Borland C++ - Copyright 1991 Borland Int
+OVR_2cf4	2cf4	631	3	36 desc	2	Borland C++ - Copyright 1991 Borland Int
+OVR_2cf7	2cf7	779	4	21 desc	3	LITEPAL1.COL | LITEPAL2.COL | LITEPAL3.COL | DARKLITE.WSA
+OVR_2cfa	2cfa	445	2	9 desc	2	
+OVR_2cfd	2cfd	434	3	1 -	3	
+OVR_2d00	2d00	494	4	23 desc	3	
+OVR_2d03	2d03	2495	4	56 desc	4	fireball.shp | Borland C++ - Copyright 1991 Borland Int | Process_Fireball_FX: Can't load fireball | Process_Fireball: Unable to alloc memory
+OVR_2d07	2d07	499	2	28 desc	2	fog.wsa | Fog: Unable to load fog.wsa
+OVR_2d0a	2d0a	688	4	25 desc	4	Process_Gas_FX: Can't load _Gas FX | gasexp%0d.wsa | Gas: Unable to load gasexp.wsa
+OVR_2d0e	2d0e	847	7	17 desc	5	
+OVR_2d12	2d12	671	3	40 desc	3	Process_Guardian_FX: Can't load _Guardia | guardian.wsa | Guardian: Unable to load guardian.wsa
+OVR_2d15	2d15	1107	3	52 desc	3	Process_Hand_FX: Can't load _Hand FX | hand.wsa | Hand: Unable to load HAND.WSA
+OVR_2d18	2d18	1779	4	55 desc	3	heal.shp | heali.shp | Process_Heal_FX: Can't load _Heal FX | Borland C++ - Copyright 1991 Borland Int
+OVR_2d1b	2d1b	3173	17	93 desc	14	SWAMPICE.COL | swampice.col | snow.wsa | Ice: Unable to load snow.wsa | ice.wsa | Process_Ice_FX: Can't load _Ice FX
+OVR_2d22	2d22	3262	14	106 desc	14	invent%d.cps
+OVR_2d28	2d28	1091	6	44 desc	5	Process_Litning_FX: Can't load _Litning  | litning%00d.wsa | Litning: Unable to load litning.wsa | Divide error
+OVR_2d2c	2d2c	9235	46	262 desc	43	PLAYFLD.CPS | Borland C++ - Copyright 1991 Borland Int | %s.%s | LEVEL%02d.TLC | Load_Monster_Shapes: Unable to alloc mon | level%d.ini
+OVR_2d3c	2d3c	1891	4	91 desc	4	level%d.cmz | _LEVEL%d.TMP | CD04 | V CD1.02 D
+OVR_2d40	2d40	113	1	6 desc	1	
+OVR_2d43	2d43	1214	5	21 desc	5	
+OVR_2d46	2d46	1780	17	41 desc	13	Unable to allocate shape #%d. | FACE%02d.SHP
+OVR_2d4d	2d4d	569	3	32 desc	3	Process_Mist_FX: Can't load _Mist FX | mists%0d.wsa | Mist: Unable to load mists.wsa
+OVR_2d50	2d50	2693	10	115 desc	10	ITEMICN.SHP | ITEMSHP.SHP | GAMESHP.SHP | THROWN.SHP | title.cps | FONT6P.FNT
+OVR_2d56	2d56	6769	23	239 desc	23	V CD1.02 D | _SAVE%03d.DAT | LEVEL%02d | LANDS | LANDS.CFG
+OVR_2d5f	2d5f	6936	66	256 desc	60	|xtplheb_\YVSPMJHFDCA@>=<;:988
+OVR_2d74	2d74	522	4	25 desc	3	
+OVR_2d77	2d77	8	1	0 -	1	
+OVR_2d7a	2d7a	1404	1	50 desc	1	Borland C++ - Copyright 1991 Borland Int
+OVR_2d7d	2d7d	614	2	23 desc	2	
+OVR_2d80	2d80	968	1	35 desc	1	Borland C++ - Copyright 1991 Borland Int | sap.wsa | SAP: Unable to load sap.wsa
+OVR_2d83	2d83	942	1	38 desc	1	spark1.wsa | SPARK: Unable to load SPARK1.WSA | spark2.wsa | SPARK: Unable to load SPARK2.WSA
+OVR_2d86	2d86	1763	5	69 desc	5	PLAYFLD.CPS | write%0d%c.wsa | writing.wsa | spellexp.wsa | getspell.wsa | SpellBook: Unable to load getspell anim
+OVR_2d8a	2d8a	1211	19	42 desc	18	
+OVR_2d92	2d92	1151	6	52 desc	5	
+OVR_2d96	2d96	804	2	25 desc	2	
+OVR_2d99	2d99	968	4	47 desc	4	Process_Swarm_FX: Can't load _Swarm FX | swarm.wsa | Swarm: Unable to load SWARM.WSA | Divide error
+OVR_2d9d	2d9d	658	1	12 desc	1	
+OVR_2da0	2da0	777	4	37 desc	3	Process_Viper_FX: Can't load _Viper FX | viper.wsa | Viper: Unable to load viper.wsa
+OVR_2da3	2da3	1250	7	36 desc	6	%02d.TLK | %3X%c%c | @%4d%c | %3d%c%c
+OVR_2da7	2da7	5	1	0 -	1	
+OVR_2daa	2daa	149	1	12 desc	1	
+OVR_2dad	2dad	690	1	30 desc	1	
+OVR_2db0	2db0	1563	4	60 desc	3	LANDS.CFG | The setup program must be run first. | This cannot be run under Windows. |  RAM Available: %8ld |  XMS Available: %8ld | \DATA
+OVR_2db3	2db3	257	2	12 asc	2	
+OVR_2db6	2db6	1059	3	42 asc	3	Borland C++ - Copyright 1991 Borland Int | ALFX.DRV | SBDIG.ADV | SBPDIG.ADV | BLASTER
+OVR_2db9	2db9	1251	10	27 asc	10	.XMI
+OVR_2dc3	2dc3	52	1	2 desc	1	
+OVR_2dc6	2dc6	2570	6	34 desc	6	
+OVR_2dca	2dca	776	2	10 desc	2	
+OVR_2dcd	2dcd	158	1	4 desc	1	
+OVR_2dd0	2dd0	213	1	5 desc	1	
+OVR_2dd3	2dd3	204	1	4 desc	1	
+OVR_2dd6	2dd6	251	1	5 desc	1	
+OVR_2dd9	2dd9	17	1	1 -	1	
+OVR_2ddc	2ddc	67	1	1 -	1	
+OVR_2ddf	2ddf	1276	7	55 desc	7	.PAK
+OVR_2de6	2de6	59	1	1 -	1	
+OVR_2de9	2de9	1068	9	36 desc	5	
+OVR_2ded	2ded	736	7	27 desc	5	
+OVR_2df1	2df1	207	1	6 desc	1	
+OVR_2df4	2df4	426	1	18 desc	1	
+OVR_2df7	2df7	932	1	31 desc	1	PageArraySize is negative!
+OVR_2dfa	2dfa	26	1	0 -	0	
+OVR_2dfd	2dfd	2837	18	43 desc	13	guardian.wsa
+OVR_2e04	2e04	67	1	3 desc	1	
+OVR_2e07	2e07	249	4	8 desc	4	
+OVR_2e0b	2e0b	652	3	8 desc	3	
+OVR_2e0e	2e0e	235	7	3 asc	0	
+OVR_2e13	2e13	1294	20	3 asc	20	
+OVR_2e19	2e19	474	11	0 -	6	
+OVR_2e1e	2e1e	337	4	6 desc	4	
+OVR_2e22	2e22	558	4	19 desc	4	
+OVR_2e26	2e26	398	5	13 desc	5	
+OVR_2e2a	2e2a	298	3	11 desc	3	

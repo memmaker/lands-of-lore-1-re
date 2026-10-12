@@ -1,0 +1,6 @@
+gog/
+orig/
+run/
+toolchain/
+ghidra/
+*.pyc
