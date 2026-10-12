@@ -26,7 +26,6 @@ typedef struct FileH {         /* 20 bytes, f_2c12_0000[20] */
 extern char g_abde;
 extern int g_ae4d, g_ae57;
 extern char g_ae59[], g_aeaa[];
-extern PakEnt far *g_2aa7;
 extern PakEnt far f_27fc_0000[];
 extern FileH far f_2c12_0000[];
 extern int (far *g_3638)(int code, char far *name);
@@ -67,6 +66,9 @@ void fn_1809_1319(int code, char far *name);
 long fn_1809_133b(int h, void far *buf, unsigned n);
 int fn_1809_1460(char far *name, int omode);
 int fn_1809_1502(int idx, int h);
+
+char g_2aa6 = 1;
+PakEnt far *g_2aa7 = 0;
 
 int fn_1809_0000(char far *name, int mode)
 {
@@ -293,7 +295,7 @@ long fn_1809_084d(int h, void far *buf, unsigned long n)
     int idx;
     long total;
     PakEnt far *ent;
-    unsigned long chunk;
+    long chunk;
     void far *tmp;
     unsigned long got;
     PakEnt b;
@@ -312,7 +314,7 @@ long fn_1809_084d(int h, void far *buf, unsigned long n)
         if (fd) {
             if (fn_2365_063f(buf)) {
                 chunk = (fn_203b_03b4(0) >> 1) & ~0xfL;
-                chunk = chunk < 0xfff0 ? chunk : 0xfff0;
+                chunk = (unsigned long)chunk < 0xfff0 ? chunk : 0xfff0;
                 tmp = fn_203b_0007(chunk, 0x28);
                 while (n) {
                     g_ae4d = 0;
@@ -340,7 +342,7 @@ long fn_1809_084d(int h, void far *buf, unsigned long n)
                     n -= chunk;
                     total += chunk;
                     f_2c12_0000[h].pos += chunk;
-                    if (chunk < 0xfff0) break;
+                    if ((unsigned long)chunk < 0xfff0) break;
                     buf = fn_2037_0002(buf, chunk);
                 }
             }
@@ -360,7 +362,7 @@ long fn_1809_0bde(int h, void far *buf, unsigned long n)
     int fd;
     long total;
     PakEnt far *ent;
-    unsigned long chunk;
+    long chunk;
     void far *tmp;
     unsigned long got;
     PakEnt b;
@@ -378,7 +380,7 @@ long fn_1809_0bde(int h, void far *buf, unsigned long n)
     total = 0;
     if (fn_2365_063f(buf)) {
         chunk = (fn_203b_03b4(0) >> 1) & ~0xfL;
-        chunk = chunk < 0xfff0 ? chunk : 0xfff0;
+        chunk = (unsigned long)chunk < 0xfff0 ? chunk : 0xfff0;
         tmp = fn_203b_0007(chunk, 0x28);
         while (n) {
             got = n < chunk ? n : chunk;
@@ -561,6 +563,7 @@ int fn_1809_1502(int idx, int h)
     long avail;
     PakEnt far *ent;
     FileH far *fh;
+    int i;
     int mf;
 
     ent = 0;
@@ -580,7 +583,6 @@ int fn_1809_1502(int idx, int h)
     mf |= 2;
     avail = fn_203b_03b4(mf);
     while (avail < size) {
-        int i;
         unsigned age;
         int best;
         long sum;
@@ -613,7 +615,6 @@ int fn_1809_1502(int idx, int h)
     fh->pos = 0;
     fh->start = 0;
     if (ent->flags & 0x1000) {
-        int x;
         PakEnt far *pak;
         PakEnt buf2;
         pak = fn_1981_02c0(ent->pak, &buf2);

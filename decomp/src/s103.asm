@@ -35,7 +35,7 @@ _fn_1fd6_000a	proc	far
 	mov	[bp+8h],ax
 	push	ds
 	push	fs
-	mov	ax,2e2dh	; FIXUP []
+	mov	ax,DGROUP
 	mov	fs,ax
 	les	di,[bp+8h]
 	mov	ax,es
