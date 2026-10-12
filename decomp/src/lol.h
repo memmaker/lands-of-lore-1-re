@@ -65,7 +65,7 @@ struct MonType {
 
 struct Monster {             /* 0x2e bytes, f_2803_15fa[30] */
     int next;                /* +00 next monster on the same block */
-    char pad02[3];
+    char c02, c03, c04;
     int block;               /* +05 */
     int x;                   /* +07 */
     int y;                   /* +09 */
@@ -91,7 +91,7 @@ struct Monster {             /* 0x2e bytes, f_2803_15fa[30] */
     char c26;                /* +26 next spell */
     char c27;                /* +27 */
     int items;               /* +28 carried items */
-    char pad2a[4];
+    char c2a[4];
 };
 
 struct Block { int items; int w2; int mon; int draw; char drawDir; unsigned char flags; };   /* items/w2 overlay char walls[4] */
