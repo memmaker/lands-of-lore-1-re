@@ -1,4 +1,5 @@
 ; s046: segment 1c24 (TASM module)
+; FIXUP-ORDER: 174 87 a0 b5 dd 105 12d 155 24e 27b 31d 336 344 2b2 2eb 362
 	.386
 S046_TEXT	segment word public use16 'CODE'
 S046_TEXT	ends
