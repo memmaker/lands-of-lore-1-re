@@ -4,7 +4,7 @@
 
 	.386
 	locals
-S068_TEXT	segment byte public use16 'CODE'
+S068_TEXT	segment word public use16 'CODE'
 S068_TEXT	ends
 DGROUP	group	_DATA,_BSS
 _DATA	segment word public use16 'DATA'
@@ -16,7 +16,7 @@ _BSS	ends
 	extrn	_g_3649:word, _g_3944:word
 	extrn	_fn_215f_001d:far
 
-S068_TEXT	segment byte public use16 'CODE'
+S068_TEXT	segment word public use16 'CODE'
 	public	_fn_1f20_0000
 
 _fn_1f20_0000	proc	far
