@@ -119,7 +119,7 @@ int fn_070c_027a(int block, int a)
     int best, res, cur, d;
 
     fn_070c_0201(a, &x, &y);
-    cur = g_8207[block].mon;
+    cur = g_8203[block].mon;
     best = 0x7fff;
     res = -1;
     while (cur & 0x8000) {
@@ -224,7 +224,7 @@ void fn_070c_05fa(struct Monster far *m)
     fn_0d6c_0034(m);
     fn_0845_046c(m->block);
     if (ovr_2d1b_005c(m->block) && !(m->type->flags & 0x1000))
-        g_8207[m->block].flags |= 0x80;
+        g_8203[m->block].flags |= 0x80;
     fn_0d6c_0742(m, 0, 0);
 }
 

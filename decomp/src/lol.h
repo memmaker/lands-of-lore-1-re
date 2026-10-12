@@ -64,10 +64,27 @@ struct Monster {             /* 0x2e bytes, f_2803_15fa[30] */
     char pad25[9];
 };
 
-struct Block { int mon; char pad[3]; unsigned char flags; char pad6[4]; };   /* 10 bytes, g_8207[1024] */
+struct Block { int items; int w2; int mon; char pad[3]; unsigned char flags; };   /* 10 bytes, g_8203[1024] */
+
+struct Item {               /* 16 bytes, f_2803_1cfd[400] */
+    int next;
+    int w2;
+    unsigned char sub;       /* +04 position inside the block */
+    int block;               /* +05 */
+    int x, y;                /* +07 */
+    unsigned char level;     /* +0b */
+    int type;                /* +0c */
+    unsigned flags;          /* +0e 0x4000 on floor, 0x8000 free */
+};
+
+struct ItemType { char pad[3]; unsigned flags; char pad5[2]; unsigned char script; char pad8[5]; };   /* 13 bytes */
+
+struct Emc { int far *ip; char pad04[8]; int sp; int regs[15]; int stack[101]; };   /* EMC2 script state */
 
 extern struct Char far f_2803_362d[];
 extern struct Monster far f_2803_15fa[];
-extern struct Block g_8207[];
+extern struct Block g_8203[];
+extern struct Item far f_2803_1cfd[];
+extern struct ItemType far *g_7fb2;
 
 #define ABS(x) ((x) < 0 ? -(x) : (x))
