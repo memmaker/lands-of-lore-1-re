@@ -1,11 +1,25 @@
 /* s019: EMC script opcodes (game callbacks called through EmcData.opcodes) */
 #include <mem.h>
 #include <stdio.h>
+#include <process.h>
 #include "lol.h"
 
 extern unsigned char g_531e[];
 extern int g_7fdf;
 extern struct EmcData far f_2803_3611;
+extern int far f_2803_363b;
+extern int far f_2c0c_0000[];
+extern char g_ad99[], g_ae59[], g_aeaa[];
+extern char g_20db;
+char far *ovr_2d46_002f(char far *s, int n);
+void fn_2309_000c(void);
+void fn_0845_1536(void);
+void fn_0845_08aa(void);
+void fn_2148_002c(int d);
+void fn_2148_014d(char far *s);
+void ovr_2d2c_00e8(void);
+int fn_154c_0057(int id, int a, int b);
+int fn_154c_010f(int a, int b);
 
 int fn_0845_0636(int lo, int hi);
 void fn_0845_155d(int a);
@@ -113,7 +127,6 @@ void fn_0638_018b(struct TimHdr far *t);
 int fn_0638_01e5(struct TimHdr far *p, int loop);
 void fn_0d6b_000f(void);
 extern struct TimHdr far *g_20fc[];
-extern char g_27a8[];
 extern char far f_2803_0053[];
 void ovr_2d2c_00b1(struct Monster far *m, int it);
 void fn_067a_0401(int n, int force);
@@ -145,14 +158,13 @@ int fn_154c_01d3(int a, int b, int c);
 extern int g_20d7, g_4bea, g_20ec;
 void fn_0845_0bf6(void);
 void fn_163d_0004(void);
-void fn_154c_0136(void);
+int fn_154c_0136(void);
 int fn_2169_060c(void);
 int fn_2169_0790(void);
 void fn_2169_0945(int k);
 void fn_2169_062e(void);
 void fn_14b3_0215(void);
 void ovr_2ce1_007f(char far *msg);
-extern char g_27af[];
 int fn_0a21_0997(int ch, int type);
 extern int g_2794, g_4bde, g_4be0, g_4bb2, g_4bb4;
 void ovr_2d46_0039(int a, int b, int c, int d, int e, int f, int g, int h);
@@ -886,7 +898,7 @@ int fn_0fbe_1910(struct EmcState far *s)
 
     i = ARG(s, 0);
     if (!g_20fc[i]) {
-        sprintf(buf, g_27a8, (char far *)s->dat->text + fn_2315_0018(s->dat->text[ARG(s, 1)]));
+        sprintf(buf, "%s.TIM", (char far *)s->dat->text + fn_2315_0018(s->dat->text[ARG(s, 1)]));
         g_20fc[i] = fn_0638_0008(buf, 0, 0);
     }
     fn_0d6b_000f();
@@ -1341,7 +1353,7 @@ int fn_0fbe_2798(struct EmcState far *s)
     int far *p;
 
     p = &ARG(s, 0);
-    if (p[3] > 0x61) ovr_2ce1_007f(g_27af);
+    if (p[3] > 0x61) ovr_2ce1_007f("Cmd_Animate_Wall: Too many anim frames passed for stack");
     fn_130a_0360(p[0], p[1], (p + 4)[(unsigned)p[2] % (unsigned)p[3]]);
     return 0;
 }
@@ -1678,3 +1690,350 @@ int fn_0fbe_3244(struct EmcState far *s)
 {
     return fn_0845_1280(ARG(s, 0), ARG(s, 1), ARG(s, 2));
 }
+
+int fn_0fbe_3282(struct EmcState far *s)
+{
+    int mode;
+    char far *p;
+
+    switch (f_2803_363b) {
+    default: mode = 0; break;
+    case -9: mode = 1; break;
+    case -1: mode = 2; break;
+    case -5: mode = 3; break;
+    }
+    while (fn_154c_0136())
+        ;
+    p = ovr_2d46_002f(" ", g_20db);
+    sprintf(g_ad99, "%d HOMIE %d %s", mode, fn_0845_1036(), g_ae59);
+    fn_2309_000c();
+    fn_0845_1536();
+    fn_2148_002c(g_aeaa[0] - 'A');
+    fn_2148_014d(g_aeaa);
+    fn_2148_014d(p + 2);
+    execl("FINALE.EXE", "FINALE.EXE", g_ad99, (char far *)0);
+    return 0;
+}
+
+int fn_0fbe_333f(struct EmcState far *s)
+{
+    ovr_2d2c_00e8();
+    return 0;
+}
+
+int fn_0fbe_334b(struct EmcState far *s)
+{
+    int v;
+
+    v = ARG(s, 0);
+    fn_0845_155d(v);
+    return 1;
+}
+
+int fn_0fbe_336f(struct EmcState far *s)
+{
+    fn_0845_15d9(2);
+    fn_234e_0003(2);
+    ovr_2d46_0039(0x70, 0, 0x70, 0, 0xb0, 0x78, 2, 0);
+    fn_0845_08aa();
+    fn_234e_0062();
+    return 1;
+}
+
+int fn_0fbe_33a8(struct EmcState far *s)
+{
+    fn_0845_08aa();
+    return 1;
+}
+
+int fn_0fbe_33b5(struct EmcState far *s)
+{
+    if (ARG(s, 0) == -1) {
+        fn_154c_000f(1);
+        return 1;
+    }
+    if (ARG(s, 0) == -2)
+        return fn_154c_0136();
+    return fn_154c_0057(ARG(s, 0), ARG(s, 1), ARG(s, 2));
+}
+
+int fn_0fbe_342b(struct EmcState far *s)
+{
+    return fn_154c_010f(ARG(s, 0), ARG(s, 1));
+}
+
+/* NONMATCHING original keeps a dead mov dx,ax after the rounding */
+int fn_0fbe_3457(struct EmcState far *s)
+{
+    int v;
+    int far *p;
+
+    v = ARG(s, 0);
+    if (v < 0) {
+        v = -v;
+        if (v < 50) return 50;
+        v += 99;
+        return v = v / 100 * 100;
+    }
+    for (p = f_2c0c_0000; *p; p++)
+        if (*p >= v) return *p;
+    return 0;
+}
+
+int fn_0fbe_34b8(struct EmcState far *s)
+{
+    return g_20db;
+}
+
+/* opcode table (EmcData.opcodes) */
+int ovr_2d2c_0089();
+int ovr_2d2c_008e();
+int ovr_2d2c_0093();
+int ovr_2d50_003e();
+int ovr_2d50_0043();
+int ovr_2d2c_0098();
+int ovr_2d2c_009d();
+int ovr_2d2c_00a2();
+int ovr_2d5f_00d9();
+int ovr_2d5f_00de();
+int ovr_2d2c_00de();
+int ovr_2d5f_0124();
+int ovr_2d5f_0129();
+int ovr_2d2c_00d4();
+int ovr_2d2c_00cf();
+int ovr_2d2c_00ca();
+int ovr_2d2c_00a7();
+int ovr_2d5f_011a();
+int ovr_2d5f_011f();
+int ovr_2d74_002a();
+int ovr_2d5f_0110();
+int ovr_2d5f_0115();
+int ovr_2d2c_00ac();
+int ovr_2d5f_0106();
+int ovr_2d2c_00c5();
+int ovr_2d2c_00c0();
+int ovr_2d86_0034();
+int ovr_2d77_0020();
+int ovr_2d5f_0093();
+int ovr_2d5f_0098();
+int ovr_2d5f_009d();
+int ovr_2d5f_00a2();
+int ovr_2d5f_00a7();
+int ovr_2d5f_00ac();
+int ovr_2d5f_00b1();
+int ovr_2d5f_00b6();
+int ovr_2d5f_00bb();
+int ovr_2d5f_00c0();
+int ovr_2d2c_00b6();
+int ovr_2d2c_00bb();
+int ovr_2d5f_00c5();
+int ovr_2d5f_00ca();
+int ovr_2d5f_00cf();
+int ovr_2d46_004d();
+int ovr_2cef_0039();
+int ovr_2d7d_0025();
+int ovr_2d5f_00d4();
+int ovr_2d5f_00ed();
+int ovr_2d5f_00e3();
+int ovr_2d5f_00e8();
+int ovr_2d0a_002f();
+int ovr_2d5f_0138();
+
+int (far *g_2494[])(struct EmcState far *s) = {
+    fn_0fbe_007f,
+    fn_0fbe_00dd,
+    fn_0fbe_014b,
+    fn_0fbe_0053,
+    fn_0fbe_0168,
+    fn_0fbe_021a,
+    fn_0fbe_0273,
+    fn_0fbe_0290,
+    fn_0fbe_02e8,
+    (int (far *)(struct EmcState far *))ovr_2d2c_0089,
+    (int (far *)(struct EmcState far *))ovr_2d2c_008e,
+    (int (far *)(struct EmcState far *))ovr_2d2c_0093,
+    fn_0fbe_0322,
+    (int (far *)(struct EmcState far *))ovr_2d50_003e,
+    (int (far *)(struct EmcState far *))ovr_2d50_0043,
+    fn_0fbe_0341,
+    fn_0fbe_037f,
+    fn_0fbe_03fc,
+    fn_0fbe_04a8,
+    fn_0fbe_0677,
+    fn_0fbe_079e,
+    (int (far *)(struct EmcState far *))ovr_2d2c_0098,
+    (int (far *)(struct EmcState far *))ovr_2d2c_009d,
+    fn_0fbe_004c,
+    (int (far *)(struct EmcState far *))ovr_2d2c_00a2,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00d9,
+    fn_0fbe_08cb,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00de,
+    fn_0fbe_0a4a,
+    fn_0fbe_319d,
+    (int (far *)(struct EmcState far *))ovr_2d2c_00de,
+    (int (far *)(struct EmcState far *))ovr_2d5f_0124,
+    (int (far *)(struct EmcState far *))ovr_2d5f_0129,
+    fn_0fbe_0a52,
+    fn_0fbe_0aa2,
+    fn_0fbe_0b0f,
+    fn_0fbe_0c11,
+    fn_0fbe_0c40,
+    fn_0fbe_0c4d,
+    fn_0fbe_0c5a,
+    fn_0fbe_0c6a,
+    fn_0fbe_0c8a,
+    fn_0fbe_0d17,
+    fn_0fbe_0d34,
+    fn_0fbe_0d54,
+    fn_0fbe_0db9,
+    fn_0fbe_0d8c,
+    fn_0fbe_0dd3,
+    fn_0fbe_0e81,
+    fn_0fbe_0f94,
+    fn_0fbe_0fe7,
+    fn_0fbe_313b,
+    fn_0fbe_1063,
+    (int (far *)(struct EmcState far *))ovr_2d2c_00d4,
+    (int (far *)(struct EmcState far *))ovr_2d2c_00cf,
+    fn_0fbe_1126,
+    fn_0fbe_1239,
+    fn_0fbe_11cb,
+    fn_0fbe_11db,
+    fn_0fbe_122c,
+    (int (far *)(struct EmcState far *))ovr_2d2c_00ca,
+    fn_0fbe_14fb,
+    fn_0fbe_1515,
+    (int (far *)(struct EmcState far *))ovr_2d2c_00a7,
+    fn_0fbe_151c,
+    fn_0fbe_155a,
+    (int (far *)(struct EmcState far *))ovr_2d5f_011a,
+    (int (far *)(struct EmcState far *))ovr_2d5f_011f,
+    fn_0fbe_162c,
+    fn_0fbe_170f,
+    fn_0fbe_1784,
+    fn_0fbe_17b8,
+    fn_0fbe_17d9,
+    fn_0fbe_181b,
+    fn_0fbe_308b,
+    (int (far *)(struct EmcState far *))ovr_2d74_002a,
+    fn_0fbe_1870,
+    fn_0fbe_18cb,
+    fn_0fbe_1910,
+    fn_0fbe_19ad,
+    fn_0fbe_19e1,
+    (int (far *)(struct EmcState far *))ovr_2d5f_0110,
+    (int (far *)(struct EmcState far *))ovr_2d5f_0115,
+    fn_0fbe_1a1d,
+    fn_0fbe_3244,
+    fn_0fbe_1a27,
+    (int (far *)(struct EmcState far *))ovr_2d2c_00ac,
+    fn_0fbe_1a72,
+    fn_0fbe_177a,
+    fn_0fbe_1ad1,
+    fn_0fbe_0110,
+    fn_0fbe_1b20,
+    fn_0fbe_1c17,
+    fn_0fbe_333f,
+    fn_0fbe_1cf7,
+    fn_0fbe_1cea,
+    fn_0fbe_1a93,
+    fn_0fbe_1d58,
+    (int (far *)(struct EmcState far *))ovr_2d5f_0106,
+    fn_0fbe_1df1,
+    fn_0fbe_1e0e,
+    fn_0fbe_334b,
+    fn_0fbe_1e28,
+    fn_0fbe_1e6c,
+    fn_0fbe_1f05,
+    fn_0fbe_3282,
+    fn_0fbe_1f39,
+    (int (far *)(struct EmcState far *))ovr_2d2c_00c5,
+    fn_0fbe_2087,
+    fn_0fbe_20c5,
+    fn_0fbe_1f4e,
+    fn_0fbe_1fa0,
+    fn_0fbe_20df,
+    fn_0fbe_2126,
+    fn_0fbe_2188,
+    fn_0fbe_2290,
+    fn_0fbe_22dc,
+    fn_0fbe_22fb,
+    fn_0fbe_248a,
+    (int (far *)(struct EmcState far *))ovr_2d2c_00c0,
+    (int (far *)(struct EmcState far *))ovr_2d86_0034,
+    fn_0fbe_24b4,
+    fn_0fbe_24e9,
+    fn_0fbe_254c,
+    fn_0fbe_25aa,
+    (int (far *)(struct EmcState far *))ovr_2d77_0020,
+    fn_0fbe_25c4,
+    fn_0fbe_25d1,
+    fn_0fbe_262d,
+    fn_0fbe_2647,
+    fn_0fbe_269d,
+    fn_0fbe_2725,
+    fn_0fbe_2798,
+    fn_0fbe_27f6,
+    fn_0fbe_28b5,
+    fn_0fbe_28cc,
+    fn_0fbe_2922,
+    fn_0fbe_29f0,
+    (int (far *)(struct EmcState far *))ovr_2d5f_0093,
+    (int (far *)(struct EmcState far *))ovr_2d5f_0098,
+    (int (far *)(struct EmcState far *))ovr_2d5f_009d,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00a2,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00a7,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00ac,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00b1,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00b6,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00bb,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00c0,
+    (int (far *)(struct EmcState far *))ovr_2d2c_00b6,
+    (int (far *)(struct EmcState far *))ovr_2d2c_00bb,
+    fn_0fbe_2a1f,
+    fn_0fbe_2a97,
+    fn_0fbe_2aff,
+    fn_0fbe_2ba4,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00c5,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00ca,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00cf,
+    fn_0fbe_2c12,
+    fn_0fbe_2c5c,
+    fn_0fbe_2cbe,
+    fn_0fbe_2cf4,
+    fn_0fbe_2dc7,
+    fn_0fbe_2de4,
+    fn_0fbe_2e01,
+    (int (far *)(struct EmcState far *))ovr_2d46_004d,
+    fn_0fbe_2e3f,
+    fn_0fbe_2e7d,
+    fn_0fbe_2eca,
+    fn_0fbe_2ec1,
+    fn_0fbe_2ef6,
+    (int (far *)(struct EmcState far *))ovr_2cef_0039,
+    fn_0fbe_05fa,
+    fn_0fbe_2f13,
+    fn_0fbe_2f3f,
+    (int (far *)(struct EmcState far *))ovr_2d7d_0025,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00d4,
+    fn_0fbe_2f7d,
+    fn_0fbe_3081,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00ed,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00e3,
+    (int (far *)(struct EmcState far *))ovr_2d5f_00e8,
+    fn_0fbe_30f8,
+    (int (far *)(struct EmcState far *))ovr_2d0a_002f,
+    fn_0fbe_3218,
+    fn_0fbe_336f,
+    fn_0fbe_33a8,
+    (int (far *)(struct EmcState far *))ovr_2d5f_0138,
+    fn_0fbe_33b5,
+    fn_0fbe_342b,
+    fn_0fbe_3457,
+    fn_0fbe_34b8,
+    fn_0fbe_004c,
+};
+int g_2794 = -1;
+int g_2796 = 0;
+int g_2798[4] = { 12, 62, 63, -1 };
+int g_27a0[4] = { -1, -1, -1, -1 };
