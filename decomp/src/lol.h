@@ -36,7 +36,8 @@ struct Char {                /* 0x82 bytes, f_2803_362d[4] */
     char skill[3];           /* +66 */
     char skillBonus[3];      /* +69 */
     long exp[3];             /* +6c */
-    char pad78[0x0a];
+    char timer[5];           /* +78 status timers (ticks of timer 3) */
+    char timerType[5];       /* +7d */
 };
 
 struct MonType {
@@ -91,6 +92,21 @@ struct Emc { int far *ip; char pad04[8]; int sp; int regs[15]; int stack[101]; }
 
 extern struct Char far f_2803_362d[];
 extern struct Monster far f_2803_15fa[];
+
+struct Fly {                /* 0x11 bytes, g_4dcc[8]: flying objects (thrown items, missiles) */
+    char active;
+    char type;
+    int owner;               /* +02 */
+    int item;                /* +04 */
+    int x, y;                /* +06 */
+    char power;              /* +0a */
+    char dir;                /* +0b */
+    char range;              /* +0c */
+    char pad;
+    char e;                  /* +0e */
+    char flags;              /* +0f */
+    char f10;                /* +10 */
+};
 extern struct Block g_8203[];
 extern struct Item far f_2803_1cfd[];
 extern struct ItemType far *g_7fb2;

@@ -1,20 +1,6 @@
 /* s012: flying objects (thrown items, missiles, spell projectiles) */
 #include "lol.h"
 
-struct Fly {                /* 0x11 bytes, g_4dcc[8] */
-    char active;
-    char type;
-    int owner;               /* +02 */
-    int item;                /* +04 */
-    int x, y;                /* +06 */
-    char power;              /* +0a */
-    char dir;                /* +0b */
-    char range;              /* +0c */
-    char pad;
-    char e;                  /* +0e */
-    char flags;              /* +0f */
-    char f10;                /* +10 */
-};
 
 extern struct Fly g_4dcc[];
 struct XY { int x, y; };
