@@ -7,8 +7,10 @@
 	.386
 	locals
 S141_TEXT	segment word public use16 'CODE'
-	assume	cs:S141_TEXT
+S141_TEXT	ends
 	extrn	_fn_2279_02b5:far
+S141_TEXT	segment word public use16 'CODE'
+	assume	cs:S141_TEXT
 	public	_fn_232c_000c, _fn_232c_0111
 
 _fn_232c_000c	proc	far
