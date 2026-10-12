@@ -135,6 +135,24 @@ int fn_070c_0793(int who, int ch, int t);
 int fn_070c_07e3(int dmg);
 void fn_07bc_0367(int it, int b);
 int fn_070c_06a3(int a, int b, int c, int d, int e);
+void fn_0bbc_0365(struct Char far *c, int a, int b);
+extern int g_7fe6[];
+void fn_0845_1343(int b, unsigned mask, int c, int d, int e, int f);
+void ovr_2d5f_012e(void);
+void ovr_2d5f_0133(int a);
+void fn_130a_0a7c(int n, char far *str, struct EmcState far *s, int far *p, int e);
+int fn_154c_01d3(int a, int b, int c);
+extern int g_20d7, g_4bea, g_20ec;
+void fn_0845_0bf6(void);
+void fn_163d_0004(void);
+void fn_154c_0136(void);
+int fn_2169_060c(void);
+int fn_2169_0790(void);
+void fn_2169_0945(int k);
+void fn_2169_062e(void);
+void fn_14b3_0215(void);
+struct Win { int a, b; char pad[12]; };
+extern struct Win g_1f47[];
 int fn_0b6b_032f(int type, int item, int x, int y, int power, int dir, int unused, int owner, int e);
 
 void fn_0fbe_000c(int fn)
@@ -1113,4 +1131,165 @@ int fn_0fbe_2188(struct EmcState far *s)
     r = fn_0b6b_032f(ARG(s, 0), ARG(s, 1), x, y, ARG(s, 5), ARG(s, 6) << 1, ARG(s, 7), ARG(s, 8), 0x3f);
     if (!r) fn_07bc_044c(ARG(s, 1));
     return r;
+}
+
+int fn_0fbe_2290(struct EmcState far *s)
+{
+    fn_0bbc_0365(&f_2803_362d[ARG(s, 0)], ARG(s, 1), ARG(s, 2));
+    return 1;
+}
+
+int fn_0fbe_22dc(struct EmcState far *s)
+{
+    int i;
+
+    for (i = 0; i < 0x30; i++)
+        if (!g_7fe6[i]) return 0;
+    return 1;
+}
+
+int fn_0fbe_22fb(struct EmcState far *s)
+{
+    struct Monster far *m;
+    int found;
+    int doMon;
+    int doItems;
+    struct Item far *p;
+    int b;
+    int x;
+    int lvl;
+    register int id;
+    register int next;
+
+    found = 0;
+    b = ARG(s, 0);
+    x = ARG(s, 1);
+    lvl = ARG(s, 2);
+    doMon = ARG(s, 3);
+    doItems = ARG(s, 5);
+    next = g_8203[b].mon;
+    while (next) {
+        id = next;
+        p = fn_080e_000b(next);
+        next = p->next;
+        if (!(id & 0x8000)) {
+            if (!(f_2803_1cfd[id].flags & 0x4000)) continue;
+            if (!doItems) continue;
+            fn_130a_0052(id, lvl, x, f_2803_1cfd[id].x & 0xff, f_2803_1cfd[id].y & 0xff, f_2803_1cfd[id].sub);
+            if (ARG(s, 4) && g_7fe5 == lvl)
+                fn_0845_1343(x, 0x80, -1, id, 0, 0);
+            found = 1;
+        } else {
+            if (!doMon) continue;
+            m = &f_2803_15fa[id & 0x7fff];
+            fn_0d6c_0995(m, 14);
+            fn_0845_046c(m->block);
+            fn_0d6c_0742(m, 0, 0);
+            found = 1;
+        }
+    }
+    return found;
+}
+
+int fn_0fbe_248a(struct EmcState far *s)
+{
+    if (ARG(s, 1)) ovr_2d5f_012e();
+    else ovr_2d5f_0133(0);
+    return 1;
+}
+
+int fn_0fbe_24b4(struct EmcState far *s)
+{
+    fn_130a_0a7c(3, fn_0845_06f8(ARG(s, 0)), s, 0, 1);
+    return 1;
+}
+
+int fn_0fbe_24e9(struct EmcState far *s)
+{
+    int r;
+
+    r = fn_154c_01d3(ARG(s, 0), 0, 0);
+    if (!(r && !g_81fe))
+        fn_130a_0a7c(4, fn_0845_06f8(ARG(s, 0)), s, 0, 1);
+    return 1;
+}
+
+int fn_0fbe_254c(struct EmcState far *s)
+{
+    int i;
+
+    for (i = 0; i < 30; i++)
+        if (f_2803_15fa[i].c20 == ARG(s, 0) || ARG(s, 0) == -1)
+            return f_2803_15fa[i].mode != 1 ? 1 : 0;
+    return 1;
+}
+
+int fn_0fbe_25aa(struct EmcState far *s)
+{
+    g_20d7 = ARG(s, 0);
+    return 1;
+}
+
+int fn_0fbe_25c4(struct EmcState far *s)
+{
+    fn_0845_0bf6();
+    return 1;
+}
+
+int fn_0fbe_25d1(struct EmcState far *s)
+{
+    struct Monster far *m;
+    int id;
+
+    id = ARG(s, 0) & 0x7fff;
+    if (id >= 0) {
+        m = &f_2803_15fa[id];
+        fn_0d6c_0995(m, 14);
+        fn_0845_046c(m->block);
+        fn_0d6c_0742(m, 0, 0);
+    }
+    return 1;
+}
+
+int fn_0fbe_262d(struct EmcState far *s)
+{
+    g_4bea = ARG(s, 0);
+    return 1;
+}
+
+int fn_0fbe_2647(struct EmcState far *s)
+{
+    int k;
+
+    fn_163d_0004();
+    fn_154c_0136();
+    if (fn_2169_060c()) {
+        k = fn_2169_0790();
+        if (k && !(k & 0x800)) {
+            if (ARG(s, 0)) {
+                fn_2169_0945(k);
+                g_20ec = 1;
+            } else
+                fn_2169_062e();
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int fn_0fbe_269d(struct EmcState far *s)
+{
+    register int w;
+    register int f;
+
+    w = ARG(s, 0);
+    f = ARG(s, 1);
+    fn_14b3_0122(w);
+    if (f & 1) fn_14b3_0215();
+    if (f & 3) {
+        g_1f47[w].a = 0;
+        g_1f47[w].b = 0;
+    }
+    fn_130a_0a7c(w, fn_0845_06f8(ARG(s, 2)), s, 0, 3);
+    return 1;
 }
