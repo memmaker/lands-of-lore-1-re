@@ -15,10 +15,7 @@ void fn_0845_046c(int block);
 void fn_080e_013c(int far *list, int it);
 void fn_080e_02f5(int far *list, int it);
 struct Item far *fn_080e_000b(int it);
-void fn_0f28_032c(struct Emc *st, char far *data);
-void fn_0f28_035f(struct Emc *st, int fn);
 int fn_2315_0018(int a);
-int fn_0f28_04a0(struct Emc *st);
 
 void fn_07bc_044c(int it);
 
@@ -153,13 +150,13 @@ void fn_07bc_047f(int a, int it, int c, int d, int e)
     else
         fn = 3;
     if (fn == 0xff) return;
-    fn_0f28_032c(&st, f_2803_35fd);
-    fn_0f28_035f(&st, fn);
+    fn_0f28_032c((void far *)&st, (void far *)f_2803_35fd);
+    fn_0f28_035f((void far *)&st, fn);
     st.regs[0] = c;
     st.regs[1] = a;
     st.regs[2] = it;
     st.regs[3] = d;
     st.regs[4] = e;
     if (!(c & fn_2315_0018(st.ip[-1]))) return;
-    do r = fn_0f28_04a0(&st); while (r);
+    do r = fn_0f28_04a0((void far *)&st); while (r);
 }
