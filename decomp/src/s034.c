@@ -564,8 +564,7 @@ int fn_1809_1502(int idx, int h)
     {
     PakEnt buf1;
     ent = fn_1981_02c0(idx, &buf1);
-    if (!(ent->flags & 0x600)) goto fail;
-    if (ent->data) goto fail;
+    if (!(ent->flags & 0x600) || ent->data) goto fail;
     size = ent->size;
     mf = 0;
     if (fn_203b_03b4(0x42) >= size || fn_203b_0482(0x42) >= size) mf = 0x40;

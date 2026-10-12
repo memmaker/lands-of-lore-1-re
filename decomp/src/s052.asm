@@ -4,9 +4,9 @@
 
 	.386
 	locals
+	extrn	_fn_215f_0003:far, _fn_215f_001d:far
 S052_TEXT	segment word public use16 'CODE'
 	assume	cs:S052_TEXT
-	extrn	_fn_215f_0003:far, _fn_215f_001d:far
 	public	_fn_1dff_0008
 
 _fn_1dff_0008	proc	far
