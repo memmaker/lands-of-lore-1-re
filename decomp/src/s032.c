@@ -42,7 +42,8 @@ void fn_17d6_0019(int n, int vol)
         g_28e2[g_28e0].h = fn_1b79_02ac(g_28b8, g_28ce, n, g_28e2[g_28e0].data, 0);
         fn_1b79_02dd(g_28b8, g_28e2[g_28e0].h);
         fn_1b79_0301(g_28b8, g_28e2[g_28e0].h, ((vol & 0xff) * 90) >> 8, 0);
-        if (++g_28e0 >= 4)
+        g_28e0++;
+        if (g_28e0 >= 4)
             g_28e0 = 0;
     } else {
         fn_178d_01ef(&g_28b8, n, vol);
