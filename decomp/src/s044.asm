@@ -13,7 +13,7 @@ S044_TEXT	segment
 _fn_1b79_0000	proc	far
 	add	[bx+si],al		; 0
 	push	sp		; 2
-	gs	jnc 7ah		; 3
+	db	65h, 73h, 74h	; 3: gs jnc 0x7a
 	add	[bx+si],al		; 6
 	add	[bx+si],al		; 8
 	add	[bx+si],al		; a
@@ -528,7 +528,7 @@ L042C:
 	iret		; 444
 L0445:
 	sti		; 445
-	int3		; 446
+	db	0cch	; 446: int3
 	jmp	short L0445		; 447
 	pushf		; 449
 	call	dword ptr es:[2da6h]		; 44a

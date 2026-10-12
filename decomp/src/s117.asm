@@ -4,12 +4,11 @@
 	locals
 S117_TEXT	segment word public use16 'CODE'
 S117_TEXT	ends
-DGROUP	group	_DATA,_BSS
 _DATA	segment word public use16 'DATA'
 _DATA	ends
 _BSS	segment word public use16 'BSS'
 _BSS	ends
-	assume	cs:S117_TEXT,ds:DGROUP
+	assume	cs:S117_TEXT
 
 	extrn	_fn_19ba_0086:far, _fn_1f6a_0002:far, _fn_215f_001d:far, _fn_226d_0007:far, _fn_226d_004e:far
 
@@ -265,4 +264,5 @@ L028f:	mov	ax,[bp-2h]
 _fn_2096_014b	endp
 
 S117_TEXT	ends
+DGROUP	group	_DATA,_BSS
 	end
