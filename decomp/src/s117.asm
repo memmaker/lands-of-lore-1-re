@@ -138,6 +138,9 @@ L0144:	mov	ax,[bp-2h]
 	leave
 	retf
 _fn_2096_0000	endp
+S117_TEXT	ends
+DGROUP	group	_DATA,_BSS
+S117_TEXT	segment word public use16 'CODE'
 
 _fn_2096_014b	proc	far
 	enter	4h,0h
@@ -264,5 +267,4 @@ L028f:	mov	ax,[bp-2h]
 _fn_2096_014b	endp
 
 S117_TEXT	ends
-DGROUP	group	_DATA,_BSS
 	end
