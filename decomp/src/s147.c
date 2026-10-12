@@ -6,7 +6,7 @@
 
 struct heap { int used; unsigned long base, size, head; };
 struct blk { unsigned long size, phys, next, prev; };
-struct xmove { unsigned long len; int sh; void far *so; int dh; void far *doff; };
+struct xmove { unsigned long len; int sh; unsigned long so; int dh; unsigned long doff; };
 
 extern long g_38a8;
 extern struct heap g_af6c[];
@@ -40,7 +40,7 @@ int fn_2365_0ac2(struct blk far *b, unsigned long a);
 int fn_2365_0afc(struct blk far *b, unsigned long a);
 int fn_2365_05e4(void far *p);
 unsigned long fn_2365_0602(void far *p);
-int fn_2365_07a1(unsigned long x, char far *dst, unsigned long n);
+int fn_2365_07a1(void far *x, char far *dst, unsigned long n);
 
 void far *fn_2365_0002(unsigned long size, register int idx)
 {
@@ -204,7 +204,7 @@ int fn_2365_063f(void far *p)
     return 1;
 }
 
-int fn_2365_0687(char far *src, unsigned long x, unsigned long n)
+int fn_2365_0687(char far *src, void far *x, unsigned long n)
 {
     char buf[2];
     char far *q;
@@ -212,28 +212,28 @@ int fn_2365_0687(char far *src, unsigned long x, unsigned long n)
 
     if (n & 1) {
         n--;
-        if (fn_2365_0602((void far *)x) & 1) {
-            fn_2365_07a1((unsigned long)((char far *)x - 1), buf, 2L);
+        if (fn_2365_0602(x) & 1) {
+            fn_2365_07a1((char far *)x - 1, buf, 2L);
             buf[1] = *src;
-            fn_2365_0687(buf, (unsigned long)((char far *)x - 1), 2L);
+            fn_2365_0687(buf, (char far *)x - 1, 2L);
             src++;
-            x++;
+            (*(unsigned long *)&x)++;
         } else {
-            fn_2365_07a1(x + n, buf, 2L);
+            fn_2365_07a1((void far *)((unsigned long)x + n), buf, 2L);
             q = fn_2037_0002(src, n);
             buf[0] = *q;
-            fn_2365_0687(buf, x + n, 2L);
+            fn_2365_0687(buf, (void far *)((unsigned long)x + n), 2L);
         }
     }
     m.len = n;
     m.sh = 0;
-    m.so = src;
-    m.dh = fn_2365_05e4((void far *)x);
-    m.doff = (void far *)fn_2365_0602((void far *)x);
+    m.so = (unsigned long)(void far *)src;
+    m.dh = fn_2365_05e4(x);
+    m.doff = fn_2365_0602(x);
     return fn_2362_0004(&m);
 }
 
-int fn_2365_07a1(unsigned long x, char far *dst, unsigned long n)
+int fn_2365_07a1(void far *x, char far *dst, unsigned long n)
 {
     char buf[2];
     char far *q;
@@ -241,22 +241,22 @@ int fn_2365_07a1(unsigned long x, char far *dst, unsigned long n)
 
     if (n & 1) {
         n--;
-        if (fn_2365_0602((void far *)x) & 1) {
-            fn_2365_07a1((unsigned long)((char far *)x - 1), buf, 2L);
+        if (fn_2365_0602(x) & 1) {
+            fn_2365_07a1((char far *)x - 1, buf, 2L);
             *dst = buf[1];
             dst++;
-            x++;
+            (*(unsigned long *)&x)++;
         } else {
-            fn_2365_07a1(x + n, buf, 2L);
+            fn_2365_07a1((void far *)((unsigned long)x + n), buf, 2L);
             q = fn_2037_0002(dst, n);
             *q = buf[0];
         }
     }
     m.len = n;
-    m.sh = fn_2365_05e4((void far *)x);
-    m.so = (void far *)fn_2365_0602((void far *)x);
+    m.sh = fn_2365_05e4(x);
+    m.so = fn_2365_0602(x);
     m.dh = 0;
-    m.doff = dst;
+    m.doff = (unsigned long)(void far *)dst;
     return fn_2362_0004(&m);
 }
 
@@ -269,41 +269,41 @@ void fn_2365_0884(unsigned long src, unsigned long dst, unsigned long n)
         if (n == 1) {
             m.len = 2;
             m.sh = fn_2365_05e4((void far *)dst);
-            m.so = (void far *)fn_2365_0602((void far *)dst);
+            m.so = fn_2365_0602((void far *)dst);
             m.dh = 0;
-            m.doff = a;
+            m.doff = (unsigned long)(void far *)a;
             fn_2362_0004(&m);
             m.len = 2;
             m.sh = fn_2365_05e4((void far *)src);
-            m.so = (void far *)fn_2365_0602((void far *)src);
+            m.so = fn_2365_0602((void far *)src);
             m.dh = 0;
-            m.doff = b;
+            m.doff = (unsigned long)(void far *)b;
             fn_2362_0004(&m);
             a[0] = b[0];
             m.len = 2;
             m.sh = 0;
-            m.so = a;
+            m.so = (unsigned long)(void far *)a;
         tail:
             m.dh = fn_2365_05e4((void far *)dst);
-            m.doff = (void far *)fn_2365_0602((void far *)dst);
+            m.doff = fn_2365_0602((void far *)dst);
             fn_2362_0004(&m);
             return;
         } else {
             if (src & 1) {
                 m.len = 2;
                 m.sh = fn_2365_05e4((void far *)src);
-                m.so = (void far *)fn_2365_0602((void far *)src);
+                m.so = fn_2365_0602((void far *)src);
                 m.dh = fn_2365_05e4((void far *)dst);
-                m.doff = (void far *)fn_2365_0602((void far *)dst);
+                m.doff = fn_2365_0602((void far *)dst);
                 fn_2362_0004(&m);
-                src++;
-                dst++;
+                src = src + 1;
+                dst = dst + 1;
             } else {
                 m.len = 2;
                 m.sh = fn_2365_05e4((void far *)src);
-                m.so = (void far *)fn_2365_0602((void far *)(src + (n - 2)));
+                m.so = fn_2365_0602((void far *)(src + (n - 2)));
                 m.dh = fn_2365_05e4((void far *)dst);
-                m.doff = (void far *)fn_2365_0602((void far *)(dst + (n - 2)));
+                m.doff = fn_2365_0602((void far *)(dst + (n - 2)));
                 fn_2362_0004(&m);
             }
             n--;
@@ -311,7 +311,7 @@ void fn_2365_0884(unsigned long src, unsigned long dst, unsigned long n)
     }
     m.len = n;
     m.sh = fn_2365_05e4((void far *)src);
-    m.so = (void far *)fn_2365_0602((void far *)src);
+    m.so = fn_2365_0602((void far *)src);
     goto tail;
 }
 
@@ -321,9 +321,9 @@ int fn_2365_0ac2(struct blk far *b, unsigned long a)
 
     m.len = 0x10;
     m.sh = 0;
-    m.so = b;
+    m.so = (unsigned long)(void far *)b;
     m.dh = g_af88;
-    m.doff = (void far *)a;
+    m.doff = a;
     return fn_2362_0004(&m);
 }
 
@@ -333,12 +333,14 @@ int fn_2365_0afc(struct blk far *b, unsigned long a)
 
     m.len = 0x10;
     m.sh = g_af88;
-    m.so = (void far *)a;
+    m.so = a;
     m.dh = 0;
-    m.doff = b;
+    m.doff = (unsigned long)(void far *)b;
     return fn_2362_0004(&m);
 }
 
+/* original loads the segment with `mov edx,[bp-2]` (66 prefix) where BCC emits `mov dx,[bp-2]` */
+/* NONMATCHING */
 void far *fn_2365_0b36(register int idx, unsigned long off)
 {
     long t = off - g_af6c[idx].base;
