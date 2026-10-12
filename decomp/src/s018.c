@@ -1,26 +1,6 @@
 /* s018: EMC script loader and interpreter (IFF FORM with TEXT/ORDR/DATA chunks) */
 
-struct EmcState;
-
-struct EmcData {
-    int far *text;           /* +00 TEXT chunk: strings */
-    int far *data;           /* +04 DATA chunk: bytecode */
-    int far *ordr;           /* +08 function entry points */
-    int dataSize;            /* +0c in words */
-    int (far * far *opcodes)(struct EmcState far *s);  /* +0e */
-    char alloc;              /* +12 buffers were allocated here */
-};
-
-struct EmcState {
-    int far *ip;             /* +00 */
-    struct EmcData far *dat; /* +04 */
-    int retValue;            /* +08 */
-    int bp;                  /* +0a */
-    int sp;                  /* +0c */
-    int regs[15];            /* +0e */
-    int stack[100];          /* +2c */
-    int running;             /* +f4 */
-};
+#include "lol.h"
 
 int ovr_2de9_0020(char far *name);
 void ovr_2de9_0025(int h);
