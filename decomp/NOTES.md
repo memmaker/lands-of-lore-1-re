@@ -57,6 +57,13 @@ Every fact below was needed to get the relinked MAIN.EXE byte-identical:
   objfix.py transplants the original bytes (relocations → fixups) into the link OBJ, so the EXE stays identical.
 
 ## C idioms that pin BCC's code (collected while matching)
+- Stack slots are handed out in order of first use, not declaration; when the original has a later-used local nearer
+  bp, the other local lives in a nested `{ int blk; ... }` block (inner-scope slots come after the outer ones).
+- Prototype `char` params change call code: `char` args are computed in 8 bits (`mov al; shl al,1`) and adjacent
+  constant pushes are not merged into `push dword`; when the original merges or computes in 16 bits, prototype `int`.
+- `if (!(flags & X)) return 0; ... return 1;` vs `if (flags & X) { ... return 1; } return 0;` differ (jz to the end).
+- `x = c ? 8 : 0` -> jz/else-first; the original's `jnz` + `xor ax,ax` first comes from `c == 0 ? 0 : 8`.
+- Switch with few sparse cases -> value table + loop scan (`mov cx,N; mov bx,table; cmp [cs:bx]`) after the code.
 - char truth tests: `if (c)` / `c == 0` -> `cmp byte [..],0`; `!c` -> `mov al,..; cbw; or ax,ax`.
 - `end = nv = expr;` -> `mov di,dx; mov ax,dx; mov [end],ax`; separate statements store di directly.
 - A register param must be a register *local copy* to get si (`register int ch = chr;`); the first register local gets si.
