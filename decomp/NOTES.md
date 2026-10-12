@@ -55,3 +55,12 @@ Every fact below was needed to get the relinked MAIN.EXE byte-identical:
 - Locals: declare in frame order (first declared = highest bp offset).
 - Functions that won't match get `/* NONMATCHING reason */` above them: mc.sh still compiles/compares the C, then
   objfix.py transplants the original bytes (relocations → fixups) into the link OBJ, so the EXE stays identical.
+
+## C idioms that pin BCC's code (collected while matching)
+- char truth tests: `if (c)` / `c == 0` -> `cmp byte [..],0`; `!c` -> `mov al,..; cbw; or ax,ax`.
+- `end = nv = expr;` -> `mov di,dx; mov ax,dx; mov [end],ax`; separate statements store di directly.
+- A register param must be a register *local copy* to get si (`register int ch = chr;`); the first register local gets si.
+- A temp used only between calls (`d = flags & mask; if (d && ...)`) lands in dx/cx without frame space.
+- Ternary order is the branch order: `a <= b ? -2 : 2` puts the -2 on the fall-through path.
+- Far scalar globals at fixed offsets of a far segment: declare `extern char far f_2803_0000[];` and index it
+  (`f_2803_0000[0x45]`) to get `mov ax,SEG; mov es,ax; cmp byte [es:0x45]`.

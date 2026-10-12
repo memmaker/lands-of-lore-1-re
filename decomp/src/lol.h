@@ -12,23 +12,27 @@ struct Stats {
 
 struct Char {                /* 0x82 bytes, f_2803_362d[4] */
     unsigned flags;          /* +00 1 present, 8 dead, 0x1000 mute */
-    char name[0x0c];         /* +02 */
+    char name[0x0b];         /* +02 */
+    char cD;                 /* +0d */
     int wE;                  /* +0e */
-    int w10;                 /* +10 */
+    char face;               /* +10 current face */
+    char faceDef;            /* +11 default face */
     char voice;              /* +12 */
     struct Stats st;         /* +13 */
     int w37;                 /* +37 */
     int hp;                  /* +39 */
     int maxHp;               /* +3b */
-    int w3d;                 /* +3d */
-    char pad3f[3];
+    int mp;                  /* +3d */
+    int maxMp;               /* +3f */
+    char c41;                /* +41 */
     int lastDmg;             /* +42 */
     int dmgDealt;            /* +44 */
     int w46;                 /* +46 */
     int w48;                 /* +48 */
     int w4a;
     int w4c;                 /* +4c */
-    char pad4e[0x18];
+    int w4e;
+    int items[11];           /* +50 equipment */
     char skill[3];           /* +66 */
     char skillBonus[3];      /* +69 */
     long exp[3];             /* +6c */
@@ -81,7 +85,7 @@ struct Item {               /* 16 bytes, f_2803_1cfd[400] */
     unsigned flags;          /* +0e 0x4000 on floor, 0x8000 free */
 };
 
-struct ItemType { int name; unsigned char shape; unsigned flags; char pad5[2]; unsigned char script; char pad8[5]; };   /* 13 bytes */
+struct ItemType { int name; unsigned char shape; unsigned flags; char pad5[2]; unsigned char script; unsigned char w8; char pad9[4]; };   /* 13 bytes */
 
 struct Emc { int far *ip; char pad04[8]; int sp; int regs[15]; int stack[101]; };   /* EMC2 script state */
 
