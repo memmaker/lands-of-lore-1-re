@@ -153,7 +153,7 @@ int ovr_2db6_002a(void)
 
     p = g_2938;
     if (p == 0) return 0;
-    while (*(int far *)p != -1) p = (char far *)p + 1;
+    while (*(unsigned far *)p != 0xffff) p = (char far *)p + 1;
     g_2952 = (struct sbstate far *)p;
     g_2952->ds = _DS;
     g_2952->on = 1;
