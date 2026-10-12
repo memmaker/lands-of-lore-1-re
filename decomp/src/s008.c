@@ -741,13 +741,13 @@ int fn_0845_122b(struct Char far *c, int k)
     int i, n;
 
     for (n = i = 0; i < 4; i++)
-        if (f_27dd_0000[k][9 + i] <= c->w3d && f_27dd_0000[k][15 + i] < c->hp) n++;
+        if (f_27dd_0000[k][9 + i] <= c->mp && f_27dd_0000[k][15 + i] < c->hp) n++;
     return n;
 }
 
 int fn_0845_1280(int ch, int cls, int i)
 {
-    if (f_27dd_0000[cls][9 + i] > f_2803_362d[ch].w3d) {
+    if (f_27dd_0000[cls][9 + i] > f_2803_362d[ch].mp) {
         if (fn_154c_0057(0x4043, f_2803_362d[ch].wE, 1))
             fn_0845_01c4(6, fn_0845_06f8(0x4043), f_2803_362d[ch].name);
         return 1;
