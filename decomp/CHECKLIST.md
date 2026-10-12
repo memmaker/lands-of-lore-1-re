@@ -43,7 +43,8 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
   - [x] s018 EMC interpreter 7/8
   - [x] s019 EMC opcodes 135/140 + opcode table
   - [x] s020 speech text, TIM anim slots 12/13
-  - [ ] s021–s047 game modules (27 left)
+  - [x] s021 wall buttons/doors/message box (13/14)
+  - [ ] s022–s047 game modules (26 left)
   - [ ] s049–s149 WW library (~100 small modules, maybe TASM)
   - [ ] 80 overlays (objfix needs overlay support)
 - [ ] Data/BSS modules generated as readable C
