@@ -1,5 +1,4 @@
 /* o2dd3: stop the first sound driver's four channels and release their buffers */
-/* FLAGS: -ml -3 -Y */
 
 struct SndCh { int h; void far *p; };
 
@@ -17,13 +16,13 @@ void ovr_2dd3_0020(void)
 
     if (g_28b8 != -1) {
         if (g_3745 == 7) {
-            asm mov dx,g_2962
-            asm add dx,4
-            asm mov al,83h
-            asm out dx,al
-            asm inc dx
-            asm mov al,0fh
-            asm out dx,al
+            _DX = g_2962;
+            _DX += 4;
+            _AL = 0x83;
+            __emit__(0xEE);
+            _DX++;
+            _AL = 0x0f;
+            __emit__(0xEE);
         }
         for (i = 0; i < 4; i++) {
             if (g_28e2[i].h != -1) {
