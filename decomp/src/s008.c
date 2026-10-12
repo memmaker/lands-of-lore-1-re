@@ -95,9 +95,6 @@ void fn_2309_000c(void);
 void far *fn_215f_001d(int page);
 void ovr_2dfd_002a(struct Wsa far *w, int f, int x, int y, int a, int b, void far *c, void far *d);
 int ovr_2d1b_003e(void far *a, void far *b, long t, long c);
-void fn_0f28_032c(struct Emc far *s, char far *p);
-void fn_0f28_035f(struct Emc far *s, int n);
-int fn_0f28_04a0(struct Emc far *s);
 unsigned fn_2315_0018(int a);
 char far *ovr_2d46_002f(char far *s, int n);
 void fn_2148_002c(int d);
@@ -764,8 +761,8 @@ void fn_0845_1343(int b, unsigned mask, int c, int d, int e, int f)
     struct Emc s;
 
     if (!g_4bf6) {
-        fn_0f28_032c(&s, f_2803_3611);
-        fn_0f28_035f(&s, b);
+        fn_0f28_032c((void far *)&s, (void far *)f_2803_3611);
+        fn_0f28_035f((void far *)&s, b);
         s.regs[0] = mask;
         s.regs[1] = c;
         s.regs[2] = d;
@@ -774,7 +771,7 @@ void fn_0845_1343(int b, unsigned mask, int c, int d, int e, int f)
         s.regs[5] = b;
         s.regs[6] = g_7fd8;
         if (mask & fn_2315_0018(s.ip[-1]))
-            while (fn_0f28_04a0(&s));
+            while (fn_0f28_04a0((void far *)&s));
     }
     fn_0845_046c(b);
 }
