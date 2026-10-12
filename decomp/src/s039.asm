@@ -15,7 +15,7 @@ _fn_1afa_0000	proc	far
 _fn_1afa_0000	endp
 
 _fn_1afa_0010	proc	far
-	enter	0h,0h		; 10
+	db	0c8h, 0h, 0h, 0h	; 10: enter 0x0,0x0
 	push	bx		; 14
 	push	cx		; 15
 	push	dx		; 16

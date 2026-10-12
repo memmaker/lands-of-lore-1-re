@@ -176,7 +176,9 @@ fail:
         g_abde--;
         return -1;
     }
-    while ((fd = fn_1809_1460(name, omode)) == -1) {
+    for (;;) {
+        fd = fn_1809_1460(name, omode);
+        if (fd != -1) break;
         fn_2148_014d(g_aeaa);
         fn_2148_014d(g_ae59);
         if (!fn_1809_12c0(2, name)) goto fail;
