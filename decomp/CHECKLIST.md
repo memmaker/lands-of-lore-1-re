@@ -20,6 +20,8 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
 - [x] RTL fingerprint (tools/fingerprint.py knows TLINK's far→near call rewrite): C0L + CL.LIB fill segment 0000 (22211/22522 bytes), OVERLAY.LIB = segment 1c8d → results/rtl_matches.tsv. VNEWN/VDELN/SRBSYNC hits are 7-12 byte false positives
 - [x] Compiler flags (provisional, 1 fn): `bcc -c -ml -3 -O -Z` (run/flags/T1.C = fn_057f_000a 73/73 bytes; -O2, no -Z, no -O all differ)
 - [x] Build pipeline (DOSBox-X batch, per-OBJ compare)
+- [x] Final flags `-ml -3 -O -Z -Oe -Ol`; ENTER quirk handled by tools/objfix.py; NONMATCHING transplant
+- [x] Other compilers ruled out: BC 4.0, TC++ 3.0, BC 3.0 patch
 
 ## Phase 2 — analysis
 - [ ] Name functions from upstream RE (format decoders, EMC2/TIM opcode tables) + ScummVM kyra/lol (reading only)
@@ -33,6 +35,7 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
 ## Phase 3 — rewrite to byte-exact C
 - [x] Relink pipeline with blobs, full-EXE compare from day one — **MATCH** (md5 263998ec…, see NOTES.md)
 - [ ] Every module from C/ASM (list per module below)
+  - [x] s001 TIM interpreter (47/49 match, relink MATCH)
 - [ ] Data/BSS modules generated as readable C
 - [ ] Full MAIN.EXE identical, independent of originals; tag raw-decompile-1.0
 - [ ] LOLCD.EXE identical
