@@ -560,19 +560,19 @@ int fn_1809_1502(int idx, int h)
     int mf;
 
     ent = 0;
-    if (idx == -1) return 0;
+    if (idx == -1) goto fail;
     {
     PakEnt buf1;
     ent = fn_1981_02c0(idx, &buf1);
-    if (!(ent->flags & 0x600)) return 0;
-    if (ent->data) return 0;
+    if (!(ent->flags & 0x600)) goto fail;
+    if (ent->data) goto fail;
     size = ent->size;
     mf = 0;
     if (fn_203b_03b4(0x42) >= size || fn_203b_0482(0x42) >= size) mf = 0x40;
     if (!mf) {
         ent->flags &= 0xd1ff;
         fn_1981_031f(idx, &buf1);
-        return 0;
+        goto fail;
     }
     mf |= 2;
     avail = fn_203b_03b4(mf);
@@ -601,11 +601,11 @@ int fn_1809_1502(int idx, int h)
         avail = fn_203b_03b4(mf);
         fn_1981_031f(best, &buf1);
     }
-    if (avail < size) return 0;
+    if (avail < size) goto fail;
     fh = &f_2c12_0000[h];
     ent = fn_1981_02c0(idx, &buf1);
     ent->data = fn_203b_0007(size, mf);
-    if (!ent->data) return 0;
+    if (!ent->data) goto fail;
     fn_1809_084d(h, ent->data, size);
     fh->pos = 0;
     fh->start = 0;
@@ -622,4 +622,6 @@ int fn_1809_1502(int idx, int h)
     fn_1981_031f(idx, &buf1);
     return 1;
     }
+fail:
+    return 0;
 }
