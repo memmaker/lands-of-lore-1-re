@@ -127,6 +127,15 @@ void ovr_2d18_002a(int a, int b);
 void fn_070c_0a8f(int a, int b, int c);
 void fn_0a21_022b(int ch);
 void fn_067a_003e(int a);
+int fn_067a_01d1(int a);
+struct Item far *fn_080e_000b(int it);
+int ovr_2d74_0025(void);
+void fn_0845_01c4(unsigned flags, char far *fmt, ...);
+int fn_070c_0793(int who, int ch, int t);
+int fn_070c_07e3(int dmg);
+void fn_07bc_0367(int it, int b);
+int fn_070c_06a3(int a, int b, int c, int d, int e);
+int fn_0b6b_032f(int type, int item, int x, int y, int power, int dir, int unused, int owner, int e);
 
 void fn_0fbe_000c(int fn)
 {
@@ -977,4 +986,131 @@ int fn_0fbe_1df1(struct EmcState far *s)
 {
     fn_067a_003e(ARG(s, 0));
     return 1;
+}
+
+int fn_0fbe_1e0e(struct EmcState far *s)
+{
+    return fn_067a_01d1(ARG(s, 0));
+}
+
+int fn_0fbe_1e28(struct EmcState far *s)
+{
+    struct Item far *p;
+    int id;
+    register int n;
+
+    id = g_8203[ARG(s, 0)].mon;
+    for (n = 0; id; id = p->next) {
+        if (!(id & 0x8000)) n++;
+        p = fn_080e_000b(id);
+    }
+    return n;
+}
+
+int fn_0fbe_1e6c(struct EmcState far *s)
+{
+    int k;
+    int bestIdx;
+    struct Char far *c;
+    register int i;
+    register int best;
+    int v;
+
+    bestIdx = -1;
+    best = 0;
+    k = ARG(s, 0);
+    for (i = 0; i < ovr_2d74_0025(); i++) {
+        c = &f_2803_362d[i];
+        v = (c->skillBonus[k] + c->skill[k]) * 10 + ARG(s, 1) + 25;
+        if (v > best) {
+            best = v;
+            bestIdx = i;
+        }
+    }
+    return fn_0845_0636(1, 100) <= best ? bestIdx : -1;
+}
+
+int fn_0fbe_1f05(struct EmcState far *s)
+{
+    struct Monster far *m;
+    int i;
+    int n;
+
+    n = 0;
+    for (m = f_2803_15fa, i = 0; i < 30; i++, m++)
+        if (m->hp > 0 && m->mode != 13) n++;
+    return n;
+}
+
+int fn_0fbe_1f39(struct EmcState far *s)
+{
+    fn_154c_000f(1);
+    fn_130a_0784();
+    return 1;
+}
+
+int fn_0fbe_1f4e(struct EmcState far *s)
+{
+    int v;
+    int i;
+
+    v = ARG(s, 0);
+    for (i = 0; i < 4; i++)
+        if ((f_2803_362d[i].flags & 9) && f_2803_362d[i].wE == v) return 1;
+    return 0;
+}
+
+int fn_0fbe_1fa0(struct EmcState far *s)
+{
+    int flags;
+    int id;
+    register int n;
+
+    flags = ARG(s, 0);
+    id = ARG(s, 1);
+    n = ARG(s, 2);
+    fn_0845_01c4(flags, fn_0845_06f8(id), ARG(s, 3), ARG(s, 4), ARG(s, 5), ARG(s, 6), ARG(s, 7), ARG(s, 8), ARG(s, 9));
+    if (n > 0) fn_067a_0401(n, 0);
+    return 1;
+}
+
+int fn_0fbe_2087(struct EmcState far *s)
+{
+    return fn_070c_0793(ARG(s, 0), ARG(s, 1), ARG(s, 2));
+}
+
+int fn_0fbe_20c5(struct EmcState far *s)
+{
+    return fn_070c_07e3(ARG(s, 0));
+}
+
+int fn_0fbe_20df(struct EmcState far *s)
+{
+    register int it;
+
+    it = ARG(s, 0);
+    if (f_2803_1cfd[it].block)
+        fn_07bc_0367(it, f_2803_1cfd[it].block);
+    fn_07bc_044c(it);
+    return 1;
+}
+
+int fn_0fbe_2126(struct EmcState far *s)
+{
+    return fn_070c_06a3(ARG(s, 0), ARG(s, 1), ARG(s, 2), ARG(s, 3), ARG(s, 4));
+}
+
+int fn_0fbe_2188(struct EmcState far *s)
+{
+    int x;
+    int y;
+    register int r;
+
+    if (ARG(s, 8) & 0x8000)
+        fn_1aff_030e(&x, &y, ARG(s, 2), ARG(s, 3), ARG(s, 4));
+    else
+        fn_1aff_030e(&x, &y, ARG(s, 2), 0x80, 0x80);
+    r = fn_0b6b_032f(ARG(s, 0), ARG(s, 1), x, y, ARG(s, 5), ARG(s, 6) << 1, ARG(s, 7), ARG(s, 8), 0x3f);
+    if (!r) fn_07bc_044c(ARG(s, 1));
+    return r;
 }
