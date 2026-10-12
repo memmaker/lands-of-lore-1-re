@@ -573,7 +573,8 @@ _fn_1aff_0434	proc	far
 _fn_1aff_0434	endp
 S040_TEXT	ends
 _DATA	segment
-	public	_g_2b8c, _g_2c12, _g_2c90, _g_2c92, _g_2c94, _g_2cd2, _g_2cd4, _g_2cd6, _g_2cf8, _g_2d18, _g_2d1a, _g_2d1c, _g_2d5e, _g_2d60, _g_2da2, _g_2da4, _g_2da6, _g_2da8, _g_2daa, _g_2dac, _g_2dae, _g_2db0, _g_2db2, _g_2db4, _g_2df2, _g_2e12, _g_2e36, _g_2e3c, _g_2e3e
+	public	_g_2b30, _g_2b50, _g_2b70, _g_2b90, _g_2b8c, _g_2c12, _g_2c90, _g_2c92, _g_2c94, _g_2cd2, _g_2cd4, _g_2cd6, _g_2cf8, _g_2d18, _g_2d1a, _g_2d1c, _g_2d5e, _g_2d60, _g_2da2, _g_2da4, _g_2da6, _g_2da8, _g_2daa, _g_2dac, _g_2dae, _g_2db0, _g_2db2, _g_2db4, _g_2df2, _g_2e12, _g_2e36, _g_2e3c, _g_2e3e
+_g_2b30	label	word
 	dd	_fn_2023_000a	; 2b30
 	dd	_fn_2027_0004	; 2b34
 	dd	_fn_2023_000a	; 2b38
@@ -582,6 +583,7 @@ _DATA	segment
 	dd	_fn_2019_0008	; 2b44
 	dd	_fn_201d_000e	; 2b48
 	dd	_fn_2019_0008	; 2b4c
+_g_2b50	label	word
 	dd	_fn_2023_000a	; 2b50
 	dd	_fn_2027_0004	; 2b54
 	dd	_fn_2023_000a	; 2b58
@@ -590,6 +592,7 @@ _DATA	segment
 	dd	_fn_2029_0008	; 2b64
 	dd	_fn_202c_0000	; 2b68
 	dd	_fn_2029_0008	; 2b6c
+_g_2b70	label	word
 	dd	_fn_2022_0004	; 2b70
 	dd	_fn_2025_000c	; 2b74
 	dd	_fn_2022_0004	; 2b78
@@ -599,6 +602,7 @@ _DATA	segment
 	dd	_fn_202e_0006	; 2b88
 _g_2b8c	label	byte
 	dd	_fn_2032_000c	; 2b8c
+_g_2b90	label	word
 	dd	_fn_1f84_000e-4	; 2b90: 1f84:000a, s077 function
 	dd	_fn_1f84_000e	; 2b94
 	dd	_fn_1f88_0004	; 2b98
