@@ -28,8 +28,8 @@ int fn_2148_000f(void);
 int fn_1809_1460(char far *name, int mode);
 void far *fn_2037_0002(void far *p, long off);
 void fn_2279_025b(void far *a, void far *b, long n);
-void far *fn_242d_000f(void far *key, void far *tmp, void far *base, int n, int w, int (far *cmp)());
-void far *fn_242d_0108(void far *key, void far *tmp, void far *base, int n, int w, int (far *cmp)());
+void far *fn_242d_000f(void far *key, void far *tmp, void far *base, int n, int w, void far *cmp);
+void far *fn_242d_0108(void far *key, void far *tmp, void far *base, int n, int w, void far *cmp);
 int fn_1981_01af(char far *name);
 PakEnt far *fn_1981_02c0(int i, PakEnt far *buf);
 char far *fn_1981_0365(char far *name);
@@ -67,7 +67,8 @@ int fn_1981_000a(char far *name)
                 return fn_1981_000a(fn_1981_0365(e->name));
             }
         }
-        if (g_2aa6) {
+        if (!g_2aa6) return 0;
+        {
             fn_2148_002c(g_aeaa[0] - 'A');
             g_ae4d = 0;
             fh = fn_1809_1460(name, 0x8001);
@@ -113,7 +114,7 @@ int fn_1981_01af(char far *name)
     } else {
         found = fn_242d_000f(&key, &tmp,
             direct ? &f_27fc_0000[g_abda] : fn_2037_0002(g_2aa7, (long)(unsigned)g_abda * 20),
-            g_abd8, 20, direct ? fn_1981_014c : fn_1981_0167);
+            g_abd8, 20, direct ? (void far *)fn_1981_014c : (void far *)fn_1981_0167);
     }
     if (found) return ((long)found - (long)g_2aa7) / 20;
     return -1;

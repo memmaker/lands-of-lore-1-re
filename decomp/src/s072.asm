@@ -4,7 +4,7 @@
 
 	.386
 	locals
-S072_TEXT	segment byte public use16 'CODE'
+S072_TEXT	segment word public use16 'CODE'
 	assume	cs:S072_TEXT
 	public	_fn_1f6a_0002
 
