@@ -1,7 +1,6 @@
 /* s115: WW library -- memory allocator (Alloc/Free/Resize/Ram_Free/Heap_Size/Total_Ram_Free)
  * A conventional block keeps a flag byte just below the returned pointer; paragraph-aligned blocks (flag 0x20)
  * store 15 - (padding) in the low nibble. Flags 0x40/0x80 route to other memory managers (s147, s036). */
-/* FLAGS: -ml -3 -O */
 #include <alloc.h>
 #include <mem.h>
 #include <dos.h>
@@ -119,10 +118,8 @@ void fn_203b_0203(char far *p)
             g_35de = 0;
         if (fl & 0x20)
             farfree(MK_FP(FP_SEG(hdr), 0xf - (fl & 0xf)));
-        else if (FP_OFF(p))
-            farfree((char far *)MK_FP(FP_SEG(p), FP_OFF(p)) - 1);
         else
-            farfree(MK_FP(FP_SEG(p) - 1, FP_OFF(p) + 0xf));
+            farfree(FP_OFF(p) ? (char far *)MK_FP(FP_SEG(p), FP_OFF(p)) - 1 : MK_FP(FP_SEG(p) - 1, FP_OFF(p) + 0xf));
     }
     g_3642--;
 }
@@ -133,10 +130,7 @@ void far *fn_203b_02dc(char far *p, unsigned long size)
     unsigned char lo;
     unsigned char hi;
 
-    if (FP_OFF(p))
-        hdr = (char far *)MK_FP(FP_SEG(p), FP_OFF(p)) - 1;
-    else
-        hdr = MK_FP(FP_SEG(p) - 1, FP_OFF(p) + 0xf);
+    hdr = FP_OFF(p) ? (char far *)MK_FP(FP_SEG(p), FP_OFF(p)) - 1 : MK_FP(FP_SEG(p) - 1, FP_OFF(p) + 0xf);
     lo = *hdr & 0xf;
     hi = *hdr & 0xf0;
     size += hi & 0x20 ? 0x10 : 1;
