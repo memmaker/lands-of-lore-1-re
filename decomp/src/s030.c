@@ -31,7 +31,7 @@ void fn_2120_0007(int n);
 void fn_178d_00a4(int n, int vol);
 void fn_178d_01ef(struct Drv far *s, int n, int vol);
 
-int g_2a9a = -1;
+unsigned g_2a9a = 0xffff;
 
 int fn_178d_0007(void)
 {
@@ -115,18 +115,15 @@ void fn_178d_01b0(void)
     }
 }
 
-void fn_178d_01ef(struct Drv far *s, int n, int vol)
+void fn_178d_01ef(struct Drv far *s, volatile int n, int vol)
 {
     int r;
     void far *fp;
-    int st;
+    int stat;
 
     fp = s->entry;
-    if (n == -1) return;
-    if (!fp) return;
-    if (!s->data) return;
-    n = s->tab[n];
-    if (n == -1) return;
+    if (n == -1 || !fp || !s->data || (n = s->tab[n]) == -1)
+        return;
     if (memcmp(s->name, "ALFX", 4) == 0) {
         n &= 0xff;
         do {
@@ -134,9 +131,9 @@ void fn_178d_01ef(struct Drv far *s, int n, int vol)
             asm mov bx, 0x10;
             asm pushf;
             asm call dword ptr fp;
-            asm mov st, ax;
-        } while (st & 8);
-        if (g_2a9a != -1) {
+            asm mov stat, ax;
+        } while (stat & 8);
+        if (g_2a9a != 0xffff) {
             asm mov cx, g_abd6;
             asm mov dx, 1;
             asm mov ax, g_2a9a;
