@@ -118,8 +118,10 @@ void fn_203b_0203(char far *p)
             g_35de = 0;
         if (fl & 0x20)
             farfree(MK_FP(FP_SEG(hdr), 0xf - (fl & 0xf)));
+        else if (FP_OFF(p))
+            farfree(MK_FP(FP_SEG(p), FP_OFF(p) - 1));
         else
-            farfree(FP_OFF(p) ? (char far *)MK_FP(FP_SEG(p), FP_OFF(p)) - 1 : MK_FP(FP_SEG(p) - 1, FP_OFF(p) + 0xf));
+            farfree(MK_FP(FP_SEG(p) - 1, FP_OFF(p) + 0xf));
     }
     g_3642--;
 }
@@ -130,7 +132,10 @@ void far *fn_203b_02dc(char far *p, unsigned long size)
     unsigned char lo;
     unsigned char hi;
 
-    hdr = FP_OFF(p) ? (char far *)MK_FP(FP_SEG(p), FP_OFF(p)) - 1 : MK_FP(FP_SEG(p) - 1, FP_OFF(p) + 0xf);
+    if (FP_OFF(p))
+        hdr = (char far *)MK_FP(FP_SEG(p), FP_OFF(p)) - 1;
+    else
+        hdr = MK_FP(FP_SEG(p) - 1, FP_OFF(p) + 0xf);
     lo = *hdr & 0xf;
     hi = *hdr & 0xf0;
     size += hi & 0x20 ? 0x10 : 1;

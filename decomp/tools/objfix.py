@@ -1,4 +1,4 @@
-"""objfix.py OBJ MODULE [FN ...]: post-process a BCC 3.1 OBJ of root module MODULE so it links like the original.
+"""objfix.py OBJ MODULE [FN ...]: post-process a BCC 3.1 OBJ of root or overlay module MODULE so it links like the original.
 
 1. ENTER: our BCC opens functions with locals with `enter N,0`; the compiler that built MAIN.EXE wrote
    `push bp; mov bp,sp; sub sp,N` (+2 bytes, +3 for N >= 0x80). Everything else it generates is identical.
@@ -123,47 +123,84 @@ def main():
     for f in fixes:
         if f.tm == 0 and f.ti == cs: starts.add(tval(f))
     pubname = {o: n for _, n, si, o in pubs if si == cs}
+    fx0 = {f.off for f in fixes if f.seg == cs}
+    for q in range(len(img) - 4):   # static functions: targets of fixup-less `push cs; call near`
+        if img[q] == 0x0e and img[q + 1] == 0xe8 and q + 2 not in fx0:
+            starts.add((q + 4 + struct.unpack_from('<h', img, q + 2)[0]) & 0xffff)
     fstarts = sorted(o for o in starts if o < len(img))
 
     edits = []   # (old lo, old hi, new bytes, new fixups [(new rel off, b0, raw-builder)])
     # 2. transplants
+    o2obj = {}   # orig function offset -> OBJ offset (targets of restored same-segment far calls)
     if transplant:
-        import mkblob, layout, lolcfg
-        st = mkblob.st; ri = dict(layout.ROOT)[mod]; sseg, smx, sfl, smn = st[ri]
-        oimg = mkblob.img; base = sseg * 16
-        # orig offset of a function from its name
-        def ooff(n):
-            import re
-            m = __import__('re').match(r'_fn_([0-9a-f]{4})_([0-9a-f]{4})$', n)
-            return int(m.group(2), 16) if m else None
-        orig_funcs = sorted((ooff(n), o) for o, n in pubname.items() if ooff(n) is not None)
-        oo = [x for x, _ in orig_funcs]
+        import re, mkblob, layout, lolcfg, ovr
+        st = mkblob.st
+        ovl = mod in dict(layout.OVR)
+        if ovl:
+            # overlay: original bytes are the overlay's code; relocated words are segment-table keys (index * 8)
+            sseg = dict(layout.OVR)[mod]; ov = ovr.overlays()[sseg]
+            oimg = ovr.exe()[ov['file']:ov['file'] + ov['size']]; base = 0; seg_end = ov['size']
+            orl = ov['relocs']
+            segval = lambda r: st[struct.unpack_from('<H', oimg, r)[0] // 8][0]
+            own = None
+            import split
+            cf = split.functions(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src',
+                                                   mod + '.c')).read().split('\n'))
+            def corig(n):
+                m = re.match(r'_?(fn|ovr)_([0-9a-f]{4})_([0-9a-f]{4})$', n)
+                if m.group(1) == 'ovr': return ovr.stub_to_code(int(m.group(2), 16), int(m.group(3), 16))
+                return int(m.group(3), 16)
+            # OBJ starts: publics + targets of BCC's fixup-less `push cs; call near` (static functions)
+            fxpos0 = {f.off for f in fixes if f.seg == cs}
+            ost = {o for _, _, si, o in pubs if si == cs}
+            for q in range(len(img) - 4):
+                if img[q] == 0x0e and img[q + 1] == 0xe8 and q + 2 not in fxpos0:
+                    t = (q + 4 + struct.unpack_from('<h', img, q + 2)[0]) & 0xffff
+                    if t < len(img): ost.add(t)
+            ost = sorted(ost)
+            assert len(ost) == len(cf), 'overlay %s: %d OBJ function starts, %d C functions' % (mod, len(ost), len(cf))
+            names = ['_' + n for n, _, _, _, _ in cf]
+            objoff = dict(zip(names, ost)); origoff = {n: corig(n) for n in names}
+        else:
+            ri = dict(layout.ROOT)[mod]; sseg, smx, sfl, smn = st[ri]
+            oimg = mkblob.img; base = sseg * 16; seg_end = smx
+            orl = [r - base for r in mkblob.relocs if base <= r < base + 0x10000]
+            segval = lambda r: struct.unpack_from('<H', oimg, base + r)[0]
+            own = sseg
+            def ooff(n):
+                m = re.match(r'_fn_([0-9a-f]{4})_([0-9a-f]{4})$', n)
+                return int(m.group(2), 16) if m else None
+            ost = sorted(o for o in pubname if o < len(img))   # case labels are fixup targets too
+            objoff = {n: o for o, n in pubname.items() if ooff(n) is not None}
+            origoff = {n: ooff(n) for n in objoff}
+        for n in objoff: o2obj[origoff[n]] = objoff[n]
+        oo = sorted(origoff.values())
         for fn in transplant:
             fn = fn if fn.startswith('_') else '_' + fn
-            lo_obj = [o for o, n in pubname.items() if n == fn][0]
-            pstarts = sorted(o for o in pubname if o < len(img))   # case labels are fixup targets too
-            k = pstarts.index(lo_obj)
-            hi_obj = pstarts[k + 1] if k + 1 < len(pstarts) else len(img)
-            olo = ooff(fn)
+            lo_obj = objoff[fn]
+            k = ost.index(lo_obj)
+            hi_obj = ost[k + 1] if k + 1 < len(ost) else len(img)
+            olo = origoff[fn]
             j = oo.index(olo)
-            ohi = oo[j + 1] if j + 1 < len(oo) else smx - smn + smn
-            if j + 1 >= len(oo): ohi = smx
+            ohi = oo[j + 1] if j + 1 < len(oo) else seg_end
             ob = bytearray(oimg[base + olo:base + ohi])
             nf = []
-            rl = [r - base - olo for r in mkblob.relocs if base + olo <= r < base + ohi]
+            rl = [r - olo for r in orl if olo <= r < ohi]
             for q in range(len(ob) - 4):   # TLINK's same-segment call rewrite back to a far call
                 if ob[q:q + 3] == b'\x90\x0e\xe8' and not any(q <= r < q + 5 for r in rl):
                     tgt = (olo + q + 5 + struct.unpack_from('<h', ob, q + 3)[0]) & 0xffff
                     ob[q:q + 5] = b'\x9a\0\0\0\0'
                     nf.append((q + 1, 'self', tgt))
             for r in rl:
-                v = struct.unpack_from('<H', ob, r)[0]
+                v = segval(olo + r)
                 ow = struct.unpack_from('<H', ob, r - 2)[0] if r >= 2 else 0
                 far = r >= 3 and ob[r - 3] == 0x9a
                 loc, kind, sym = mkblob.target(v, ow, mod)
+                if ovl and v == sseg:
+                    raise Exception('%s: reference to its own overlay at %04x not supported' % (fn, olo + r))
                 if kind == 'grp':
                     nf.append((r, 'grp', None)); struct.pack_into('<H', ob, r, 0)
-                elif v == sseg:
+                elif v == own:
                     if far: nf.append((r - 2, 'self', ow)); struct.pack_into('<HH', ob, r - 2, 0, 0)
                     else: nf.append((r, 'selfbase', None)); struct.pack_into('<H', ob, r, 0)
                 elif loc == 'ptr' or (far and kind == 'ext' and sym.startswith('__seg_')):
@@ -184,6 +221,9 @@ def main():
             nb = b'\x55\x8b\xec' + (bytes([0x83, 0xec, n]) if n < 0x80 else b'\x81\xec' + struct.pack('<H', n))
             edits.append((c, c + 4, nb, [], False))
     edits.sort()
+    # BCC run through TASM (`#pragma inline` / asm statements): TASM writes each record's fixups in ascending order
+    tasm = any(t == 0x88 and b'Turbo Assembler' in d for t, d in recs)
+    if tasm and not edits: return
 
     los = [e[0] for e in edits]
     def newoff(x):
@@ -244,9 +284,7 @@ def main():
                 f = Fix(cs, o, 0xc0 | (2 << 2), bytes([(1 << 4) | (1 << 2) | 1]) + index(dgroup) + index(dgroup), 1, dgroup, None)
             elif kind == 'self':
                 # target = function at orig offset arg: its new offset in this OBJ
-                tgt = None
-                for oo2, n2 in pubname.items():
-                    if n2.endswith('_%04x' % arg): tgt = newoff(oo2)
+                tgt = newoff(o2obj[arg]) if arg in o2obj else None
                 assert tgt is not None, 'self call target %04x not a public of this OBJ' % arg
                 f = Fix(cs, o, 0xc0 | (3 << 2), bytes([(5 << 4) | 0]) + index(cs) + struct.pack('<H', tgt), 0, cs, None)
                 struct.pack_into('<HH', nimg, o, 0, 0)
@@ -300,7 +338,7 @@ def main():
                     for a, b in chunks:
                         out += rec(0xa0, index(cs) + struct.pack('<H', a) + nimg[a:b])
                         fb = b''.join(f.bytes(o - a) for o, f in sorted(((o, f) for o, f in code_fx if a <= o < b),
-                                                                        key=lambda x: -x[0]))
+                                                                        key=lambda x: x[0] if tasm else -x[0]))
                         if fb: out += rec(0x9c, fb)
                 cur = 'code'; continue
             cur = 'other'
