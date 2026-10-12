@@ -55,7 +55,7 @@ L0050:
 	pop	dx		; 54
 	pop	cx		; 55
 	pop	ax		; 56
-	ret		; 57
+	db	0c3h	; 57: ret
 L0058:
 	enter	2h,0h		; 58
 	push	ax		; 5c
@@ -64,7 +64,7 @@ L0058:
 	mov	ax,ds:[2f91h]		; 5f
 	and	ax,7h		; 62
 	mov	bx,161h		; 65
-	cs	xlatb		; 68
+	db	2eh, 0d7h	; 68: cs xlatb
 	mov	bx,ax		; 6a
 	xor	bl,ds:[2f45h]		; 6c
 	jz	short L00A7		; 70
@@ -194,7 +194,7 @@ _fn_1c24_0161	proc	far
 	mov	ax,DGROUP		; 173
 	mov	ds,ax		; 176
 	cmp	byte ptr ds:[2f43h],0h		; 178
-	jnz	near ptr L0287		; 17d
+	db	0fh, 85h, 6h, 1h	; 17d: jnz near 0x287
 	cmp	byte ptr ds:[2f44h],0h		; 181
 	jz	near ptr L0287		; 186
 	cmp	word ptr ds:[2f0ah],+0h		; 18a
@@ -377,7 +377,7 @@ L034B:
 	pop	cx		; 34b
 	pop	bx		; 34c
 	leave		; 34d
-	ret		; 34e
+	db	0c3h	; 34e: ret
 _fn_1c24_0290	endp
 
 _fn_1c24_034f	proc	far
@@ -580,7 +580,7 @@ _fn_1c24_04eb	proc	far
 L0526:
 	mov	ax,0h		; 526
 	mov	byte ptr ds:[2f42h],0h		; 529
-	jmp	short L05A6		; 52e
+	db	0ebh, 76h	; 52e: jmp short 0x5a6
 L0530:
 	mov	ax,0h		; 530
 	int	33h		; 533

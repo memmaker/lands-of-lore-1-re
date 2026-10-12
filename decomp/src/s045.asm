@@ -1089,7 +1089,7 @@ L0633:
 	add	si,dx		; 643
 	mov	al,[si]		; 645
 	add	bx,ax		; 647
-	mov	al,cs:[bx+0ch]		; 649
+	db	2eh, 8ah, 87h, 0ch, 0h	; 649: mov al,[cs:bx+0xc]
 	sub	al,80h		; 64e
 	stosb		; 650
 	sub	si,[bp-2h]		; 651
