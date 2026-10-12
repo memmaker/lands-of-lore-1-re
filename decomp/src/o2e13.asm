@@ -257,7 +257,7 @@ _ovr_2e13_002f	proc	far
 	push	bp
 	mov	bp,sp
 	push	seg _ovr_2e13_0052
-	push	offset _ovr_2e13_0052
+	push	52h			; stub offset of _ovr_2e13_0052 (TLINK resolved the original's ref to the stub; ours gives the code offset)
 	push	word ptr [bp+6]
 	mov	ax,64h
 	push	cs
