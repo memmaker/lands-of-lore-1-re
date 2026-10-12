@@ -1,9 +1,8 @@
-/* s128: WW library -- named block lookup and a debug hex dump; owns the Westwood globals DGROUP 0x3638..0x3940
+/* s128: WW library -- command line argument lookup (by prefix) and a debug hex dump; owns the Westwood globals DGROUP 0x3638..0x3940
  * (layout.py; the hex dump's format strings at g_35f6.. lie in w000's range, so they are referenced as externs) */
 #include <string.h>
 #include <stdio.h>
-extern int g_3f5a;
-extern char far * far *g_3f5c;
+#include <dos.h>
 extern char g_35f6[], g_3601[], g_360c[], g_360f[], g_3615[];
 void far fn_0845_0f7c(char far *s, int x, int y, int c);
 void far fn_0845_0f81(char far *fmt, ...);
@@ -16,10 +15,10 @@ char far *fn_2253_000f(char far *name)
 {
     int len;
     register int i;
-    len = _fstrlen(name);
-    for (i = 0; i < g_3f5a; i++)
-        if (_fstrnicmp(g_3f5c[i], name, len) == 0)
-            return g_3f5c[i];
+    len = strlen(name);
+    for (i = 0; i < _argc; i++)
+        if (strnicmp(_argv[i], name, len) == 0)
+            return _argv[i];
     return 0;
 }
 
