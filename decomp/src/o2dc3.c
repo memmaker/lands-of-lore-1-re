@@ -8,6 +8,10 @@ void fn_203b_0203(void far *p);
 
 void ovr_2dc3_0020(void)
 {
-    if (g_2a6f == 1 && g_2a71 != 0) fn_203b_0203(g_2a71);
+    switch (g_2a6f) {
+    case 1:
+        if (g_2a71 != 0) fn_203b_0203(g_2a71);
+        break;
+    }
     memset(g_2a37, 0, 0x48);
 }
