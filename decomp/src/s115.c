@@ -5,6 +5,7 @@
 #include <mem.h>
 #include <dos.h>
 #include <stdlib.h>
+#define MKFP(s,o) ((void near *)(o) + (void _seg *)(s))
 
 extern unsigned long g_35d2;   /* lowest free memory seen */
 extern unsigned long g_35d6;   /* largest amount used */
@@ -68,10 +69,13 @@ void far *fn_203b_0007(unsigned long size, unsigned flags)
             pad = 0xf - (unsigned char)FP_OFF(p);
             p[pad] = pad | flags;
             p = MK_FP(FP_SEG(p) + 1, 0);
-        } else {
+            goto done;
+        }
+        {
             *p = flags;
             p++;
         }
+done:
         if (flags & 0x10) {
             q = p;
             while (req > 0x7d00) {
@@ -127,7 +131,7 @@ void far *fn_203b_02dc(char far *p, unsigned long size)
     unsigned char lo;
     unsigned char hi;
 
-    hdr = FP_OFF(p) ? MK_FP(FP_SEG(p), FP_OFF(p) - 1) : MK_FP(FP_SEG(p) - 1, FP_OFF(p) + 0xf);
+    hdr = FP_OFF(p) ? MKFP(FP_SEG(p), FP_OFF(p) - 1) : MKFP(FP_SEG(p) - 1, FP_OFF(p) + 0xf);
     lo = *hdr & 0xf;
     hi = *hdr & 0xf0;
     size += hi & 0x20 ? 0x10 : 1;
