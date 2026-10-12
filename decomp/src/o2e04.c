@@ -1,4 +1,5 @@
 /* o2e04: fatal error on an unexpected character code */
+/* FLAGS: -ml -3 -Y */
 #include <stdio.h>
 #include <stdlib.h>
 
