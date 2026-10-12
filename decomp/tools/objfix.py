@@ -202,6 +202,15 @@ def main():
     for lo, hi, nb, _, _ in edits:
         nimg += img[p:lo] + nb; p = hi
     nimg += img[p:]
+    # near self calls (push cs; call rel16) are resolved by BCC without a fixup: re-aim them at the moved targets
+    fxpos = {f.off for f in fixes if f.seg == cs}
+    fset = set(fstarts)
+    for q in range(len(img) - 4):
+        if img[q] != 0x0e or img[q + 1] != 0xe8 or q + 2 in fxpos: continue
+        t = (q + 4 + struct.unpack_from('<h', img, q + 2)[0]) & 0xffff
+        if t not in fset or any(lo <= q < hi for lo, hi, _, _, _ in edits): continue
+        nq = newoff(q + 1)
+        struct.pack_into('<h', nimg, nq + 1, (newoff(t) - (nq + 3) + 0x8000) % 0x10000 - 0x8000)
     # extra EXTDEFs for transplanted fixups
     newext = []
     def ext(sym):

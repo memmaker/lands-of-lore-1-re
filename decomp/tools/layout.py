@@ -22,10 +22,14 @@ FAR = [('f%03d' % i, i) for i in FAR_ALL if not any(i in v for v in FAR_OWN.valu
 EMPTY_OVR = [0x2dbf, 0x2dc1, 0x2de4]   # overlay stubs with no code (empty overlaid segments)
 OVR = [('o%04x' % s, s) for s in sorted(list(ovr.overlays()) + EMPTY_OVR)]
 
-# DGROUP _DATA by module (the order of the original relocation table fixes which module owns which pointers):
+# DGROUP _DATA by module (ranges without pointers split by tools/xref.py's results/dsxref.tsv: data is laid out in
+# module order, so each range starts at its module's first referenced item; s005 (no code) holds the shared globals)
+# (the order of the original relocation table fixes which module owns which pointers):
 # g000 is a data-only module linked first; C0L's 147-byte _DATA precedes it, OVERLAY.LIB _DATA (6 bytes) follows
 # the game at 0x2e40, the Westwood library from 0x2e46, CL.LIB (ATEXIT, CTYPE, EXIT, ...) from 0x3ae2.
-DATA = {'g000': (0x94, 0x1dcc), 's001': (0x1dcc, 0x1e8c), 's002': (0x1e8c, 0x2298), 's013': (0x2298, 0x2494), 's019': (0x2494, 0x2830),
+DATA = {'g000': (0x94, 0x1dcc), 's001': (0x1dcc, 0x1e8c), 's003': (0x1e8c, 0x1f16),
+        's004': (0x1f16, 0x1f3a), 's005': (0x1f3a, 0x2196), 's007': (0x2196, 0x21d6), 's008': (0x21d6, 0x2236),
+        's009': (0x2236, 0x2256), 's010': (0x2256, 0x2270), 's011': (0x2270, 0x2298), 's013': (0x2298, 0x2494), 's019': (0x2494, 0x2830),
         's021': (0x2830, 0x2b30), 's040': (0x2b30, 0x2e40),
         'w000': (0x2e46, 0x3638), 's128': (0x3638, 0x3940), 's147': (0x3940, 0x3ae2)}
 # LEDATA order of g000 (its relocations interleave far data and _DATA)
