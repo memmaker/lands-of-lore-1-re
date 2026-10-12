@@ -25,7 +25,7 @@ OVR = [('o%04x' % s, s) for s in sorted(list(ovr.overlays()) + EMPTY_OVR)]
 # DGROUP _DATA by module (the order of the original relocation table fixes which module owns which pointers):
 # g000 is a data-only module linked first; C0L's 147-byte _DATA precedes it, OVERLAY.LIB _DATA (6 bytes) follows
 # the game at 0x2e40, the Westwood library from 0x2e46, CL.LIB (ATEXIT, CTYPE, EXIT, ...) from 0x3ae2.
-DATA = {'g000': (0x94, 0x1dcc), 's001': (0x1dcc, 0x2298), 's013': (0x2298, 0x2494), 's019': (0x2494, 0x2830),
+DATA = {'g000': (0x94, 0x1dcc), 's001': (0x1dcc, 0x1e8c), 's002': (0x1e8c, 0x2298), 's013': (0x2298, 0x2494), 's019': (0x2494, 0x2830),
         's021': (0x2830, 0x2b30), 's040': (0x2b30, 0x2e40),
         'w000': (0x2e46, 0x3638), 's128': (0x3638, 0x3940), 's147': (0x3940, 0x3ae2)}
 # LEDATA order of g000 (its relocations interleave far data and _DATA)
@@ -46,9 +46,10 @@ def lib_order():
     return [WWHEAD] + [n for n, _ in WWLIB]
 
 
-def rsp():
-    """TLINK response file: C0L, root OBJs, /o overlays, EXE, MAP, libraries"""
-    root = [n.upper() for n in order() if n not in dict(OVR)]
+def rsp(parts={}):
+    """TLINK response file: C0L, root OBJs, /o overlays, EXE, MAP, libraries (parts: module -> OBJ names of a
+    split module)"""
+    root = [x for n in order() if n not in dict(OVR) for x in parts.get(n, [n.upper()])]
     ov = [n.upper() for n, _ in OVR]
     lines = ['D:\\INSTALL\\C0L +']
     lines += [' '.join(root[k:k + 10]) + ' +' for k in range(0, len(root), 10)]
