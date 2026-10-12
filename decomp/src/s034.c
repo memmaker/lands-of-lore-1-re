@@ -530,11 +530,9 @@ again:
     fn_2279_025b(&f_2c12_0000[nh], &f_2c12_0000[h], 20L);
     f_2c12_0000[nh].free = 1;
     got = fn_2148_00c9(f_2c12_0000[h].fd, buf, n);
-    if (g_ae4d) {
-        if (fn_1809_12c0(2, fn_1981_0365(f_2c12_0000[h].name)) && fn_2148_014d(g_aeaa)) goto again;
-        return 0;
-    }
-    return got;
+    if (!g_ae4d) return got;
+    if (fn_1809_12c0(2, fn_1981_0365(f_2c12_0000[h].name)) && fn_2148_014d(g_aeaa)) goto again;
+    return 0;
 }
 
 int fn_1809_1460(char far *name, int omode)
