@@ -106,13 +106,27 @@ void fn_0bbc_070e(int a, int b);
 void fn_0bbc_07b1(int a, int b);
 int fn_0c59_03a8(int h);
 void fn_070c_00cf(int who, int cls, long exp);
-struct TimHdr;
+struct TimHdr { int magic; int stop; int numStart; int offFuncs; int offWsa; int offAvtl; int offText; };
+struct TimFunc { int far *ip; long lastTime; long nextTime; int far *loopIp; int w10; int w12; int far *avtl; };
 struct TimHdr far *fn_0638_0008(char far *name, struct TimHdr far *buf, unsigned long bufSize);
 void fn_0638_018b(struct TimHdr far *t);
 int fn_0638_01e5(struct TimHdr far *p, int loop);
 void fn_0d6b_000f(void);
 extern struct TimHdr far *g_20fc[];
 extern char g_27a8[];
+extern char far f_2803_0053[];
+void ovr_2d2c_00b1(struct Monster far *m, int it);
+void fn_067a_0401(int n, int force);
+void fn_067a_02f5(int n, int pos);
+int fn_0d6c_059d(int x, int y, struct Monster far *m, int fl);
+void fn_0845_093a(void);
+void fn_154c_000f(int a);
+void fn_130a_0784(void);
+int fn_130a_03cd(int a, int b, int c, char far *str, struct EmcState far *s, int far *p, int e);
+void ovr_2d18_002a(int a, int b);
+void fn_070c_0a8f(int a, int b, int c);
+void fn_0a21_022b(int ch);
+void fn_067a_003e(int a);
 
 void fn_0fbe_000c(int fn)
 {
@@ -836,5 +850,131 @@ int fn_0fbe_19e1(struct EmcState far *s)
     i = ARG(s, 0);
     fn_0638_018b(g_20fc[i]);
     g_20fc[i] = 0;
+    return 1;
+}
+
+int fn_0fbe_1a1d(struct EmcState far *s)
+{
+    return fn_0845_0ac7();
+}
+
+int fn_0fbe_1a27(struct EmcState far *s)
+{
+    int m;
+
+    if ((m = ARG(s, 0)) != -1) {
+        ovr_2d2c_00b1(&f_2803_15fa[m], ARG(s, 1));
+        return 1;
+    }
+    return 0;
+}
+
+int fn_0fbe_1a72(struct EmcState far *s)
+{
+    fn_067a_0401(ARG(s, 0), 0);
+    return 1;
+}
+
+int fn_0fbe_1a93(struct EmcState far *s)
+{
+    int b;
+
+    b = ARG(s, 1);
+    b = b == -1 ? g_7fd0 : b;
+    fn_067a_02f5(ARG(s, 0), b);
+    return 1;
+}
+
+int fn_0fbe_1ad1(struct EmcState far *s)
+{
+    struct TimHdr far *t;
+    struct TimFunc far *f;
+    int i;
+
+    t = g_20fc[ARG(s, 0)];
+    f = (struct TimFunc far *)((char far *)t + t->offFuncs);
+    for (i = 0; i < 10; f++, i++)
+        *(long far *)&f->ip = 0;
+    return 1;
+}
+
+int fn_0fbe_1b20(struct EmcState far *s)
+{
+    int x;
+    int y;
+    struct Monster far *m;
+    int v;
+
+    v = ARG(s, 0);
+    if (v == -1) return 1;
+    m = &f_2803_15fa[v & 0x7fff];
+    v = ARG(s, 2);
+    switch (ARG(s, 1)) {
+    case 6: m->flags |= v; break;
+    case 2:
+        fn_1aff_030e(&x, &y, v, m->x & 0xff, m->y & 0xff);
+        if (!fn_0d6c_059d(x, y, m, 7))
+            fn_0d6c_0742(m, x, y);
+        break;
+    case 0: fn_0d6c_0995(m, v); break;
+    case 1: m->hp = v; break;
+    case 3: fn_0d6c_0073(m, v << 1); break;
+    default: break;
+    }
+    return 1;
+}
+
+int fn_0fbe_1c17(struct EmcState far *s)
+{
+    struct Monster far *m;
+    int r;
+    int v;
+
+    r = -1;
+    v = ARG(s, 0);
+    if (v == -1) return 0;
+    m = &f_2803_15fa[v & 0x7fff];
+    switch (ARG(s, 1)) {
+    case 8: r = f_2803_0053[m->type->c00]; break;
+    case 7: r = m->type->flags; break;
+    case 6: r = m->flags; break;
+    case 1: r = m->hp; break;
+    case 5: r = m->type->maxHp; break;
+    case 0: r = m->mode; break;
+    case 2: r = m->block; break;
+    case 3: r = m->facing; break;
+    case 4: r = m->c20; break;
+    default: break;
+    }
+    return r;
+}
+
+int fn_0fbe_1cea(struct EmcState far *s)
+{
+    fn_0845_093a();
+    return 1;
+}
+
+int fn_0fbe_1cf7(struct EmcState far *s)
+{
+    fn_154c_000f(1);
+    fn_130a_0784();
+    return fn_130a_03cd(ARG(s, 0), ARG(s, 1), 1, fn_0845_06f8(ARG(s, 2)), s, 0, 3);
+}
+
+int fn_0fbe_1d58(struct EmcState far *s)
+{
+    if (ARG(s, 3))
+        ovr_2d18_002a(ARG(s, 0), ARG(s, 1));
+    else {
+        fn_070c_0a8f(ARG(s, 0), ARG(s, 1), 1);
+        if (ARG(s, 2)) fn_0a21_022b(ARG(s, 0));
+    }
+    return 1;
+}
+
+int fn_0fbe_1df1(struct EmcState far *s)
+{
+    fn_067a_003e(ARG(s, 0));
     return 1;
 }
