@@ -163,6 +163,22 @@ void fn_0a21_05ce(void);
 void fn_0c59_0377(void);
 int fn_130a_0d2b(int a, int b, int c);
 extern char far *g_540e;
+extern char g_7fe3, g_1f3a;
+extern int g_2798[];
+int fn_0c59_0410(int a, int b);
+int fn_09aa_0183(int b, int dir);
+int ovr_2d8a_0039(int a, int b, int c);
+void fn_0845_0f86(char far *src, char far *dst, int n);
+void fn_234e_0003(int n);
+void fn_234e_0062(void);
+void fn_1dbc_0017(int a, int b, int c, int d, int e, int f, int g, int h);
+void fn_1f24_003f(int a, int b, int c, int d, int e, char far *tbl);
+void fn_1ef2_001c(char far *pal);
+void fn_1ebc_022a(int a, char b, char c);
+void fn_2120_0007(int n);
+int ovr_2cf7_0020(void);
+void ovr_2d28_0034(int a, int b, int c, int d);
+int fn_0845_1280(int a, int b, int c);
 struct Win { int a, b; char pad[12]; };
 extern struct Win g_1f47[];
 int fn_0b6b_032f(int type, int item, int x, int y, int power, int dir, int unused, int owner, int e);
@@ -1542,4 +1558,123 @@ int fn_0fbe_2e7d(struct EmcState far *s)
     fn_1ef2_0075(g_adea, 10, 0, 0);
     g_20d5 = 0;
     return 1;
+}
+
+int fn_0fbe_2ec1(struct EmcState far *s)
+{
+    return g_7fe3;
+}
+
+int fn_0fbe_2eca(struct EmcState far *s)
+{
+    return fn_09aa_0183(ARG(s, 0), ARG(s, 1));
+}
+
+int fn_0fbe_2ef6(struct EmcState far *s)
+{
+    fn_0845_0acf(ARG(s, 0));
+    return 1;
+}
+
+int fn_0fbe_2f13(struct EmcState far *s)
+{
+    return fn_0c59_0410(ARG(s, 0), ARG(s, 1));
+}
+
+int fn_0fbe_2f3f(struct EmcState far *s)
+{
+    return ovr_2d8a_0039(ARG(s, 0), ARG(s, 1), ARG(s, 2));
+}
+
+int fn_0fbe_2f7d(struct EmcState far *s)
+{
+    char pal[0x300];
+    char tbl[0x100];
+    int i;
+
+    fn_0845_0f86(g_540e, pal, ARG(s, 0));
+    fn_0845_1430(pal);
+    fn_0845_1430(g_540e);
+    if (g_1f3a) {
+        for (i = 0; i < 0x100; i++) tbl[i] = i;
+        tbl[1] = 6;
+        fn_234e_0003(2);
+        fn_1dbc_0017(0xe, 0, 0xe, 0, 0x16, 0x78, 0, 2);
+        fn_1f24_003f(0x70, 0, 0xb0, 0x78, 0, tbl);
+        fn_234e_0062();
+    }
+    fn_1ef2_001c(pal);
+    fn_1ebc_022a(12, 1, 2);
+    fn_2120_0007(2);
+    fn_1ef2_001c(g_540e);
+    if (g_1f3a) {
+        fn_234e_0003(2);
+        fn_1dbc_0017(0xe, 0, 0xe, 0, 0x16, 0x78, 2, 0);
+        fn_234e_0062();
+    }
+    return 0;
+}
+
+int fn_0fbe_3081(struct EmcState far *s)
+{
+    return ovr_2cf7_0020();
+}
+
+int fn_0fbe_308b(struct EmcState far *s)
+{
+    int t;
+
+    t = ARG(s, 0);
+    if ((t >= 0x46 && t <= 0x4a) || (t >= 0x51 && t <= 0x59) || (t >= 0x5d && t <= 0x61) || (t >= 0x66 && t <= 0x6a))
+        fn_067a_0401(12, 1);
+    else
+        fn_067a_0401(g_2798[g_7fb2[t].c9 & 3], 1);
+    return 1;
+}
+
+int fn_0fbe_30f8(struct EmcState far *s)
+{
+    ovr_2d28_0034(ARG(s, 0), ARG(s, 1), ARG(s, 2), 1);
+    return 1;
+}
+
+int fn_0fbe_313b(struct EmcState far *s)
+{
+    if (ARG(s, 1)) {
+        g_8203[ARG(s, 0)].flags &= 0xef;
+        g_8203[ARG(s, 0)].flags |= 0x20;
+    } else
+        g_8203[ARG(s, 0)].flags &= 0xdf;
+    return 1;
+}
+
+int fn_0fbe_319d(struct EmcState far *s)
+{
+    int snd;
+    int i;
+
+    snd = -1;
+    for (i = 0; i < 4; i++) {
+        if ((f_2803_362d[i].flags & 1) && f_2803_362d[i].wE < 0) {
+            switch (i) {
+            case 0: snd = 0x88; break;
+            case 5: snd = 0x32; break;
+            case 8: snd = 0x31; break;
+            case 9: snd = 0x30; break;
+            }
+            break;
+        }
+    }
+    fn_067a_0401(snd, 1);
+    return 1;
+}
+
+int fn_0fbe_3218(struct EmcState far *s)
+{
+    return fn_09aa_0183(ARG(s, 0), ARG(s, 1));
+}
+
+int fn_0fbe_3244(struct EmcState far *s)
+{
+    return fn_0845_1280(ARG(s, 0), ARG(s, 1), ARG(s, 2));
 }
