@@ -1,5 +1,6 @@
 /* s019: EMC script opcodes (game callbacks called through EmcData.opcodes) */
 #include <mem.h>
+#include <stdio.h>
 #include "lol.h"
 
 extern unsigned char g_531e[];
@@ -94,6 +95,24 @@ void fn_0845_046c(int b);
 int fn_070c_0253(int a);
 int fn_070c_044a(int att, int def, int k);
 int fn_070c_07f5(int who, int dmg, int src, int k, int how);
+int fn_1afa_0010(int x1, int y1, int x2, int y2);
+void fn_0d6c_0073(struct Monster far *m, int dir);
+char far *fn_0845_06f8(int id);
+void fn_13e8_0903(int n, char far *a, char far *b, char far *c);
+int fn_13e8_06a1(void);
+void ovr_2d0e_002f(int a, int b);
+void ovr_2d0e_0034(int a, int b);
+void fn_0bbc_070e(int a, int b);
+void fn_0bbc_07b1(int a, int b);
+int fn_0c59_03a8(int h);
+void fn_070c_00cf(int who, int cls, long exp);
+struct TimHdr;
+struct TimHdr far *fn_0638_0008(char far *name, struct TimHdr far *buf, unsigned long bufSize);
+void fn_0638_018b(struct TimHdr far *t);
+int fn_0638_01e5(struct TimHdr far *p, int loop);
+void fn_0d6b_000f(void);
+extern struct TimHdr far *g_20fc[];
+extern char g_27a8[];
 
 void fn_0fbe_000c(int fn)
 {
@@ -566,22 +585,20 @@ int fn_0fbe_0f94(struct EmcState far *s)
     return 1;
 }
 
-/* NONMATCHING original switches on bx (only the for-loop form gets bx, but then adds a jump to the test) */
 int fn_0fbe_0fe7(struct EmcState far *s)
 {
     int it;
     int ch;
     int i;
+    int sc;
 
     ch = 0;
     do {
         if (f_2803_362d[ch].flags & 1) {
             for (i = 0; i <= 3; i++) {
                 if ((it = f_2803_362d[ch].items[i]) != 0) {
-                    switch (g_7fb2[f_2803_1cfd[it].type].script) {
-                    case 0: case 2: return 1;
-                    default: break;
-                    }
+                    sc = g_7fb2[f_2803_1cfd[it].type].script;
+                    if (sc == 0 || sc == 2) return 1;
                 }
             }
         }
@@ -713,5 +730,111 @@ int fn_0fbe_155a(struct EmcState far *s)
             fn_070c_07f5(ch, ARG(s, 1), ARG(s, 2), ARG(s, 3), ARG(s, 4));
     } else
         fn_070c_07f5(ARG(s, 0), ARG(s, 1), ARG(s, 2), ARG(s, 3), ARG(s, 4));
+    return 1;
+}
+
+int fn_0fbe_162c(struct EmcState far *s)
+{
+    struct Monster far *m;
+
+    m = &f_2803_15fa[ARG(s, 0)];
+    if (m->mode == 1 || m->mode == 2) {
+        fn_1aff_030e(&m->tx, &m->ty, ARG(s, 1), ARG(s, 2), ARG(s, 3));
+        m->tdir = ARG(s, 4) << 1;
+        if (m->x != m->tx || m->y != m->ty)
+            fn_0d6c_0073(m, fn_1afa_0010(m->x, m->y, m->tx, m->ty));
+    }
+    return 1;
+}
+
+int fn_0fbe_170f(struct EmcState far *s)
+{
+    fn_13e8_0903(ARG(s, 0), fn_0845_06f8(ARG(s, 1)), fn_0845_06f8(ARG(s, 2)), fn_0845_06f8(ARG(s, 3)));
+    return 1;
+}
+
+int fn_0fbe_177a(struct EmcState far *s)
+{
+    return fn_13e8_06a1();
+}
+
+int fn_0fbe_1784(struct EmcState far *s)
+{
+    int d;
+
+    d = ARG(s, 0);
+    if (d < 0) ovr_2d0e_0034(-d, 1);
+    else ovr_2d0e_002f(d, 1);
+    return 1;
+}
+
+int fn_0fbe_17b8(struct EmcState far *s)
+{
+    return ARG(s, 0) > g_81e0 ? 0 : 1;
+}
+
+int fn_0fbe_17d9(struct EmcState far *s)
+{
+    int a;
+    int b;
+
+    a = ARG(s, 0) + 5;
+    b = ARG(s, 1);
+    if (!b) fn_0bbc_070e(a, 0);
+    else fn_0bbc_07b1(a, b);
+    return 1;
+}
+
+int fn_0fbe_181b(struct EmcState far *s)
+{
+    if (fn_0845_0ac7()) return 0;
+    fn_0845_0acf(fn_07bc_012d(ARG(s, 0), ARG(s, 1), ARG(s, 2)));
+    return 1;
+}
+
+int fn_0fbe_1870(struct EmcState far *s)
+{
+    int it;
+
+    it = fn_07bc_012d(ARG(s, 0), ARG(s, 1), ARG(s, 2));
+    if (!fn_0c59_03a8(it)) {
+        fn_07bc_044c(it);
+        return 0;
+    }
+    return 1;
+}
+
+int fn_0fbe_18cb(struct EmcState far *s)
+{
+    fn_070c_00cf(ARG(s, 0), ARG(s, 1), ARG(s, 2));
+    return 1;
+}
+
+int fn_0fbe_1910(struct EmcState far *s)
+{
+    char buf[14];
+    register int i;
+
+    i = ARG(s, 0);
+    if (!g_20fc[i]) {
+        sprintf(buf, g_27a8, (char far *)s->dat->text + fn_2315_0018(s->dat->text[ARG(s, 1)]));
+        g_20fc[i] = fn_0638_0008(buf, 0, 0);
+    }
+    fn_0d6b_000f();
+    return 1;
+}
+
+int fn_0fbe_19ad(struct EmcState far *s)
+{
+    return fn_0638_01e5(g_20fc[ARG(s, 0)], ARG(s, 1));
+}
+
+int fn_0fbe_19e1(struct EmcState far *s)
+{
+    register int i;
+
+    i = ARG(s, 0);
+    fn_0638_018b(g_20fc[i]);
+    g_20fc[i] = 0;
     return 1;
 }
