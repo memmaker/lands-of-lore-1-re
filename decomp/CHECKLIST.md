@@ -36,6 +36,9 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
 - [x] Relink pipeline with blobs, full-EXE compare from day one — **MATCH** (md5 263998ec…, see NOTES.md)
 - [ ] Every module from C/ASM (list per module below)
   - [x] s001 TIM interpreter (47/49 match, relink MATCH)
+  - [x] s002 4/4, s003 sound 10/16, s004 combat 11/18, s006 9/9, s007 9/9
+  - [x] s008 UI/misc 46/57, s009 movement 12/14, s010 portraits 11/11, s011 view transitions 8/8
+  - [x] s012 flying objects 6/6
 - [ ] Data/BSS modules generated as readable C
 - [ ] Full MAIN.EXE identical, independent of originals; tag raw-decompile-1.0
 - [ ] LOLCD.EXE identical
