@@ -41,7 +41,10 @@ Every fact below was needed to get the relinked MAIN.EXE byte-identical:
   (format with slashes; `02-10-1994` is silently ignored).
 
 ## Compiling game modules (tools/mc.sh NAME → run/m/NAME/NAME.OBJ; tools/relink.sh NAME)
-- Flags `bcc -c -ml -3 -O -Z -Oe -Ol` (-Oe/-Ol fix register-variable and loop-rotation choices; -Ob -Om -Ov -Oi -Op
+- Flags `bcc -c -ml -3 -O -Z -Oe -Ol -Ob` (-Oe/-Ol fix register-variable and loop-rotation choices; -Ob removes the
+  dead `jmp` after an if/else whose arms both jump and lets backward conditional jumps hit a shared return directly —
+  judged worse on s001 alone, it fixed 4 of s008 and 4 of s009. s001/s002/s006 need `#pragma option -O-b` (-Ob drops
+  a dead store `r = f();` the original kept); tools/remark.sh NAME re-marks after a flag change. -Om -Ov -Oi -Op
   -Ot -O2 -Ox -r- -k- -2 all worse; -Oc -Og -Oa -Os neutral). BC++ 4.0 BCC: 0/49 (saves si/di everywhere);
   TC++ 3.0 and the BC 3.0 patch disk have no -3. BCPP31.ZIP's BCC.EXE is byte-identical to ours.
 - The original BCC never emitted ENTER (558 `push bp; mov bp,sp; sub sp,N`, still `leave`); ours always does.

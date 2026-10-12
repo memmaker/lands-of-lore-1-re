@@ -111,7 +111,6 @@ int fn_070c_0253(int a)
     return fn_070c_027a(b, a);
 }
 
-/* NONMATCHING */
 int fn_070c_027a(int block, int a)
 {
     struct Monster far *m;

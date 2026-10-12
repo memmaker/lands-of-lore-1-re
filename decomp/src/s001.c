@@ -1,4 +1,5 @@
 /* s001: TIM (timed animation script) interpreter opcodes */
+#pragma option -O-b
 #include <mem.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -108,7 +109,7 @@ int fn_057f_0053(void)
     return -1;
 }
 
-/* NONMATCHING: tail-merge/jump-threading layout differs (+2 bytes) */
+/* NONMATCHING */
 int fn_057f_0096(char far *fmt, struct Emc far *s, int arg, char far *out, int far *pos)
 {
     int far *q;
@@ -426,7 +427,7 @@ int fn_057f_0887(int far *p)
     return 1;
 }
 
-/* NONMATCHING: case 3 tail-merges into case 1 instead of case 5 */
+/* NONMATCHING */
 int fn_057f_08cd(int far *p)
 {
     switch (*p) {

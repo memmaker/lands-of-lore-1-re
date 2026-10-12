@@ -496,7 +496,6 @@ void fn_0845_0bf6(void)
     exit(0);
 }
 
-/* NONMATCHING */
 char far *fn_0845_0c08(int it)
 {
     struct ItemType far *t;
@@ -536,7 +535,6 @@ int fn_0845_0c7e(int b, int dir, int n, int far *out)
     return i;
 }
 
-/* NONMATCHING */
 int fn_0845_0cf7(int b, int dir, int mask)
 {
     if (g_8203[b].flags & 0x10) return 1;
@@ -548,7 +546,6 @@ int fn_0845_0cf7(int b, int dir, int mask)
     return 0;
 }
 
-/* NONMATCHING */
 void fn_0845_0d5e(struct Wsa far *wsa, int start, int end, int delay, int x, int y, void (far *cb)(struct Wsa far *w, int x, int y), void far *a, void far *b, int c, int restore)
 {
     int done;
@@ -739,7 +736,6 @@ int fn_0845_11b7(void)
     return r;
 }
 
-/* NONMATCHING */
 int fn_0845_122b(struct Char far *c, int k)
 {
     int i, n;

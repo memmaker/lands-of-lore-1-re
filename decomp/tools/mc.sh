@@ -1,7 +1,7 @@
 #!/bin/sh
 # mc.sh NAME [BCC flags]: compile src/NAME.c (or assemble src/NAME.asm) in DOSBox-X and compare every function with
 # the original (tools/cmpobj.py). Root modules sNNN compare against their code segment, overlays oSSSS against the
-# overlay. Work dir run/m/NAME. Default flags: -ml -3 -O -Z -Oe -Ol (overlays add -Y); tools/objfix.py then turns
+# overlay. Work dir run/m/NAME. Default flags: -ml -3 -O -Z -Oe -Ol -Ob (overlays add -Y); tools/objfix.py then turns
 # BCC's ENTER prologues into the push/mov/sub frames of the original compiler.
 # Functions marked /* NONMATCHING */ are compared as C, then objfix.py transplants their original bytes into the OBJ
 # that relink.sh uses (run/m/NAME/NAME.OBJ).
@@ -9,7 +9,7 @@ cd "$(dirname "$0")/.." || exit 1
 N=$1; shift; W=run/m/$N; mkdir -p $W; rm -rf $W/*.OBJ $W/OUT.LOG
 U=$(echo $N | tr a-z A-Z)
 cp src/*.H src/*.h $W/ 2>/dev/null
-case $N in o*) F="-ml -3 -O -Z -Oe -Ol -Y";; *) F="-ml -3 -O -Z -Oe -Ol";; esac
+case $N in o*) F="-ml -3 -O -Z -Oe -Ol -Ob -Y";; *) F="-ml -3 -O -Z -Oe -Ol -Ob";; esac
 [ $# -gt 0 ] && F="$*"
 if [ -f src/$N.asm ] || [ -f src/$U.ASM ]; then
   cp src/$N.asm $W/$U.ASM 2>/dev/null || cp src/$U.ASM $W/

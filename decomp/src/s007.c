@@ -96,7 +96,6 @@ int fn_080e_01f3(struct Item far *p, int dir)
     return (p->sub << 12) | (0xfff - y);
 }
 
-/* NONMATCHING */
 void fn_080e_0245(int dir, int id, struct Block far *b, int asc)
 {
     struct Item far *p;
