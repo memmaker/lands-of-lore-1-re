@@ -9,7 +9,7 @@ _DATA	ends
 _BSS	segment word public use16 'BSS'
 _BSS	ends
 S044_TEXT	segment
-	public	_fn_1b79_020a, _fn_1b79_025c, _fn_1b79_0261, _fn_1b79_027f, _fn_1b79_0284, _fn_1b79_02ac, _fn_1b79_02b1, _fn_1b79_02dd, _fn_1b79_02e3, _fn_1b79_02ef, _fn_1b79_0301, _fn_1b79_035b, _fn_1b79_0367, _fn_1b79_0450, _fn_1b79_0456
+	public	_fn_1b79_02a7, _fn_1b79_02b6, _fn_1b79_02bb, _fn_1b79_020a, _fn_1b79_025c, _fn_1b79_0261, _fn_1b79_027f, _fn_1b79_0284, _fn_1b79_02ac, _fn_1b79_02b1, _fn_1b79_02dd, _fn_1b79_02e3, _fn_1b79_02ef, _fn_1b79_0301, _fn_1b79_035b, _fn_1b79_0367, _fn_1b79_0450, _fn_1b79_0456
 L0000	label	byte
 	db	0h, 0h, 54h, 65h, 73h, 74h	; 0
 	db	516 dup (0h)	; 6
@@ -100,6 +100,7 @@ _fn_1b79_0284	proc	far
 	jmp	short L0245		; 2a0
 	mov	ax,84h		; 2a2
 	jmp	short L0245		; 2a5
+_fn_1b79_02a7	label	far
 	mov	ax,96h		; 2a7
 	jmp	short L0245		; 2aa
 _fn_1b79_0284	endp
@@ -112,8 +113,10 @@ _fn_1b79_02ac	endp
 _fn_1b79_02b1	proc	far
 	mov	ax,98h		; 2b1
 	jmp	short L0245		; 2b4
+_fn_1b79_02b6	label	far
 	mov	ax,99h		; 2b6
 	jmp	short L0245		; 2b9
+_fn_1b79_02bb	label	far
 	mov	ax,9ah		; 2bb
 	jmp	short L0245		; 2be
 	mov	ax,9bh		; 2c0

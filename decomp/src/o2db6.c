@@ -1,4 +1,5 @@
 /* o2db6: load and initialise the sound/music drivers */
+/* FLAGS: -ml -3 -O -Z -Oe -Ol -Ob -Y -B */
 #include <string.h>
 #include <stdlib.h>
 #include <mem.h>
@@ -70,8 +71,10 @@ int ovr_2db6_0020(int a, int b, int c)
     return 1;
 }
 
-int ovr_2db6_0025(char far *name, struct drv far *d, char far *id, register int mode)
+#pragma option -O-e
+int ovr_2db6_0025(char far *name, struct drv far *d, char far *id, int md)
 {
+    register int mode = md;
     void (interrupt far *entry)();
     struct drvinfo far *info;
     char far *env;
@@ -132,7 +135,8 @@ fail:
             goto fail;
         }
         ovr_2e13_0039(d->h, info->port, info->irq, info->dma, info->irq2);
-        if ((n = fn_1b79_02b6(d->h)) != 0) {
+        n = fn_1b79_02b6(d->h);
+        if (n != 0) {
             d->buf = fn_203b_0007(n, 0);
             fn_1b79_02bb(d->h, d->buf, n);
         }
