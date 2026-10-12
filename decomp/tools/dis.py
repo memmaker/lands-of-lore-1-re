@@ -3,6 +3,8 @@ START/END default to the segment's min/max from results/segtable.tsv."""
 import subprocess, sys, os
 sys.path.insert(0, os.path.dirname(__file__))
 import lolcfg
+import layout, ovr
+if sys.argv[1] in dict(layout.ROOT): sys.argv[1] = '%x' % ovr.segtable()[dict(layout.ROOT)[sys.argv[1]]][0]
 seg = int(sys.argv[1], 16)
 rows = [l.split('\t') for l in open('results/segtable.tsv').read().split('\n')[1:] if l]
 mn, mx = max((int(r[4], 16), int(r[2], 16)) for r in rows if int(r[1], 16) == seg and r[3] == '1')

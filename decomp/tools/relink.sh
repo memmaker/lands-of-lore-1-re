@@ -4,6 +4,7 @@
 # (run/m/NAME/P/PARTS for a split module, else run/m/NAME/NAME.OBJ).
 cd "$(dirname "$0")/.." && mkdir -p run/link && rm -f run/link/*.OBJ run/link/MAIN.EXE run/link/PMAIN.MAP || exit 1
 ARGS=""
+[ "$1" = all ] && set -- $(ls src/*.c src/*.asm 2>/dev/null | sed "s#src/##; s#\..*##" | sort -u)
 for a in "$@"; do
   case $a in
     *.OBJ|*PARTS) ARGS="$ARGS $a";;
