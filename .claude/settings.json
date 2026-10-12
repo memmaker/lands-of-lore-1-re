@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ \"$CLAUDE_CODE_REMOTE\" = true ] && \"$CLAUDE_PROJECT_DIR\"/decomp/tools/cloud-setup.sh || true",
+            "timeout": 600
+          }
+        ]
+      }
+    ]
+  }
+}
