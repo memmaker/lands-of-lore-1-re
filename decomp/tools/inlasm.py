@@ -14,7 +14,7 @@ The C body stays above the function inside #if 0 for reading and porting.
 """
 import os, re, subprocess, sys, tempfile
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import omf, split
+import objfix, omf, split
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 
@@ -43,26 +43,54 @@ def disasm(b):
     return out
 
 
+DEF = re.compile(r'^(?!typedef|extern)[A-Za-z_][^;=(]*?\b([A-Za-z_]\w*)\s*\([^;]*\)\s*$')
+
+
 def extract(mod, fn):
     m = omf.modules(os.path.join(ROOT, 'run/m/%s/%s.OBJ' % (mod, mod.upper())))[0]
     ci = [i for i, s in enumerate(m['segs']) if s and s.get('cls') == 'CODE'][0]
     seg = m['segs'][ci]
     pubs = {o: n for n, si, o in m['pubs'] if si == ci}
+    # static functions have no PUBDEF: starts are also the targets of fixup-less push cs/call near; pair all starts
+    # with the C definitions in source order
+    d, mk = seg['data'], seg['mask']
+    selfcall = {}
+    starts = set(pubs)
+    for q in range(len(d) - 4):
+        if d[q] == 0x0e and d[q + 1] == 0xe8 and not mk[q + 2]:
+            starts.add((q + 4 + int.from_bytes(d[q + 2:q + 4], 'little', signed=True)) & 0xffff)
+    lines = open(os.path.join(ROOT, 'src', mod + '.c')).read().split('\n')
+    defs = [DEF.match(l).group(1) for k, l in enumerate(lines[:-1]) if DEF.match(l) and lines[k + 1].startswith('{')]
+    starts = sorted(o for o in starts if o < len(d))
+    if len(starts) == len(defs):
+        for o, n in zip(starts, defs): pubs.setdefault(o, '_' + n)
     lo = [o for o, n in pubs.items() if n == '_' + fn][0]
     hi = min([o for o in pubs if o > lo] + [len(seg['data'])])
     code = bytes(seg['data'][lo:hi])
     ext = {o - lo: n for o, n in seg.get('ext', {}).items() if lo <= o < hi}
     offs = {o - lo for o in seg.get('off', {}) if lo <= o < hi}
-    return code, seg['mask'][lo:hi], ext, offs, {o - lo: n for o, n in pubs.items()}, lo
+    # far pointers into the own segment (same-segment far calls): target = data word + fixup displacement
+    raw = open(os.path.join(ROOT, 'run/m/%s/%s.OBJ' % (mod, mod.upper())), 'rb').read(); last = None
+    for rt, b in objfix.records(raw):
+        if rt == 0xa0:
+            si, p = objfix.idx(b, 0); last = (si, int.from_bytes(b[p:p + 2], 'little'))
+        elif rt == 0x9c and last and last[0] == ci:
+            for f in objfix.parse_fixupp(b, *last):
+                if f.loc == 3 and f.tm == 0 and f.ti == ci and lo <= f.off < hi:
+                    v = int.from_bytes(d[f.off:f.off + 2], 'little')
+                    if f.dpos is not None: v += int.from_bytes(f.raw[f.dpos:f.dpos + 2], 'little')
+                    selfcall[f.off - lo] = (v & 0xffff) - lo
+    return code, seg['mask'][lo:hi], ext, offs, {o - lo: n for o, n in pubs.items()}, lo, selfcall
 
 
-# Calls into the module's own segment are C statements: BASM gives `call near ptr f` a segment-base fixup without
-# target, while BCC emits push cs/call near (callee already defined) or a far call that TLINK turns into
-# nop/push cs/call near (callee defined later), exactly as the original. Arguments and `add sp` stay in asm.
+# push cs/call near into the module's own segment is a C statement: BASM gives `call near ptr f` a segment-base
+# fixup without target, BCC emits push cs/call near for a callee it has already seen. Arguments and `add sp`
+# stay in asm. A far call (TLINK turns those into its own segment into nop/push cs/call near) to a function
+# defined later is a C statement too (BASM writes offset 0 for it, BCC emits the far call for a callee not seen yet).
 CALL = '    ((void (far *)(void))%s)();'
 
 
-def generate(code, mask, ext, offs, pubs, declared, seg_name, dbset):
+def generate(code, mask, ext, offs, pubs, selfcall, declared, seg_name, dbset):
     ins = disasm(code)
     assert ins[0][1] == b'\x55' and ins[1][1] == b'\x8b\xec', 'no standard frame'
     k = 2; N = 0
@@ -118,10 +146,11 @@ def generate(code, mask, ext, offs, pubs, declared, seg_name, dbset):
             if q in ext: nm = cname(ext[q])
             elif a + 3 in ext: nm = cname(ext[a + 3])
             else:
-                tgt = code[q] | code[q + 1] << 8
-                nm = cname(pubs.get(tgt - 0, '')) if tgt in pubs else None
+                tgt = selfcall[q]
+                nm = cname(pubs[tgt]) if tgt in pubs else None
                 assert nm, 'self call to unknown %04x at %04x' % (tgt, a)
-                out.append((a, CALL % nm)); continue
+                if tgt > 0:   # BASM leaves the offset of a callee defined later at 0; BCC emits that far call itself
+                    out.append((a, CALL % nm)); continue
             out.append((a, '    asm call far ptr %s' % nm)); continue
         if fx:
             mm2 = re.match(r'(.*),0x0$', t) or re.match(r'(push word) 0x0$', t)
@@ -147,14 +176,15 @@ def generate(code, mask, ext, offs, pubs, declared, seg_name, dbset):
     return N, regs, body, out, tail
 
 
-def splice(src, fn, N, out):
+def splice(src, fn, N, regs, out):
     lines = src.split('\n')
     _, _, head, s, en = [x for x in split.functions(lines) if x[0] == fn][0]
     p = s - 1
     while p >= 0 and lines[p].strip() == '': p -= 1
     if 'NONMATCHING' in lines[p]: del lines[p]; s -= 1; en -= 1
     pre = ['/* C version: BCC 3.1 does not reproduce the original code from it (tools/inlasm.py) */', '#if 0'] + \
-          lines[s:en + 1] + ['#endif', head, '{'] + (['    char _l[%d];' % N] if N else [])
+          lines[s:en + 1] + ['#endif', head, '{'] + (['    char _l[%d];' % N] if N else []) + \
+          ['    _%s;   /* saved by the original */' % r for r in regs]
     first = s + len(pre) + 1   # 1-based line number of the first body line
     lines[s:en + 1] = pre + [x for _, x in out] + ['}']
     return '\n'.join(lines), first
@@ -165,7 +195,7 @@ def main():
     path = os.path.join(ROOT, 'src', mod + '.c')
     src = open(path).read()
     subprocess.run([os.path.join(ROOT, 'tools/mc.sh'), mod], capture_output=True)
-    code, mask, ext, offs, pubs, lo = extract(mod, fn)
+    code, mask, ext, offs, pubs, lo, selfcall = extract(mod, fn)
     hdrs = src + ''.join(open(os.path.join(ROOT, 'src', h)).read() for h in re.findall(r'#include "([^"]+)"', src)
                          if os.path.exists(os.path.join(ROOT, 'src', h)))
     declared = lambda nm: re.search(r'\b%s\b' % re.escape(nm), hdrs) is not None
@@ -177,8 +207,8 @@ def main():
         return alt.group(1)
     dbset = set()
     for it in range(400):
-        N, regs, body, out, tail = generate(code, mask, ext, offs, pubs, declared, seg_name, dbset)
-        text, first = splice(src, fn, N, out)
+        N, regs, body, out, tail = generate(code, mask, ext, offs, pubs, selfcall, declared, seg_name, dbset)
+        text, first = splice(src, fn, N, [{0x56: 'SI', 0x57: 'DI'}[r[0]] for r in regs], out)
         open(path, 'w').write(text)
         res = subprocess.run([os.path.join(ROOT, 'tools/mc.sh'), mod], capture_output=True, text=True).stdout
         errs = [int(x) for x in re.findall(r'Error %s\.c (\d+):' % mod, res)]
@@ -188,6 +218,12 @@ def main():
                 print(res); raise SystemExit('%s: compile errors outside the asm body' % fn)
             dbset |= bad; continue
         line = [l for l in res.split('\n') if l.startswith('_%s:' % fn)]
+        oc, om = extract(mod, fn)[:2]   # compare the OBJ bytes, fixup bytes excluded (cmpobj reports TLINK's
+        diff = [q for q in range(min(len(oc), len(code))) if oc[q] != code[q] and not om[q] and not mask[q]]
+        if not diff and len(oc) == len(code):   # far-call rewrite in overlays as a difference)
+            line = ['_%s: OK' % fn]
+        elif line:
+            line = ['_%s: diff at +%x' % (fn, diff[0] if diff else min(len(oc), len(code)))]
         if line and ': OK' in line[0]:
             print('%s: OK after %d rounds, %d instructions, %d as raw bytes%s' % (
                 fn, it + 1, len(body), len(dbset), ', %d bytes after retf' % tail if tail else '')); return
