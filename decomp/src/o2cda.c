@@ -778,7 +778,7 @@ void ovr_2cda_0043(int n)
 }
 
 /* register/stack-slot choices differ; original bytes transplanted (with following statics) */
-/* NONMATCHING */
+
 void ovr_2cda_0048(void)
 {
     int off;
