@@ -4,11 +4,13 @@ Mask 1 = external fixup (ignored); mask 2 = offset into own segment (compared af
 Offset fixups to _g_XXXX are checked against DGROUP XXXX; with env DSBASE=hex also those into the module's own _DATA."""
 import sys, struct, re; sys.path.insert(0, __file__.rsplit('/', 1)[0])
 from omf import modules
-NAMED = {'_main': '0003'}  # functions whose name cannot carry the orig offset
+NAMED = {}  # functions whose name cannot carry the orig offset
+REAL = {'_main': '_ovr_2db0_002a'}  # RTL-required names -> address names
 def orig_off(name):
     """orig offset of a function from its name: fn_SSSS_OOOO / loc_SSSS_OOOO -> OOOO; ovr_SSSS_OOOO -> overlay code
     offset of stub entry OOOO (tools/ovr.py); NAMED for the rest. None if unknown."""
     from names import orig as _o; name = _o(name)
+    name = REAL.get(name, name)
     if name in NAMED: return int(NAMED[name], 16)
     mm = re.match(r'[_@](fn|loc|ovr)_([0-9a-f]{4})_([0-9a-f]{4})(\$.*)?$', name)
     if not mm: return None

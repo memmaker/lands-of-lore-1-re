@@ -74,5 +74,5 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
 
 ## Status (full recompilation)
 - `bash tools/relink.sh all` = MATCH (356928 bytes) after clean rebuild of every module.
-- Every module is built from src/ except overlay o2db0 (src/wip/o2db0.c): needs mkblob pubsort + cmpobj `_main` alias fix (awaiting approval).
+- Every module is built from src/ (o2db0 enabled by the mkblob pubsort + cmpobj `_main` alias fix).
 - NONMATCHING (original bytes transplanted): s115 fn_203b_02dc, s147 fn_2365_0b36, o2cf7 0025, o2dfd 002a, o2cda 003e/0043/0048/0052/005c/0061/0066/006b, o2d56 007a/007f/0084.
