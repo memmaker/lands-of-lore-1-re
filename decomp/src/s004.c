@@ -135,7 +135,7 @@ int fn_070c_027a(int block, int a)
     return res;
 }
 
-/* NONMATCHING */
+
 int fn_070c_0322(int x, int y)
 {
     struct Monster far *m;
@@ -145,18 +145,14 @@ int fn_070c_0322(int x, int y)
     best = 0x7fff;
     res = -1;
     m = f_2803_15fa;
-    i = 0;
-    do {
-        if (m->mode < 13) {
-            d = ABS(x - m->x) + ABS(y - m->y);
-            if (d < best) {
-                best = d;
-                res = i | 0x8000;
-            }
+    for (i = 0; i < 30; i++, m++) {
+        if (m->mode >= 13) continue;
+        d = ABS(x - m->x) + ABS(y - m->y);
+        if (d < best) {
+            best = d;
+            res = i | 0x8000;
         }
-        i++;
-        m++;
-    } while (i < 30);
+    }
     return res;
 }
 
