@@ -286,51 +286,55 @@ void fn_067a_0644(void)
 {
 }
 
-/* NONMATCHING */
-void far *fn_067a_0649(int n)
+
+void far *fn_067a_0649(n)
+register int n;
 {
     void far *p;
     long size;
-    void far *q;
+    long q;
     char name[20];
     int h;
 
-    if (n == -1) return 0;
-    if (!g_3749) return 0;
-    h = f_26a4_09e2[n].voc;
-    if (h == -1) return 0;
-    p = fn_15a7_030c(g_1e8c, n);
-    if (p) return p;
-    sprintf(name, "%s.VOC", f_26a4_00f0[h]);
-    if (name[0] == 'X') return p;
-    if (name[0] == 'E' && name[1] == 'M') return p;
-    if (!fn_1981_000a(name)) return p;
-    h = fn_1809_0000(name, 1);
-    size = fn_1809_120c(h);
-    size = ovr_2dc6_0025(size, ovr_2dc6_0020(h));
-    while (fn_15a7_04b0(g_1e8c) < size) {
-        q = fn_15a7_043c(g_1e8c);
-        if (!q) break;
-    }
-    p = fn_15a7_00b0(g_1e8c, size, n);
-    if (!p) {
-        while (!p) {
-            q = fn_15a7_043c(g_1e8c);
-            if (!q) break;
-            p = fn_15a7_00b0(g_1e8c, size, n);
+    if (n != -1 && g_3749) {
+        h = f_26a4_09e2[n].voc;
+        if (h != -1) {
+            p = fn_15a7_030c(g_1e8c, n);
+            if (!p) {
+                sprintf(name, "%s.VOC", f_26a4_00f0[h]);
+                if (name[0] != 'X' && !(name[0] == 'E' && name[1] == 'M') && fn_1981_000a(name)) {
+                    h = fn_1809_0000(name, 1);
+                    size = fn_1809_120c(h);
+                    size = ovr_2dc6_0025(size, ovr_2dc6_0020(h));
+                    while (fn_15a7_04b0(g_1e8c) < size) {
+                        q = (long)fn_15a7_043c(g_1e8c);
+                        if (!q) break;
+                    }
+                    p = fn_15a7_00b0(g_1e8c, size, n);
+                    if (!p) {
+                        while (!p) {
+                            q = (long)fn_15a7_043c(g_1e8c);
+                            if (!q) break;
+                            p = fn_15a7_00b0(g_1e8c, size, n);
+                        }
+                        if (!p) {
+                            fn_16cf_00b9(0);
+                            fn_15a7_0501(g_1e8c);
+                            p = fn_15a7_00b0(g_1e8c, size, n);
+                        }
+                    }
+                    if (p) {
+                        q = ovr_2dc6_002f(h, size, p, size);
+                        if (!q)
+                            ovr_2d46_002a(1, "Unable to load voc file %s", name);
+                    }
+                    fn_1809_058d(h);
+                }
+            }
+            return p;
         }
-        if (!p) {
-            fn_16cf_00b9(0);
-            fn_15a7_0501(g_1e8c);
-            p = fn_15a7_00b0(g_1e8c, size, n);
-        }
     }
-    if (p) {
-        if (!ovr_2dc6_002f(h, size, p, size))
-            ovr_2d46_002a(1, "Unable to load voc file %s", name);
-    }
-    fn_1809_058d(h);
-    return p;
+    return 0;
 }
 
 void fn_067a_084d(char far *name, int n)
