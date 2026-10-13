@@ -136,7 +136,7 @@ int fn_067a_01d1(int n)
     return old;
 }
 
-/* NONMATCHING */
+
 void fn_067a_023d(void)
 {
     if (g_7fda & 2) {

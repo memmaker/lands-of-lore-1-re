@@ -424,7 +424,7 @@ char far *fn_0845_09a9(int b)
     return g_ab04;
 }
 
-/* NONMATCHING */
+
 void fn_0845_09f1(int n)
 {
     void far *p;
