@@ -640,7 +640,8 @@ void fn_0d6c_13c5(struct Monster far *m)
     }
 }
 
-/* NONMATCHING */
+/* C version: BCC 3.1 does not reproduce the original code from it (tools/inlasm.py) */
+#if 0
 void fn_0d6c_1419(struct Monster far *m)
 {
     int cnt;
@@ -678,6 +679,138 @@ void fn_0d6c_1419(struct Monster far *m)
         d &= 6;
     }
     fn_0d6c_0995(m, 3);
+}
+#endif
+void fn_0d6c_1419(struct Monster far *m)
+{
+    char _l[6];
+    asm les bx,dword ptr [bp+6]
+    asm cmp byte ptr es:[bx+15h],0
+    asm jnz L_008f
+    asm and byte ptr es:[bx+17h],6
+    asm mov al,es:[bx+17h]
+    asm cbw
+    asm push ax
+    asm push ss
+    asm lea ax,word ptr _l
+    asm push ax
+    asm push ss
+    asm lea ax,word ptr _l+2
+    asm push ax
+    asm push word ptr es:[bx+9]
+    asm push word ptr es:[bx+7]
+    ((void (far *)(void))fn_0d6c_0004)();
+    asm add sp,0eh
+    asm push 4
+    asm db 66h	/* push dword [bp+0x6] */
+    asm push word ptr [bp+6]
+    asm push word ptr _l
+    asm push word ptr _l+2
+    ((void (far *)(void))fn_0d6c_059d)();
+    asm add sp,0ah
+    asm db 0bh, 0c0h	/* or ax,ax */
+    asm jnz L_0061
+    asm push word ptr _l
+    asm push word ptr _l+2
+    asm db 66h	/* push dword [bp+0x6] */
+    asm push word ptr [bp+6]
+    ((void (far *)(void))fn_0d6c_0742)();
+    asm add sp,8
+    asm db 0e9h, 0edh, 0	/* jmp 0x14e */
+L_0061:
+    asm db 66h, 68h, 1, 0, 2, 0	/* push dword 0x20001 */
+    asm call far ptr fn_0845_0636
+    asm add sp,4
+    asm db 8bh, 0d8h	/* mov bx,ax */
+    asm mov al,[bx+2480h]
+    asm cbw
+    asm db 8bh, 0d0h	/* mov dx,ax */
+    asm les bx,dword ptr [bp+6]
+    asm mov es:[bx+15h],dl
+    asm mov al,es:[bx+15h]
+    asm add es:[bx+17h],al
+    asm and byte ptr es:[bx+17h],6
+    asm db 0e9h, 0bfh, 0	/* jmp 0x14e */
+L_008f:
+    asm les bx,dword ptr [bp+6]
+    asm mov al,es:[bx+15h]
+    asm cbw
+    asm db 8bh, 0d0h	/* mov dx,ax */
+    asm mov al,es:[bx+16h]
+    asm cbw
+    asm mov word ptr _l+4,ax
+    asm mov al,es:[bx+17h]
+    asm cbw
+    asm db 2bh, 0c2h	/* sub ax,dx */
+    asm db 8bh, 0f0h	/* mov si,ax */
+    asm db 83h, 0e6h, 6	/* and si,0x6 */
+    asm db 33h, 0ffh	/* xor di,di */
+L_00af:
+    asm push si
+    asm push ss
+    asm lea ax,word ptr _l
+    asm push ax
+    asm push ss
+    asm lea ax,word ptr _l+2
+    asm push ax
+    asm les bx,dword ptr [bp+6]
+    asm push word ptr es:[bx+9]
+    asm push word ptr es:[bx+7]
+    ((void (far *)(void))fn_0d6c_0004)();
+    asm add sp,0eh
+    asm push 4
+    asm db 66h	/* push dword [bp+0x6] */
+    asm push word ptr [bp+6]
+    asm push word ptr _l
+    asm push word ptr _l+2
+    ((void (far *)(void))fn_0d6c_059d)();
+    asm add sp,0ah
+    asm db 0bh, 0c0h	/* or ax,ax */
+    asm jnz L_012b
+    asm push word ptr _l
+    asm push word ptr _l+2
+    asm db 66h	/* push dword [bp+0x6] */
+    asm push word ptr [bp+6]
+    ((void (far *)(void))fn_0d6c_0742)();
+    asm add sp,8
+    asm push si
+    asm db 66h	/* push dword [bp+0x6] */
+    asm push word ptr [bp+6]
+    ((void (far *)(void))fn_0d6c_0073)();
+    asm add sp,6
+    asm db 0bh, 0ffh	/* or di,di */
+    asm db 75h, 4ah	/* jnz 0x14e */
+    asm inc word ptr _l+4
+    asm mov ax,word ptr _l+4
+    asm cmp ax,3
+    asm jng L_0117
+    asm les bx,dword ptr [bp+6]
+    asm mov byte ptr es:[bx+15h],0
+L_0117:
+    asm les bx,dword ptr [bp+6]
+    asm and byte ptr es:[bx+15h],0ffh
+    asm mov al,byte ptr _l+4
+    asm shl al,8
+    asm or es:[bx+15h],al
+    asm db 0ebh, 23h	/* jmp 0x14e */
+L_012b:
+    asm les bx,dword ptr [bp+6]
+    asm mov al,es:[bx+15h]
+    asm cbw
+    asm db 3, 0f0h	/* add si,ax */
+    asm db 83h, 0e6h, 6	/* and si,0x6 */
+    asm inc di
+    asm cmp di,7
+    asm jnl L_0141
+    asm jmp L_00af
+L_0141:
+    asm push 3
+    asm db 66h	/* push dword [bp+0x6] */
+    asm push word ptr [bp+6]
+    ((void (far *)(void))fn_0d6c_0995)();
+    asm add sp,6
+Lret:
+    ;
 }
 
 int fn_0d6c_156b(int blk, int dir, int n, int target)

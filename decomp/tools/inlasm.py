@@ -20,6 +20,7 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 
 
 def num(v):
+    if v >= 1 << 32: return '-' + num((1 << 64) - v)   # ndisasm prints sign-extended imm8 as 64 bits
     s = '%x' % v
     return ('0' + s if s[0] in 'abcdef' else s) + 'h' if v > 9 else str(v)
 
@@ -51,10 +52,17 @@ def extract(mod, fn):
     hi = min([o for o in pubs if o > lo] + [len(seg['data'])])
     code = bytes(seg['data'][lo:hi])
     ext = {o - lo: n for o, n in seg.get('ext', {}).items() if lo <= o < hi}
-    return code, seg['mask'][lo:hi], ext, {o - lo: n for o, n in pubs.items()}, lo
+    offs = {o - lo for o in seg.get('off', {}) if lo <= o < hi}
+    return code, seg['mask'][lo:hi], ext, offs, {o - lo: n for o, n in pubs.items()}, lo
 
 
-def generate(code, mask, ext, pubs, declared, dbset):
+# Calls into the module's own segment are C statements: BASM gives `call near ptr f` a segment-base fixup without
+# target, while BCC emits push cs/call near (callee already defined) or a far call that TLINK turns into
+# nop/push cs/call near (callee defined later), exactly as the original. Arguments and `add sp` stay in asm.
+CALL = '    ((void (far *)(void))%s)();'
+
+
+def generate(code, mask, ext, offs, pubs, declared, seg_name, dbset):
     ins = disasm(code)
     assert ins[0][1] == b'\x55' and ins[1][1] == b'\x8b\xec', 'no standard frame'
     k = 2; N = 0
@@ -90,28 +98,40 @@ def generate(code, mask, ext, pubs, declared, dbset):
             ct = c2
         return ct
     out = []   # (address or None, text)
+    pushcs = {body[i][0] for i in range(len(body) - 1) if body[i][1] == b'\x0e' and body[i + 1][1][0] == 0xe8}
     for a, b, t in body:
         if a in labels: out.append((None, 'L_%04x:' % a))
+        if a in pushcs: continue   # part of the C call that follows
         fx = [q for q in range(a, a + len(b)) if mask[q]]
         mm = re.match(r'(j\w+|loop\w*|jcxz)\s+(short |near )?(0x[0-9a-f]+)$', t)
         if a in dbset and not fx:
             out.append((a, '    asm db %s\t/* %s */' % (', '.join(num(c) for c in b), t))); continue
         if mm:
             tgt = int(mm.group(3), 16); lab = 'Lret' if tgt == eplo else 'L_%04x' % tgt
-            kind = 'short ' if len(b) == 2 else ('near ptr ' if b[0] in (0xe9, 0x0f) else '')
-            out.append((a, '    asm %s %s%s' % (mm.group(1), kind, lab))); continue
+            out.append((a, '    asm %s %s' % (mm.group(1), lab))); continue   # BCC sizes jumps to C labels
+        if b[0] == 0xe8 and not fx:   # push cs; call near: a function of this module
+            tgt = a + 3 + int.from_bytes(b[1:3], 'little', signed=True)
+            assert tgt in pubs, 'near call to non-public %04x at %04x' % (tgt, a)
+            out.append((a, CALL % cname(pubs[tgt]))); continue
         if b[0] == 0x9a:
             q = a + 1
             if q in ext: nm = cname(ext[q])
+            elif a + 3 in ext: nm = cname(ext[a + 3])
             else:
                 tgt = code[q] | code[q + 1] << 8
                 nm = cname(pubs.get(tgt - 0, '')) if tgt in pubs else None
                 assert nm, 'self call to unknown %04x at %04x' % (tgt, a)
+                out.append((a, CALL % nm)); continue
             out.append((a, '    asm call far ptr %s' % nm)); continue
         if fx:
-            mm2 = re.match(r'mov\s+(\w\w),0x0$', t)
+            mm2 = re.match(r'(.*),0x0$', t) or re.match(r'(push word) 0x0$', t)
             if mm2 and fx[0] in ext:
-                out.append((a, '    asm mov %s,seg %s' % (mm2.group(1), cname(ext[fx[0]])))); continue
+                sym = seg_name(cname(ext[fx[0]]))
+                kind = 'offset' if fx[0] in offs else 'seg'
+                if t.startswith('push'):
+                    out.append((a, '    asm push %s %s' % (kind, sym))); continue
+                ct = operand(conv(mm2.group(1))); p = ct.split(None, 1)
+                out.append((a, '    asm %s %s,%s %s' % (p[0], p[1], kind, sym))); continue
             raise Exception('unhandled fixup at %04x: %s %s' % (a, b.hex(), t))
         if b[0] == 0x66:
             d = disasm(b[1:])
@@ -145,13 +165,19 @@ def main():
     path = os.path.join(ROOT, 'src', mod + '.c')
     src = open(path).read()
     subprocess.run([os.path.join(ROOT, 'tools/mc.sh'), mod], capture_output=True)
-    code, mask, ext, pubs, lo = extract(mod, fn)
+    code, mask, ext, offs, pubs, lo = extract(mod, fn)
     hdrs = src + ''.join(open(os.path.join(ROOT, 'src', h)).read() for h in re.findall(r'#include "([^"]+)"', src)
                          if os.path.exists(os.path.join(ROOT, 'src', h)))
     declared = lambda nm: re.search(r'\b%s\b' % re.escape(nm), hdrs) is not None
+    def seg_name(nm):   # `seg` of an undeclared far data/code symbol: any declared one in the same segment
+        if declared(nm): return nm
+        mm = re.match(r'(f|fn)_([0-9a-f]{4})_', nm)
+        alt = re.search(r'\b(%s_%s_[0-9a-f]{4})\b' % (mm.group(1), mm.group(2)), hdrs) if mm else None
+        assert alt, 'no C name for ' + nm
+        return alt.group(1)
     dbset = set()
     for it in range(400):
-        N, regs, body, out, tail = generate(code, mask, ext, pubs, declared, dbset)
+        N, regs, body, out, tail = generate(code, mask, ext, offs, pubs, declared, seg_name, dbset)
         text, first = splice(src, fn, N, out)
         open(path, 'w').write(text)
         res = subprocess.run([os.path.join(ROOT, 'tools/mc.sh'), mod], capture_output=True, text=True).stdout

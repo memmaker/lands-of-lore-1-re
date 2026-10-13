@@ -127,7 +127,8 @@ void fn_203b_0203(char far *p)
 }
 
 /* only diff: original has `add al,0ffh` where BCC emits `dec al` */
-/* NONMATCHING */
+/* C version: BCC 3.1 does not reproduce the original code from it (tools/inlasm.py) */
+#if 0
 void far *fn_203b_02dc(char far *p, unsigned long size)
 {
     char far *hdr;
@@ -154,6 +155,95 @@ void far *fn_203b_02dc(char far *p, unsigned long size)
         }
     }
     return hdr;
+}
+#endif
+void far *fn_203b_02dc(char far *p, unsigned long size)
+{
+    char _l[6];
+    asm cmp word ptr [bp+6],0
+    asm jz L_0015
+    asm mov ax,[bp+8]
+    asm mov dx,[bp+6]
+    asm dec dx
+    asm jmp L_001f
+L_0015:
+    asm mov ax,[bp+8]
+    asm dec ax
+    asm mov dx,[bp+6]
+    asm add dx,0fh
+L_001f:
+    asm mov word ptr _l+4,ax
+    asm mov word ptr _l+2,dx
+    asm les bx,dword ptr _l+2
+    asm mov al,es:[bx]
+    asm and al,0fh
+    asm mov byte ptr _l+1,al
+    asm les bx,dword ptr _l+2
+    asm mov al,es:[bx]
+    asm and al,0f0h
+    asm mov byte ptr _l,al
+    asm test byte ptr _l,20h
+    asm jz L_0046
+    asm mov ax,10h
+    asm jmp L_0049
+L_0046:
+    asm mov ax,1
+L_0049:
+    asm db 66h, 0fh, 0bfh, 0c0h	/* movsx eax,ax */
+    asm db 66h	/* add [bp+0xa],eax */
+    asm add [bp+0ah],ax
+    asm test byte ptr _l,20h
+    asm jz L_00a3
+    asm db 66h	/* push dword [bp+0xa] */
+    asm push word ptr [bp+0ah]
+    asm push word ptr _l+4
+    asm mov al,byte ptr _l+1
+    asm mov ah,0
+    asm mov dx,0fh
+    asm db 2bh, 0d0h	/* sub dx,ax */
+    asm push dx
+    asm call far ptr farrealloc
+    asm add sp,8
+    asm mov word ptr _l+4,dx
+    asm mov word ptr _l+2,ax
+    asm mov al,10h
+    asm sub al,byte ptr _l+2
+    asm mov byte ptr _l+1,al
+    asm mov al,byte ptr _l+1
+    asm mov ah,0
+    asm les bx,dword ptr _l+2
+    asm db 3, 0d8h	/* add bx,ax */
+    asm mov al,byte ptr _l+1
+    asm add al,0ffh
+    asm or al,byte ptr _l
+    asm mov es:[bx-1],al
+    asm mov ax,word ptr _l+4
+    asm inc ax
+    asm mov word ptr _l+4,ax
+    asm mov word ptr _l+2,0
+    asm jmp L_00ce
+L_00a3:
+    asm db 66h	/* push dword [bp+0xa] */
+    asm push word ptr [bp+0ah]
+    asm push word ptr _l+4
+    asm push word ptr _l+2
+    asm call far ptr farrealloc
+    asm add sp,8
+    asm mov word ptr _l+4,dx
+    asm mov word ptr _l+2,ax
+    asm db 66h	/* cmp dword [bp-0x4],0x0 */
+    asm cmp word ptr _l+2,0
+    asm jz L_00ce
+    asm les bx,dword ptr _l+2
+    asm mov al,byte ptr _l
+    asm mov es:[bx],al
+    asm inc word ptr _l+2
+L_00ce:
+    asm mov dx,word ptr _l+4
+    asm mov ax,word ptr _l+2
+    asm jmp Lret
+Lret:
+    ;
 }
 
 /* largest free block */

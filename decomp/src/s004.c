@@ -187,7 +187,8 @@ int fn_070c_03b1(int x, int y)
     return res;
 }
 
-/* NONMATCHING */
+/* C version: BCC 3.1 does not reproduce the original code from it (tools/inlasm.py) */
+#if 0
 int fn_070c_044a(int att, int def, int k)
 {
     struct Stats far *pa;
@@ -219,6 +220,167 @@ int fn_070c_044a(int att, int def, int k)
     d = fn_1aff_0434(e, pa->atk->hit);
     if (r < d) return 0;
     return 1;
+}
+#endif
+int fn_070c_044a(int att, int def, int k)
+{
+    char _l[14];
+    asm mov cx,[bp+6]
+    asm mov si,[bp+8]
+    asm mov dx,[bp+0ah]
+    asm cmp si,-1
+    asm jnz L_0019
+    asm db 0e9h, 91h, 1	/* jmp 0x1aa */
+L_0019:
+    asm cmp cx,-1
+    asm jnz L_0024
+L_001e:
+    asm mov ax,1
+    asm db 0e9h, 88h, 1	/* jmp 0x1ac */
+L_0024:
+    asm test si,8000h
+    asm jz L_0043
+    asm db 8bh, 0deh	/* mov bx,si */
+    asm and bx,7fffh
+    asm imul bx,bx,2eh
+    asm mov ax,seg f_2803_0032
+    asm mov es,ax
+    asm cmp byte ptr es:[bx+160eh],0dh
+    asm jl L_0043
+    asm db 0e9h, 67h, 1	/* jmp 0x1aa */
+L_0043:
+    asm test cx,8000h
+    asm jz L_0089
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm and bx,7fffh
+    asm imul bx,bx,2eh
+    asm mov ax,seg f_2803_0032
+    asm mov es,ax
+    asm mov ax,es:[bx+161dh]
+    asm mov dx,es:[bx+161bh]
+    asm add dx,14h
+    asm mov word ptr _l+12,ax
+    asm mov word ptr _l+10,dx
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm and bx,7fffh
+    asm imul bx,bx,2eh
+    asm mov ax,seg f_2803_0032
+    asm mov es,ax
+    asm les bx,dword ptr es:[bx+161bh]
+    asm mov al,es:[bx+3dh]
+    asm cbw
+    asm mov di,64h
+    asm db 2bh, 0f8h	/* sub di,ax */
+    asm jmp L_00fa
+L_0089:
+    asm db 8bh, 0c1h	/* mov ax,cx */
+    asm db 69h, 0c0h, 82h, 0	/* imul ax,ax,0x82 */
+    asm add ax,3640h
+    asm mov word ptr _l+12,seg f_2803_0032
+    asm mov word ptr _l+10,ax
+    asm cmp dx,1
+    asm jnz L_00cb
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm db 69h, 0dbh, 82h, 0	/* imul bx,bx,0x82 */
+    asm db 3, 0dah	/* add bx,dx */
+    asm mov ax,seg f_2803_0032
+    asm mov es,ax
+    asm mov al,es:[bx+3693h]
+    asm cbw
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm db 69h, 0dbh, 82h, 0	/* imul bx,bx,0x82 */
+    asm db 3, 0dah	/* add bx,dx */
+    asm mov dx,seg f_2803_0032
+    asm mov es,dx
+    asm push ax
+    asm mov al,es:[bx+3696h]
+    asm cbw
+    asm imul ax,ax,3
+    asm jmp L_00f2
+L_00cb:
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm db 69h, 0dbh, 82h, 0	/* imul bx,bx,0x82 */
+    asm db 3, 0dah	/* add bx,dx */
+    asm mov ax,seg f_2803_0032
+    asm mov es,ax
+    asm mov al,es:[bx+3693h]
+    asm cbw
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm db 69h, 0dbh, 82h, 0	/* imul bx,bx,0x82 */
+    asm db 3, 0dah	/* add bx,dx */
+    asm mov dx,seg f_2803_0032
+    asm mov es,dx
+    asm push ax
+    asm mov al,es:[bx+3696h]
+    asm cbw
+L_00f2:
+    asm pop dx
+    asm db 3, 0d0h	/* add dx,ax */
+    asm mov di,64h
+    asm db 2bh, 0fah	/* sub di,dx */
+L_00fa:
+    asm test si,8000h
+    asm db 74h, 37h	/* jz 0x137 */
+    asm db 8bh, 0deh	/* mov bx,si */
+    asm and bx,7fffh
+    asm imul bx,bx,2eh
+    asm mov ax,seg f_2803_0032
+    asm mov es,ax
+    asm mov ax,es:[bx+161dh]
+    asm mov dx,es:[bx+161bh]
+    asm add dx,14h
+    asm mov word ptr _l+8,ax
+    asm mov word ptr _l+6,dx
+    asm db 8bh, 0deh	/* mov bx,si */
+    asm and bx,7fffh
+    asm imul bx,bx,2eh
+    asm mov ax,seg f_2803_0032
+    asm mov es,ax
+    asm db 26h, 83h, 8fh, 13h, 16h, 10h	/* or word [es:bx+0x1613],0x10 */
+    asm jmp L_0148
+L_0137:
+    asm db 8bh, 0c6h	/* mov ax,si */
+    asm db 69h, 0c0h, 82h, 0	/* imul ax,ax,0x82 */
+    asm add ax,3640h
+    asm mov word ptr _l+8,seg f_2803_0032
+    asm mov word ptr _l+6,ax
+L_0148:
+    asm db 66h, 68h, 1, 0, 64h, 0	/* push dword 0x640001 */
+    asm call far ptr fn_0845_0636
+    asm add sp,4
+    asm mov word ptr _l+4,ax
+    asm db 3bh, 0c7h	/* cmp ax,di */
+    asm jl L_0162
+    asm mov ax,2
+    asm db 0ebh, 4ah	/* jmp 0x1ac */
+L_0162:
+    asm call far ptr fn_0845_1036
+    asm shl ax,1
+    asm mov dx,seg f_2803_0032
+    asm db 8bh, 0d8h	/* mov bx,ax */
+    asm mov es,dx
+    asm db 26h, 0ffh, 0b7h, 3eh, 0	/* push word [es:bx+0x3e] */
+    asm les bx,dword ptr _l+6
+    asm les bx,dword ptr es:[bx]
+    asm push word ptr es:[bx+6]
+    asm call far ptr fn_1aff_0420
+    asm add sp,4
+    asm mov word ptr _l,ax
+    asm les bx,dword ptr _l+10
+    asm les bx,dword ptr es:[bx]
+    asm push word ptr es:[bx]
+    asm push ax
+    asm call far ptr fn_1aff_0434
+    asm add sp,4
+    asm mov word ptr _l+2,ax
+    asm mov ax,word ptr _l+4
+    asm cmp ax,word ptr _l+2
+    asm jl L_01aa
+    asm jmp L_001e
+L_01aa:
+    asm db 33h, 0c0h	/* xor ax,ax */
+Lret:
+    ;
 }
 
 void fn_070c_05fa(struct Monster far *m)
