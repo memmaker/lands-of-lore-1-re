@@ -25,10 +25,10 @@ fi
 tools/dosrun.sh $W B.BAT </dev/null
 tr -d '\r' < $W/OUT.LOG | grep -iE "error|warning" | grep -v "messages: *None" | head -30
 [ -f $W/$U.OBJ ] || { echo "no OBJ"; exit 1; }
+# asm modules may pin the original's interleaving of segments' data records: `; LEDATA-ORDER: SEG:hexoff ...` (tools/ledorder.py)
+LO=$(sed -n 's/^; LEDATA-ORDER://p' src/$N.asm 2>/dev/null); [ -n "$LO" ] && python3 -I tools/ledorder.py $W/$U.OBJ $LO
 # asm modules may pin the original assembler's fixup order (EXE relocation order): `; FIXUP-ORDER: hex offsets`
 FO=$(sed -n 's/^; FIXUP-ORDER://p' src/$N.asm 2>/dev/null); [ -n "$FO" ] && python3 -I tools/fixorder.py $W/$U.OBJ $FO
-# ... and the original's interleaving of segments' data records: `; LEDATA-ORDER: SEG:hexoff ...` (tools/ledorder.py)
-LO=$(sed -n 's/^; LEDATA-ORDER://p' src/$N.asm 2>/dev/null); [ -n "$LO" ] && python3 -I tools/ledorder.py $W/$U.OBJ $LO
 cp $W/$U.OBJ $W/$U.RAW; [ -f src/$N.c ] && python3 -I tools/objfix.py $W/$U.OBJ $N
 python3 -I tools/segoff.py $N | { read OFF; python3 -I tools/cmpobj.py $W/$U.OBJ orig/MAIN.EXE $OFF; }
 cp $W/$U.RAW $W/$U.OBJ
