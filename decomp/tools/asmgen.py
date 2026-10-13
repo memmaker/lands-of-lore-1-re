@@ -63,6 +63,8 @@ def conv(t):
     t = re.sub(r'\[(cs|ds|es|ss|fs|gs):', r'\1:[', t)
     t = re.sub(r'0x([0-9a-f]+)', lambda m: num(int(m.group(1), 16)), t)
     t = t.replace('o32 ', '')
+    t = re.sub(r'^(call|jmp)\s+word far ', r'\1\tdword ptr ', t)
+    t = re.sub(r'^int3$', 'int\t3', t)
     t = re.sub(r'^(cs|ds|es|ss)\s+xlatb', r'xlat\tbyte ptr \1:[bx]', t)
     t = re.sub(r'^(l[defgs]s\s+\w+,)word ptr', r'\1dword ptr', t)
     t = re.sub(r'^push\s+dword\s+(?=[0-9])', 'push\tlarge ', t)
@@ -128,7 +130,7 @@ for a, b, t in ins:
         if op == 'call': kind = ''
         elif len(b) == 2: kind = 'short '
         else: kind = 'near ptr ' if op != 'jmp' or len(b) == 3 else ''
-        emit('\t%s\t%sL_%04x' % (op, kind, tgt))
+        emit('\t%s\t%s%s' % (op, kind, ('_fn_%04x_%04x' % (seg, tgt)) if tgt in procs else 'L_%04x' % tgt))
     else:
         ct = conv(t)
         md = re.search(r'\bcs:\[(\w\w)\+(\w+)\]', ct)
