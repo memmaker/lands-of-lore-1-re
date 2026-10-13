@@ -58,7 +58,9 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
   - [x] s034 file layer over loose files and PAK archives (13/13)
   - [x] s035 (7/7, file directory index)
   - [x] s036 (18/18, memory stubs + DGROUP 2ab2-2b30)
-  - [ ] s037–s047 game modules (11 left)
+  - [x] s037 empty (no code)
+  - [x] s038 (25/25, assembler graphics helpers, tools/asmgen.py)
+  - [ ] s039–s047 game modules (9 left)
   - [ ] s049–s149 WW library (~100 small modules, maybe TASM)
   - [ ] 80 overlays (objfix needs overlay support)
 - [ ] Data/BSS modules generated as readable C
