@@ -103,11 +103,13 @@ def main():
     assert len(code) == 1, 'one code segment expected'
     cs = code[0]
     fixes = []   # all fixups, by segment
+    rawcuts = []   # code LEDATA starts in the raw OBJ
     last = None
     for t, d in recs:
         if t == 0xa0:
             si, p = idx(d, 0); off = struct.unpack_from('<H', d, p)[0]; p += 2
             segs[si]['data'][off:off + len(d) - p] = d[p:]; last = (si, off)
+            if si == cs: rawcuts.append(off)
         elif t == 0x9c:
             fixes += parse_fixupp(d, *last)
     img = segs[cs]['data']
@@ -158,9 +160,8 @@ def main():
                     t = (q + 4 + struct.unpack_from('<h', img, q + 2)[0]) & 0xffff
                     if t < len(img): ost.add(t)
             ost = sorted(ost)
-            assert len(ost) == len(cf), 'overlay %s: %d OBJ function starts, %d C functions' % (mod, len(ost), len(cf))
-            names = ['_' + n for n, _, _, _, _ in cf]
-            objoff = dict(zip(names, ost)); origoff = {n: corig(n) for n in names}
+            objoff = {n: o for o, n in pubname.items() if re.match(r'_(fn|ovr)_[0-9a-f]{4}_[0-9a-f]{4}$', n)}
+            origoff = {n: corig(n) for n in objoff}
         else:
             ri = dict(layout.ROOT)[mod]; sseg, smx, sfl, smn = st[ri]
             oimg = mkblob.img; base = sseg * 16; seg_end = smx
@@ -178,8 +179,10 @@ def main():
         for fn in transplant:
             fn = fn if fn.startswith('_') else '_' + fn
             lo_obj = objoff[fn]
-            k = ost.index(lo_obj)
-            hi_obj = ost[k + 1] if k + 1 < len(ost) else len(img)
+            # overlay: a transplant also swallows the statics that follow (no names for them on either side)
+            pst = sorted(objoff.values()) if ovl else ost
+            k = pst.index(lo_obj)
+            hi_obj = pst[k + 1] if k + 1 < len(pst) else len(img)
             olo = origoff[fn]
             j = oo.index(olo)
             ohi = oo[j + 1] if j + 1 < len(oo) else seg_end
@@ -310,6 +313,11 @@ def main():
         if FLUSH_AT_END and flushed and fe > cstart:
             chunks.append((cstart, fe)); cstart = fe
     if cstart < len(nimg): chunks.append((cstart, len(nimg)))
+    if len(nimg) == len(img) and not FLUSH_AT_END:
+        # nothing moved: BCC's own record boundaries (it also never splits an instruction, e.g. 0x3f9) are right
+        rc = sorted(set(rawcuts)) + [len(nimg)]
+        if all(not (o < c < o + SIZE.get(f.loc, 2)) for c in rc for o, f in code_fx):
+            chunks = list(zip(rc[:-1], rc[1:]))
     # emit
     out = bytearray(); done_code = False; segcount = 0; pubk = {}
     for k, (t, d) in enumerate(recs):

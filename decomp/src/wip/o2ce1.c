@@ -7,6 +7,7 @@ struct Btn { int x, y, w, h, act, dirty; };                 /* 12 bytes, g_06ec[
 struct Sym { char shape; char seen; char dy; int str; };    /* 5 bytes, g_0720[] (shape -1 ends) */
 struct Legend { int x, y, str, x2, y2, shape; };            /* 12 bytes, *g_4afc[32] */
 
+#define WF ((unsigned char far *)f_2803_3835)
 #define FL(b) ((char)g_8203[b].flags)
 #define SHP(i) (((void far * far *)f_250c_0404)[i])
 
@@ -241,8 +242,8 @@ void ovr_2ce1_002a(int page, char far *title)
     x = g_4aec;
     y = g_4aea;
     for (b = y0 * 32 + x0; b < 0x400; b++) {
-        if ((FL(b) & 7) == 7 && !(f_2803_3835[WALL(b, 0)] & 0xc0) && !(f_2803_3835[WALL(b, 2)] & 0xc0) &&
-            !(f_2803_3835[WALL(b, 1)] & 0xc0) && !(f_2803_3835[WALL(b, 3)] & 0xc0)) {
+        if ((FL(b) & 7) == 7 && (WF[WALL(b, 0)] & 0xc0) == 0 && (WF[WALL(b, 2)] & 0xc0) == 0 &&
+            (WF[WALL(b, 1)] & 0xc0) == 0 && (WF[WALL(b, 3)] & 0xc0) == 0) {
             n0 = fn_09aa_0183(b, 0);
             n2 = fn_09aa_0183(b, 2);
             n1 = fn_09aa_0183(b, 1);
@@ -254,16 +255,16 @@ void ovr_2ce1_002a(int page, char far *title)
             fn_19c9_0ff6(g_3649, x, y, g_3649, x, y, 7, 6, 0, f_250c_0004);
             deco(n3, ww, x, y, 3);
             ovr_2ce1_008e(ww, x, y, 3);
-            if (f_2803_3835[ww] & 0xc0) fn_19c9_0ff6(g_3649, x, y, g_3649, x, y, 1, 6, 0, f_250c_0004);
+            if (WF[ww] & 0xc0) fn_19c9_0ff6(g_3649, x, y, g_3649, x, y, 1, 6, 0, f_250c_0004);
             deco(n1, we, x, y, 1);
             ovr_2ce1_008e(we, x, y, 1);
-            if (f_2803_3835[we] & 0xc0) fn_19c9_0ff6(g_3649, x + 6, y, g_3649, x + 6, y, 1, 6, 0, f_250c_0004);
+            if (WF[we] & 0xc0) fn_19c9_0ff6(g_3649, x + 6, y, g_3649, x + 6, y, 1, 6, 0, f_250c_0004);
             deco(n0, wn, x, y, 0);
             ovr_2ce1_008e(wn, x, y, 0);
-            if (f_2803_3835[wn] & 0xc0) fn_19c9_0ff6(g_3649, x, y, g_3649, x, y, 7, 1, 0, f_250c_0004);
+            if (WF[wn] & 0xc0) fn_19c9_0ff6(g_3649, x, y, g_3649, x, y, 7, 1, 0, f_250c_0004);
             deco(n2, ws, x, y, 2);
             ovr_2ce1_008e(ws, x, y, 2);
-            if (f_2803_3835[ws] & 0xc0) fn_19c9_0ff6(g_3649, x, y + 5, g_3649, x, y + 5, 7, 1, 0, f_250c_0004);
+            if (WF[ws] & 0xc0) fn_19c9_0ff6(g_3649, x, y + 5, g_3649, x, y + 5, 7, 1, 0, f_250c_0004);
         }
         x += 7;
         if (b % 32 == 31) {
@@ -307,6 +308,7 @@ void ovr_2ce1_0034(void)
             ovr_2ce1_002f();
             while (g_2f45 != 0) ;
             ovr_2ce1_0039();
+        done:
             g_06ec[i].act = 0;
             g_06ec[i].dirty = 1;
             ovr_2ce1_002f();
@@ -317,20 +319,14 @@ void ovr_2ce1_0034(void)
             ovr_2ce1_002f();
             while (g_2f45 != 0) ;
             ovr_2ce1_003e();
-            g_06ec[i].act = 0;
-            g_06ec[i].dirty = 1;
-            ovr_2ce1_002f();
-            break;
+            goto done;
         case 2:
             g_06ec[i].act = 1;
             g_06ec[i].dirty = 1;
             ovr_2ce1_002f();
             while (g_2f45 != 0) ;
             g_4af2 = 1;
-            g_06ec[i].act = 0;
-            g_06ec[i].dirty = 1;
-            ovr_2ce1_002f();
-            break;
+            goto done;
         }
     }
 }
@@ -380,15 +376,21 @@ void ovr_2ce1_0043(unsigned char far *src, unsigned char far *dst, unsigned mul,
 
     k = 0;
     for (j = 0; j < cnt; j++) {
-        v = src[k] * mul / 64L + r;
+        v = src[k];
+        v = v * mul / 64L;
+        v += r;
         if (v > 63) v = 63;
         buf[k] = v;
         k++;
-        v = src[k] * mul / 64L + g;
+        v = src[k];
+        v = v * mul / 64L;
+        v += g;
         if (v > 63) v = 63;
         buf[k] = v;
         k++;
-        v = src[k] * mul / 64L + b;
+        v = src[k];
+        v = v * mul / 64L;
+        v += b;
         if (v > 63) v = 63;
         buf[k] = v;
         k++;
@@ -406,7 +408,7 @@ int ovr_2ce1_0048(unsigned char far *a, unsigned char far *b)
 {
     volatile int d;
     int dr;
-    register int dg;
+    int dg;
     int db;
 
     dr = a[0] - b[0];
@@ -425,7 +427,7 @@ void ovr_2ce1_004d(void)
     ovr_2ded_002f(g_0787, 2, 2, f_250c_0104);
     n = ovr_2ded_002f(g_0791, 3, 5, 0);
     g_4af8 = (char far *)fn_215f_0003(5) + n;
-    n += ovr_2ded_0020(g_079d, g_4af8, g_369f - n);
+    n += (unsigned)ovr_2ded_0020(g_079d, g_4af8, g_369f - n);
     g_4af4 = (char far *)fn_215f_0003(5) + n;
     ovr_2ded_0020(g_07a9, g_4af4, g_369f - n);
     g_06ec[0].x = 0xfc;
@@ -440,7 +442,7 @@ void ovr_2ce1_004d(void)
     g_06ec[2].y = 0xaf;
     g_06ec[2].w = 0x28;
     g_06ec[2].h = 0x16;
-    for (n = 0; n < 0x6d; n++) SHP(n) = fn_1f36_0064(fn_215f_0003(5), n + 0xb);
+    for (n = 0; (int)n < 0x6d; n++) SHP(n) = fn_1f36_0064(fn_215f_0003(5), n + 0xb);
     g_0710[0] = SHP(0x30);
     g_0710[1] = SHP(0x31);
     g_0710[2] = SHP(0x32);
@@ -491,9 +493,9 @@ void ovr_2ce1_0061(void)
                 ovr_2ce1_0066(list[i].str, 0xf4, row * 8 + 0x16);
                 if (list[i].shape != -1) {
                     g_8203[list[i].x2 + (list[i].y2 << 5)].flags |= 7;
-                    fn_1fd6_000a(2, f_250c_0404[list[i].shape][0], (list[i].x2 - x0) * 7 + g_4aec - 3,
+                    fn_1fd6_000a(2, (&f_250c_0404[0][0])[list[i].shape * 4 + 0], (list[i].x2 - x0) * 7 + g_4aec - 3,
                                  (list[i].y2 - y0) * 6 + g_4aea - 3, 0, 0);
-                    fn_1fd6_000a(2, f_250c_0404[list[i].shape][0], 0xe7, row * 8 + 0x13, 0, 0);
+                    fn_1fd6_000a(2, (&f_250c_0404[0][0])[list[i].shape * 4 + 0], 0xe7, row * 8 + 0x13, 0, 0);
                 }
                 row++;
             }
@@ -503,7 +505,7 @@ void ovr_2ce1_0061(void)
     for (i = 0; g_0720[i].shape != -1; i++) {
         if (g_0720[i].seen == 1) {
             fn_19c9_0ff6(g_3649, 0xeb, row * 8 + 0x15, g_3649, 0xeb, row * 8 + 0x15, 7, 6, 0, f_250c_0004);
-            fn_1fd6_000a(g_3649, f_250c_0404[g_0720[i].shape][0], 0xe8, row * 8 + g_0720[i].dy + 0x12, 0, 0);
+            fn_1fd6_000a(g_3649, (&f_250c_0404[0][0])[g_0720[i].shape * 4 + 0], 0xe8, row * 8 + g_0720[i].dy + 0x12, 0, 0);
             ovr_2ce1_0066(g_0720[i].str, 0xf4, row * 8 + 0x16);
             row++;
         }
@@ -634,8 +636,7 @@ void ovr_2ce1_0084(int lvl)
     }
     i = 0;
     sprintf(name, g_07b9, lvl);
-    h = fn_1809_0000(name, 1);
-    if (h == -1) return;
+    if ((h = fn_1809_0000(name, 1)) == -1) return;
     for (; i < 32; i++) {
         ok = fn_1809_084d(h, &v0, 2L) == 2;
         ok &= fn_1809_084d(h, &v1, 2L) == 2;

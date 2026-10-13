@@ -497,7 +497,6 @@ static int frame1(struct Monster far *m)
     return r;
 }
 
-#pragma option -O-b
 static int frame3(struct Monster far *m, int base)
 {
     int r;
@@ -512,6 +511,7 @@ static int frame3(struct Monster far *m, int base)
     default:
         if (m->hitDmg) r = 5;
         else r = m->anim;
+        break;
     }
     return r;
 }
@@ -521,6 +521,8 @@ static int frame2(struct Monster far *m)
     return m->c15 < 13 ? m->c15 : 13;
 }
 
+/* register/stack-slot choices differ; original bytes transplanted (with following statics) */
+/* NONMATCHING */
 int ovr_2cda_003e(struct Monster far *m, register int b)
 {
     int r;
@@ -530,10 +532,10 @@ int ovr_2cda_003e(struct Monster far *m, register int b)
     case 1: r = frame1(m); break;
     case 2: r = frame2(m); break;
     case 3: r = frame3(m, b); break;
+    default: break;
     }
     return r;
 }
-#pragma option -Ob
 
 static void draw_monster(int mon)
 {
@@ -543,6 +545,7 @@ static void draw_monster(int mon)
     char far *ovl;
     int h12;
     int i;
+    int unused;
     int frame;
     int k;
     int fl;
@@ -689,6 +692,8 @@ static void draw_block(int n)
     }
 }
 
+/* register/stack-slot choices differ; original bytes transplanted (with following statics) */
+/* NONMATCHING */
 void ovr_2cda_0043(int n)
 {
     void far *pal;
@@ -772,6 +777,8 @@ void ovr_2cda_0043(int n)
     }
 }
 
+/* register/stack-slot choices differ; original bytes transplanted (with following statics) */
+/* NONMATCHING */
 void ovr_2cda_0048(void)
 {
     int off;
@@ -826,6 +833,8 @@ void ovr_2cda_004d(void)
     if (!g_3649) fn_1ebc_01ec();
 }
 
+/* register/stack-slot choices differ; original bytes transplanted (with following statics) */
+/* NONMATCHING */
 void ovr_2cda_0052(void)
 {
     int sgn;
@@ -868,6 +877,8 @@ void ovr_2cda_0057(register int page)
     }
 }
 
+/* register/stack-slot choices differ; original bytes transplanted (with following statics) */
+/* NONMATCHING */
 int ovr_2cda_005c(register int page)
 {
     void far *shp;
@@ -882,6 +893,8 @@ int ovr_2cda_005c(register int page)
     return 1;
 }
 
+/* register/stack-slot choices differ; original bytes transplanted (with following statics) */
+/* NONMATCHING */
 void ovr_2cda_0061(register int a)
 {
     if (a && a != g_4d72) {
@@ -913,6 +926,8 @@ void ovr_2cda_0061(register int a)
     g_7fb6 = 0;
 }
 
+/* register/stack-slot choices differ; original bytes transplanted (with following statics) */
+/* NONMATCHING */
 void ovr_2cda_0066(register int n, int b)
 {
     int x;
@@ -939,6 +954,8 @@ void ovr_2cda_0066(register int n, int b)
     }
 }
 
+/* register/stack-slot choices differ; original bytes transplanted (with following statics) */
+/* NONMATCHING */
 void ovr_2cda_006b(void)
 {
     int a;
