@@ -304,8 +304,16 @@ void fn_130a_0784(void)
 
 /* scan fmt for printf conversions, build the va_list in out from script arguments;
    %n (character name) and %a are rewritten in place, save[] remembers the original chars */
-/* NONMATCHING original keeps idx in si and n in di */
-int fn_130a_07be(char far *fmt, struct EmcState far *s, int far *p, int idx, char far *out, int far *save)
+
+int fn_130a_07be(char far *fmt, struct EmcState far *s, int far *p, int idx, char far *out, int far *save);
+
+int fn_130a_07be(fmt, s, p, idx, out, save)
+char far *fmt;
+struct EmcState far *s;
+int far *p;
+register int idx;
+char far *out;
+int far *save;
 {
     int n;
     int far *ip;
