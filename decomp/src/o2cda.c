@@ -896,7 +896,7 @@ int ovr_2cda_005c(register int page)
 }
 
 /* register/stack-slot choices differ; original bytes transplanted (with following statics) */
-/* NONMATCHING */
+
 void ovr_2cda_0061(register int a)
 {
     if (a && a != g_4d72) {
