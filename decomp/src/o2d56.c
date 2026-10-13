@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <dos.h>
+#include <io.h>
 #include "lol.h"
 
 struct Btn {                    /* GUI button, 0x3c bytes (s118) */
@@ -636,7 +637,7 @@ int ovr_2d56_002f(int mode)
                     if (!ovr_2d56_0025(0x400b)) return 1;
                     mode = g_11bc - id;
                     ovr_2d56_0070(n1, g_11bc - id);
-                    remove(n1);
+                    unlink(n1);
                     for (;;) {
                         mode++;
                         ovr_2d56_0070(n2, mode);
@@ -792,6 +793,7 @@ int ovr_2d56_0039(long need)
     return 0;
 }
 
+/* NONMATCHING */
 void ovr_2d56_007a(int save)
 {
     char n[14];
@@ -818,6 +820,7 @@ void ovr_2d56_007a(int save)
     }
 }
 
+/* NONMATCHING */
 char far *ovr_2d56_007f(int id)
 {
     char far *p;
@@ -850,6 +853,7 @@ char far *ovr_2d56_007f(int id)
     return fn_0845_06f8(id);
 }
 
+/* NONMATCHING */
 int ovr_2d56_0084(struct Btn far *b)
 {
     int id, run, old, nw;
@@ -922,8 +926,8 @@ int ovr_2d56_0089(struct Btn far *b)
 
 void ovr_2d56_003e(int from, int to)
 {
-    int f, i;
     struct Monster far *m;
+    int i, f;
 
     if (from == to) return;
     f = fn_0845_1044(f_2803_002c[from], f_2803_002c[to]);
