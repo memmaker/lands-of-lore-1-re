@@ -117,10 +117,13 @@ void fn_067a_003e(int n)
     g_1e91 = f_26a4_0000[n].song;
 }
 
-/* NONMATCHING */
-int fn_067a_01d1(int n)
+
+int fn_067a_01d1(int n);
+
+int fn_067a_01d1(n)
+register int n;
 {
-    int old;
+    register int old;
 
     if (n == -1) return g_1e94;
     old = g_1e94;
