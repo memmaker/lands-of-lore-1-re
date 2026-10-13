@@ -213,7 +213,7 @@ void fn_067a_0401(int n, int force)
     fn_067a_0417(n, 0xff, force);
 }
 
-/* NONMATCHING */
+
 void fn_067a_0417(int n, int vol, int force)
 {
     void far *p;
@@ -237,10 +237,8 @@ void fn_067a_0417(int n, int vol, int force)
         p = 0;
     if (p) {
         fn_15a7_02b6(p);
-        if (vol == 0xff)
-            v = g_8200 * 200 / 100 + 0x37;
-        else
-            v = (unsigned)((g_8200 * 200 / 100 + 0x37) * vol) >> 8;
+        v = vol == 0xff ? g_8200 * 200 / 100 + 0x37
+                        : (unsigned)((g_8200 * 200 / 100 + 0x37) * vol) >> 8;
         fn_16cf_0022(p, pan, v);
         return;
     }
@@ -249,6 +247,7 @@ void fn_067a_0417(int n, int vol, int force)
     case 4: n = f_27a1_0000[n]; break;
     case 6: n = f_2791_0000[n]; break;
     case 7: n = f_2781_0000[n]; break;
+    default: break;
     }
     if (n == 0xa8) n = 0xa7;
     fn_17d6_0019(n, vol);
