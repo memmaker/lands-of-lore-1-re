@@ -357,7 +357,7 @@ char far *fn_0845_06f8(int id)
     return p;
 }
 
-/* NONMATCHING */
+
 void fn_0845_07b3(char far *fmt, int x, int y, int c1, int c2, unsigned flags, ...)
 {
     char buf[0xf0];
@@ -367,7 +367,7 @@ void fn_0845_07b3(char far *fmt, int x, int y, int c1, int c2, unsigned flags, .
     va_start(ap, flags);
     vsprintf(buf, fmt, ap);
     if (flags & 1) x -= fn_1e64_002b(buf) >> 1;
-    if (flags & 2) x -= fn_1e64_002b(buf);
+    if (flags & 2) x -= (int)fn_1e64_002b(buf);
     if (flags & 4) {
         fn_1f6c_0006(buf, x - 1, y, 1, c2);
         fn_1f6c_0006(buf, x, y + 1, 1, c2);
