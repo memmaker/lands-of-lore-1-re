@@ -255,6 +255,9 @@ def owner(sym):
     if mm:
         f, o = int(mm.group(2), 16), int(mm.group(3), 16)
         n = seg_mod[f]
+        if mm.group(1) == 'fn':   # several modules can share a paragraph: take the one whose range holds o
+            for n2, i2 in layout.ROOT:
+                if st[i2][0] == f and st[i2][3] <= o < max(st[i2][1], st[i2][3] + 1): n = n2; break
         if n.startswith('f'):
             i = int(n[1:])
             return far_mod[i], 'F%03d_FAR' % i, o - st[i][3]

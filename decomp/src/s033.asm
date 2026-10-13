@@ -1,6 +1,6 @@
 ; s033: sound effects file loader (assembler module, mirror of s031)
 ;
-; long fn_17e7_0003(char far *name, long a, long b)  stop effects, (re)load the effects driver's data file (shares the music data when the names match)
+; long fn_17f8_0003(char far *name, long a, long b)  stop effects, (re)load the effects driver's data file (shares the music data when the names match)
 
 	.386
 	locals
@@ -18,9 +18,9 @@ _BSS	ends
 	extrn	_fn_17d6_0123:far, _ovr_2db9_003e:far, _ovr_2db9_0020:far, _ovr_2db9_0039:far, _stricmp:far
 
 S033_TEXT	segment byte public use16 'CODE'
-	public	_fn_17e7_0003
+	public	_fn_17f8_0003
 
-_fn_17e7_0003	proc	far
+_fn_17f8_0003	proc	far
 	push	bp
 	mov	bp,sp
 	sub	sp,10h
@@ -101,7 +101,7 @@ _fn_17e7_0003	proc	far
 	shld	edx,eax,10h
 	leave
 	ret
-_fn_17e7_0003	endp
+_fn_17f8_0003	endp
 
 S033_TEXT	ends
 	end
