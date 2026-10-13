@@ -190,14 +190,15 @@ void fn_09aa_03c3(int a)
     fn_067a_0401(0x13, 0);
 }
 
-/* NONMATCHING */
+
 int fn_09aa_0404(int b, int dir)
 {
     struct Item far *p;
     int o;
 
     if (fn_0845_0cf7(b, dir, 1)) return 0;
-    for (o = g_8203[b].mon; o; o = p->next) {
+    if (!(o = g_8203[b].mon)) return 1;
+    for (; o; o = p->next) {
         if (o & 0x8000) return 0;
         p = fn_080e_000b(o);
     }
