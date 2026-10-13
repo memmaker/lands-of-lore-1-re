@@ -23,8 +23,6 @@ _DATA	segment
 	public	_g_35e6, _g_35e8, _g_35ea, _g_35ec, _g_35ee, _g_35ef, _g_35f1, _g_35f3, _g_35f6, _g_35fd, _g_3601, _g_360c
 	public	_g_360f, _g_3611, _g_3615, _g_3618, _g_361e, _g_3622, _g_3624, _g_3626, _g_3628, _g_3629, _g_362a, _g_362c
 	public	_g_362d, _g_362e, _g_3630, _g_3632, _g_3634, _g_3636
-	public	__dat_w000
-__dat_w000	label	byte
 _g_2e46	label	byte
 	db	000h, 005h, 003h, 002h, 00ah, 00eh, 00ch, 006h, 004h, 00bh, 009h, 001h, 000h, 008h, 007h, 00fh	; 2e46
 _g_2e56	label	byte
