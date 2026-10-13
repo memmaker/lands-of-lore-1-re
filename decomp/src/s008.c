@@ -186,8 +186,14 @@ void fn_0845_01c4(register unsigned flags, char far *fmt, ...)
     g_20f6 = 0;
 }
 
-/* NONMATCHING */
-void fn_0845_02c6(unsigned char far *src, unsigned char far *dst, int s, int i)
+
+void fn_0845_02c6(unsigned char far *src, unsigned char far *dst, int s, int i);
+
+void fn_0845_02c6(src, dst, s, i)
+unsigned char far *src;
+unsigned char far *dst;
+register int s;
+int i;
 {
     fn_2279_025b(src, dst, 0x300L);
     fn_0845_1430(dst);
