@@ -137,6 +137,17 @@ for a, b, t in ins:
             labels.add(v); fixlab.add(v)
             sz = 'byte' if re.match(r'\w+\s+[abcd][lh],', ct) else 'word'
             ct = ct[:md.start()] + '%s ptr cs:L_%04x[%s]' % (sz, v, md.group(1)) + ct[md.end():]
+        md = re.search(r'(?:\b(byte|word|dword) ptr )?(?<!:)\[((?:0[0-9a-f]*|[1-9][0-9a-f]*)h|\d+)\]', ct)
+        if md:   # absolute DS reference: a DGROUP global
+            v = int(md.group(2).rstrip('h'), 16) if md.group(2).endswith('h') else int(md.group(2))
+            sz = md.group(1)
+            if not sz:
+                if re.match(r'l[defgs]s\b', ct): sz = 'dword'
+                elif re.search(r'\be[abcd]x\b|\be[sd]i\b', ct): sz = 'dword'
+                elif re.search(r'\b[abcd][lh]\b', ct): sz = 'byte'
+                else: sz = 'word'
+            exts.add('_g_%04x:byte' % v)
+            ct = ct[:md.start()] + '%s ptr _g_%04x' % (sz, v) + ct[md.end():]
         p = ct.split(None, 1)
         emit('\t' + p[0] + ('\t' + p[1] if len(p) > 1 else ''))
 if cur is not None: emit('%s\tendp' % cur)
