@@ -83,7 +83,7 @@ void fn_067a_0003(void)
     g_1e91 = -1;
 }
 
-/* NONMATCHING */
+
 void fn_067a_003e(int n)
 {
     char name[20];
@@ -99,22 +99,22 @@ void fn_067a_003e(int n)
         return;
     }
     n -= 250;
-    if (f_26a4_0000[n].file == g_1e90 && f_26a4_0000[n].song == g_1e91) {
+    if (!(f_26a4_0000[n].file == g_1e90 && f_26a4_0000[n].song == g_1e91)) {
         fn_067a_023d();
+        sprintf(name, "LORE%02d%c", f_26a4_0000[n].file, f_26a4_0000[n].song);
+        fn_17f8_0003(0, 0, 0);
+        fn_17c5_0004(0, 0, 0);
+        if (g_3747 == 7 || g_3747 == 6 || g_3747 == 4)
+            r = fn_17f8_0003("LORESFX", g_4d62, 0x6590L);
+        else
+            r = fn_17f8_0003(name, g_4d62, 0x6590L);
+        if (0x6590L - r > 1)
+            fn_17c5_0004(name, fn_2037_0002(g_4d62, r), 0x6590L - r);
+        g_1e90 = f_26a4_0000[n].file;
+        g_1e91 = f_26a4_0000[n].song;
         return;
     }
     fn_067a_023d();
-    sprintf(name, "LORE%02d%c", f_26a4_0000[n].file, f_26a4_0000[n].song);
-    fn_17f8_0003(0, 0, 0);
-    fn_17c5_0004(0, 0, 0);
-    if (g_3747 == 7 || g_3747 == 6 || g_3747 == 4)
-        r = fn_17f8_0003("LORESFX", g_4d62, 0x6590L);
-    else
-        r = fn_17f8_0003(name, g_4d62, 0x6590L);
-    if (0x6590L - r > 1)
-        fn_17c5_0004(name, fn_2037_0002(g_4d62, r), 0x6590L - r);
-    g_1e90 = f_26a4_0000[n].file;
-    g_1e91 = f_26a4_0000[n].song;
 }
 
 
