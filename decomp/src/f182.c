@@ -1,6 +1,6 @@
 /* f182: far data segment 26a4 (segment table 182, 3530 bytes), no relocations.
-   Placed in F182_FAR (class FAR_DATA) like the original blob; one variable per address other modules use. */
-#pragma option -zEF182_FAR -zFFAR_DATA
+   Placed in F182_FAR (class FAR_DATA) (code segment _TEXT: no empty F###_TEXT); one variable per address other modules use. */
+#pragma option -zEF182_FAR -zFFAR_DATA -zC_TEXT
 
 unsigned char far f_26a4_0000[240] = {
     0x01, 0x61, 0x02, 0x01, 0x61, 0x03, 0x01, 0x61, 0x04, 0x01, 0x61, 0x05,

@@ -1,6 +1,6 @@
 /* f177: far data segment 25fd (segment table 177, 336 bytes), no relocations.
-   Placed in F177_FAR (class FAR_DATA) like the original blob; one variable per address other modules use. */
-#pragma option -zEF177_FAR -zFFAR_DATA
+   Placed in F177_FAR (class FAR_DATA) (code segment _TEXT: no empty F###_TEXT); one variable per address other modules use. */
+#pragma option -zEF177_FAR -zFFAR_DATA -zC_TEXT
 
 unsigned char far f_25fd_0000[16] = {
     0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x02, 0x02, 0x02, 0x02, 0x01, 0x01,
