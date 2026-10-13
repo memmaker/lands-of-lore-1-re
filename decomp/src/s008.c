@@ -451,7 +451,7 @@ int fn_0845_0ac7(void)
     return g_8048;
 }
 
-/* NONMATCHING */
+
 void fn_0845_0acf(int item)
 {
     void far *p;

@@ -56,7 +56,7 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
   - [ ] 80 overlays (objfix needs overlay support)
 - [ ] Data/BSS modules generated as readable C
 - [ ] Full MAIN.EXE identical, independent of originals; tag raw-decompile-1.0
-- [ ] LOLCD.EXE identical
+- [-] LOLCD.EXE identical (skipped: CD-check launcher, not needed for the game)
 
 ## Phase 4 — Go/Ebiten port (~/Projects/lands-of-lore-go)
 - [ ] Machine translation C → Go (bards-tale-go approach), host lockstep goroutine
