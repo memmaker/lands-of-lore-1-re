@@ -109,7 +109,8 @@ int fn_057f_0053(void)
     return -1;
 }
 
-/* NONMATCHING */
+
+#pragma option -Ob
 int fn_057f_0096(char far *fmt, struct Emc far *s, int arg, char far *out, int far *pos)
 {
     int far *q;
@@ -162,7 +163,8 @@ int fn_057f_0096(char far *fmt, struct Emc far *s, int arg, char far *out, int f
             continue;
         switch (*fmt) {
         case 0:
-            break;
+            stop = stop;
+            continue;
         case 'n':
             pos[npos] = *fmt;
             pos[npos + 1] = fmt - start;
@@ -192,6 +194,7 @@ int fn_057f_0096(char far *fmt, struct Emc far *s, int arg, char far *out, int f
     }
     return n;
 }
+#pragma option -O-b
 
 int fn_057f_02b6(int far *p)
 {
