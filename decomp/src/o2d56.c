@@ -820,7 +820,7 @@ void ovr_2d56_007a(int save)
     }
 }
 
-/* NONMATCHING */
+
 char far *ovr_2d56_007f(int id)
 {
     char far *p;
@@ -848,6 +848,8 @@ char far *ovr_2d56_007f(int id)
         break;
     case -14:
         id = g_81fe ? 0x4068 : 0x4069;
+        break;
+    default:
         break;
     }
     return fn_0845_06f8(id);
