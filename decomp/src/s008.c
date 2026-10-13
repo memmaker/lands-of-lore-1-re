@@ -269,7 +269,7 @@ int fn_0845_04af(int x1, int y1, int x2, int y2)
     return ABS(x1 - x2) + ABS(y1 - y2);
 }
 
-/* NONMATCHING */
+
 void far *fn_0845_04ec(void far *name)
 {
     void far *p;
@@ -278,12 +278,10 @@ void far *fn_0845_04ec(void far *name)
     register int n;
 
     if (fn_2365_063f(name) || fn_19ba_0086(name)) {
-        p = fn_15a7_030c(g_4ea0, name);
-        if (p) return p;
+        if ((p = fn_15a7_030c(g_4ea0, name)) != 0) return p;
         fn_2279_025b(name, hdr, 0x10L);
         size = fn_1f36_0029(hdr);
-        p = fn_15a7_00b0(g_4ea0, (long)size, name);
-        if (!p) {
+        if (!(p = fn_15a7_00b0(g_4ea0, (long)size, name))) {
             while (fn_15a7_04b0(g_4ea0) <= (unsigned)(size + 0x10))
                 fn_15a7_043c(g_4ea0);
             n = 0;
