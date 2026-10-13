@@ -268,7 +268,7 @@ void fn_0bbc_0488(int arg)
     }
 }
 
-/* NONMATCHING */
+
 void fn_0bbc_058a(int arg)
 {
     struct Char far *c;
@@ -276,7 +276,8 @@ void fn_0bbc_058a(int arg)
 
     c = f_2803_362d;
     for (ch = 0; ch < 4; ch++, c++) {
-        if ((c->flags & 1) && !(c->flags & 8) && c->face <= 1) {
+        if (!(c->flags & 1) || (c->flags & 8)) continue;
+        if (c->face <= 1) {
             if (c->face == 1) {
                 c->face = 0;
                 fn_0a21_022b(ch);
