@@ -75,7 +75,7 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
 ## Status (full recompilation)
 - `bash tools/relink.sh all` = MATCH (356928 bytes) after clean rebuild of every module.
 - Every module is built from src/ (o2db0 enabled by the mkblob pubsort + cmpobj `_main` alias fix).
-- NONMATCHING (original bytes transplanted), 14 functions: s004 044a, s015 0012, s017 1419/1630/189f, s018 04a0,
-  s115 fn_203b_02dc (BCC always folds `+0xff` on a char into `dec al`), s147 fn_2365_0b36 (original returns
-  via `mov edx,[bp-2]`), o2cf7 0025 (8-bit subtract done in 32 bits via `pop eax`), o2dfd 002a (va_arg read as two
-  16-bit words inside 386 code), o2cda 003e/0043/006b, o2d56 0084 (old/nw spilled from dx; needs -O-e plus something else).
+- NONMATCHING: none. 14 functions BCC 3.1 cannot reproduce from C are BASM inline asm generated from the
+  original by `tools/inlasm.py MOD FN` (C version kept in `#if 0`; jump tables become C switches; statics transplanted
+  with a function use INLASM_ORIG=<original OBJ>): s004 044a, s015 0012, s017 1419/1630/189f, s018 04a0, s115 02dc,
+  s147 0b36, o2cf7 0025, o2dfd 002a, o2cda 003e (+draw_monster/draw_block)/0043/006b, o2d56 0084.
