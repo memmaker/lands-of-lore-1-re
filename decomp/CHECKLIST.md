@@ -67,7 +67,7 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
   - [x] s044 (55/55, assembler AIL gateway)
   - [x] s045 (3/3, assembler PCM helpers)
   - [x] s046 (12/12, assembler mouse interface, org-ordered source)
-  - [ ] s047 (1 left)
+  - [x] s047 (1/1, assembler CPU detection)
   - [ ] s049–s149 WW library (~100 small modules, maybe TASM)
   - [ ] 80 overlays (objfix needs overlay support)
 - [ ] Data/BSS modules generated as readable C
