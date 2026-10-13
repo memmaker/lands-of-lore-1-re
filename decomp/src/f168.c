@@ -1,6 +1,6 @@
 /* f168: far data segment 25eb (segment table 168, 80 bytes), no relocations.
-   Placed in F168_FAR (class FAR_DATA) like the original blob; one variable per address other modules use. */
-#pragma option -zEF168_FAR -zFFAR_DATA
+   Placed in F168_FAR (class FAR_DATA) (code segment _TEXT: no empty F###_TEXT); one variable per address other modules use. */
+#pragma option -zEF168_FAR -zFFAR_DATA -zC_TEXT
 
 unsigned int far f_25eb_0000[40] = {
     0x0059, 0x0041, 0x0042, 0x0043, 0x0044, 0x0045, 0x0046, 0x0031,

@@ -1,6 +1,6 @@
 /* f188: far data segment 27d5 (segment table 188, 128 bytes), no relocations.
-   Placed in F188_FAR (class FAR_DATA) like the original blob; one variable per address other modules use. */
-#pragma option -zEF188_FAR -zFFAR_DATA
+   Placed in F188_FAR (class FAR_DATA) (code segment _TEXT: no empty F###_TEXT); one variable per address other modules use. */
+#pragma option -zEF188_FAR -zFFAR_DATA -zC_TEXT
 
 unsigned char far f_27d5_0000[128] = {
     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,

@@ -1,6 +1,6 @@
 /* f151: far data segment 244c (segment table 151, 1152 bytes), no relocations.
-   Placed in F151_FAR (class FAR_DATA) like the original blob; one variable per address other modules use. */
-#pragma option -zEF151_FAR -zFFAR_DATA
+   Placed in F151_FAR (class FAR_DATA) (code segment _TEXT: no empty F###_TEXT); one variable per address other modules use. */
+#pragma option -zEF151_FAR -zFFAR_DATA -zC_TEXT
 
 unsigned int far f_244c_0000[576] = {
     0xff98, 0xffa0, 0xffa8, 0xff90, 0xff98, 0xffa0, 0xffa8, 0xffb0,

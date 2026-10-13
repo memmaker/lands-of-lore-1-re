@@ -74,7 +74,7 @@ def target(v, off_word, ctx):
         return ('base', 'ext', '_ovr_%04x_0020' % v)   # bare `seg stub` (no offset word before it)
     if v in seg_mod:
         m = seg_mod[v]
-        return ('base', 'ext', '__seg_' + m if m.startswith('f') else seg_sym.get(m, '__seg_' + m))
+        return ('base', 'ext', seg_sym.get(m, '__seg_' + m))
     raise Exception('unknown target seg %04x in %s' % (v, ctx))
 
 
@@ -296,6 +296,8 @@ def main():
         defined |= {q[0] for q in mod['pubs']}
         imported |= set(mod['exts'])
         cp = [q[0] for q in mod['pubs'] if q[1] in code]
+        if n in dict(layout.FAR):   # data-only far module: any public of its F###_FAR segment stands in for __seg_
+            cp = [q[0] for q in mod['pubs'] if mod['segs'][q[1]].get('name') == 'F%03d_FAR' % dict(layout.FAR)[n]]
         if cp and n not in seg_sym: seg_sym[n] = cp[0]
     for sym in sorted(imported - defined):
         o = owner(sym)
