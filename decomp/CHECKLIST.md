@@ -51,7 +51,8 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
   - [x] s026 sound driver switches (4/4, TASM module: ascending relocation order)
   - [x] s027, s028 empty (no code)
   - [x] s029 digital sound mixer (14/14)
-  - [ ] s030–s047 game modules (18 left)
+  - [x] s030 music driver front end (7/7, assembler module)
+  - [ ] s031–s047 game modules (17 left)
   - [ ] s049–s149 WW library (~100 small modules, maybe TASM)
   - [ ] 80 overlays (objfix needs overlay support)
 - [ ] Data/BSS modules generated as readable C
