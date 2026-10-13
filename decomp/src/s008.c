@@ -629,10 +629,10 @@ void fn_0845_0f81(char far *fmt, ...)
 {
 }
 
-/* NONMATCHING */
+
 void fn_0845_0f86(unsigned char far *src, unsigned char far *dst, unsigned mask)
 {
-    register int i;
+    int i;
     int k;
     unsigned char far *s;
     unsigned char far *d;
