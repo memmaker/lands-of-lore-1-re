@@ -793,7 +793,7 @@ int ovr_2d56_0039(long need)
     return 0;
 }
 
-/* NONMATCHING */
+
 void ovr_2d56_007a(int save)
 {
     char n[14];
@@ -804,6 +804,9 @@ void ovr_2d56_007a(int save)
             if (g_11bc - i == g_4b64) {
                 if (save) {
                     strcpy(M.names[i], ovr_2d56_007f(0x4010));
+                    continue;
+                } else {
+                    M.names[i][0] = 0;
                     continue;
                 }
             } else {
