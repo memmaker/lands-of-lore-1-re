@@ -191,7 +191,7 @@ void fn_09aa_03c3(int a)
 }
 
 
-int fn_09aa_0404(int b, int dir)
+int fn_09aa_0404(int b, int dir, int f)
 {
     struct Item far *p;
     int o;
@@ -205,7 +205,7 @@ int fn_09aa_0404(int b, int dir)
     return 1;
 }
 
-/* NONMATCHING */
+
 void fn_09aa_0458(int dir, int f, int c, int key)
 {
     int old;
@@ -215,8 +215,8 @@ void fn_09aa_0458(int dir, int f, int c, int key)
     if (key) fn_09aa_0007(key, 1);
     old = g_7fd0;
     nb = fn_09aa_0183(old, dir);
-    if (!fn_09aa_0404(nb, dir)) {
-        fn_09aa_03c3(!c);
+    if (!fn_09aa_0404(nb, dir, f)) {
+        fn_09aa_03c3(c == 0);
         fn_09aa_0007(key, 0);
         return;
     }
