@@ -290,7 +290,7 @@ int fn_070c_07e3(int n)
     return fn_0845_0636(2, n);
 }
 
-/* NONMATCHING */
+
 int fn_070c_07f5(int who, int dmg, int src, int k, int how)
 {
     struct Monster far *m;
@@ -303,8 +303,7 @@ int fn_070c_07f5(int who, int dmg, int src, int k, int how)
         if (m->mode >= 13) return 0;
     } else {
         c = &f_2803_362d[who];
-        if (!(c->flags & 1)) return 0;
-        if (c->flags & 8) return 0;
+        if (!(c->flags & 1) || (c->flags & 8)) return 0;
         if (!(c->flags & 0x1000)) fn_067a_0401(c->voice, 0);
         fn_0a21_0674(who, 6, 4, 0);
         fn_0845_08a5("Damage inflicted was %d", 0x28, 0x12, 1, dmg);
@@ -312,7 +311,7 @@ int fn_070c_07f5(int who, int dmg, int src, int k, int how)
     if (who & 0x8000) {
         if (dmg > 0) {
             m->hp -= dmg;
-            m->hitDmg = dmg | 0x8000;
+            m->hitDmg = 0x8000 | dmg;
             m->flags |= 0x10;
             m->dx = fn_0845_0636(1, 0x18) - 12;
             m->dy = fn_0845_0636(1, 0x18) - 12;
