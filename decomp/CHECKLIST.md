@@ -75,4 +75,6 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
 ## Status (full recompilation)
 - `bash tools/relink.sh all` = MATCH (356928 bytes) after clean rebuild of every module.
 - Every module is built from src/ (o2db0 enabled by the mkblob pubsort + cmpobj `_main` alias fix).
-- NONMATCHING (original bytes transplanted): s115 fn_203b_02dc, s147 fn_2365_0b36, o2cf7 0025, o2dfd 002a, o2cda 003e/0043/0048/0052/005c/0061/0066/006b, o2d56 007a/007f/0084.
+- NONMATCHING (original bytes transplanted), 54 functions: game modules s001 (2), s003 (5), s004 (7), s008 (10),
+  s009 (2), s013, s015, s017 (3), s018, s019 (5), s020, s021 (1 each where unlisted); s115 fn_203b_02dc
+  (BCC always folds `+0xff` on a char into `dec al`), s147 fn_2365_0b36 (original returns via `mov edx,[bp-2]`), s147 fn_2365_0b36, o2cf7 0025, o2dfd 002a, o2cda 003e/0043/0048/0052/005c/0061/0066/006b, o2d56 007a/007f/0084.
