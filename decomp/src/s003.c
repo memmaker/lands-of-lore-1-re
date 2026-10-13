@@ -177,8 +177,10 @@ void fn_067a_02c7(void)
         fn_067a_02f5(g_2148[i], g_215c[i]);
 }
 
-/* NONMATCHING */
-void fn_067a_02f5(int n, int pos)
+
+void fn_067a_02f5(n, pos)
+int n;
+register int pos;
 {
     int dir;
     int cnt;
@@ -187,8 +189,7 @@ void fn_067a_02f5(int n, int pos)
     if (!(g_7fda & 1)) return;
     if (g_1e96 > 0) fn_067a_0417(g_1e96, g_1e98, 0);
     if (pos) {
-        d = fn_1aff_02d2(g_7fd0, pos);
-        if (d > (g_3745 == 6 || g_3745 == 7 ? 3 : 15)) {
+        if ((d = fn_1aff_02d2(g_7fd0, pos)) > (g_3745 == 6 || g_3745 == 7 ? 3 : 15)) {
             g_1e96 = 0;
             return;
         }
@@ -200,7 +201,7 @@ void fn_067a_02f5(int n, int pos)
         cnt = 3;
         while (d != pos && cnt) {
             dir = fn_1afa_0010(d & 0x1f, d >> 5, pos & 0x1f, pos >> 5);
-            d += g_1e9a[dir];
+            d = d + g_1e9a[dir];
             if (d != pos && fn_0845_0cf7(d, 0, 1)) g_1e98 >>= 1;
             cnt--;
         }
