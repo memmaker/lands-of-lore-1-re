@@ -927,8 +927,10 @@ void ovr_2cda_0061(register int a)
 }
 
 /* register/stack-slot choices differ; original bytes transplanted (with following statics) */
-/* NONMATCHING */
-void ovr_2cda_0066(register int n, int b)
+
+void ovr_2cda_0066(n, b)
+register int n;
+int b;
 {
     int x;
     int y;
@@ -948,8 +950,8 @@ void ovr_2cda_0066(register int n, int b)
         w = k == 3 ? 0x80 : 0x20;
         tbl = k == 3 ? (void far *)g_aa03 : 0;
         fn_1aff_03b4(&x, &y, g_7fdf);
-        x |= (g_4eac[n] & 0x1f) << 8;
-        y |= (g_4eac[n] >> 5) << 8;
+        x = ((g_4eac[n] & 0x1f) << 8) | x;
+        y = ((g_4eac[n] >> 5) << 8) | y;
         draw_obj(fn_0845_04ec(f_27b1_0000[k]), tbl, x, y, 0, k == 1 ? -20 : 0, w, -1, 0);
     }
 }
