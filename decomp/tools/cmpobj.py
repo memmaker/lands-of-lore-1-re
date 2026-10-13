@@ -96,3 +96,11 @@ if DSBASE is not None:   # own _DATA bytes (globals + pooled strings) vs DGROUP;
         ref = img[lolcfg.DS + DSBASE:lolcfg.DS + DSBASE + len(s['data'])]
         bad = [i for i in range(len(ref)) if not s['mask'][i] and s['data'][i] != ref[i]]
         print(f'_DATA {DSBASE:04x}-{DSBASE + len(ref):04x}: ' + ('OK' if not bad else f'diff at DS {DSBASE + bad[0]:04x} ({len(bad)} bytes)'))
+for s in m['segs'][1:]:   # far data segments F###_FAR (data-only far modules) vs the original segment's bytes
+    mf = re.match(r'F(\d{3})_FAR$', s.get('name') or '')
+    if not mf or not s['data']: continue
+    from ovr import segtable
+    base = segtable()[int(mf.group(1))][0] * 16
+    ref = img[base:base + len(s['data'])]
+    bad = [i for i in range(len(ref)) if not s['mask'][i] and s['data'][i] != ref[i]]
+    print(f'{s["name"]} ({len(ref)} bytes): ' + ('OK' if not bad else f'diff at +{bad[0]:x} ({len(bad)} bytes)'))

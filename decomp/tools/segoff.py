@@ -4,5 +4,6 @@ import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import layout, ovr
 n = sys.argv[1].lower()
-if n in dict(layout.OVR): print('%x' % (ovr.overlays()[dict(layout.OVR)[n]]['img']))
+if n in dict(layout.FAR): print('%x' % (ovr.segtable()[dict(layout.FAR)[n]][0] * 16))   # data-only far module
+elif n in dict(layout.OVR): print('%x' % (ovr.overlays()[dict(layout.OVR)[n]]['img']))
 else: print('%x' % (ovr.segtable()[dict(layout.ROOT)[n]][0] * 16))
