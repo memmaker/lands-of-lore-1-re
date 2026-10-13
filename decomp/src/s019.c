@@ -270,27 +270,27 @@ int fn_0fbe_0273(struct EmcState far *s)
     return 1;
 }
 
-/* NONMATCHING original computes the word index before the bit mask */
+
 int fn_0fbe_0290(struct EmcState far *s)
 {
     unsigned n;
 
     n = ARG(s, 0);
     if (ARG(s, 1))
-        g_804c[n / 16] |= 1 << (n % 16);
+        g_804c[n >> 4] |= 1 << (n & 15);
     else
-        g_804c[n / 16] &= ~(1 << (n % 16));
+        g_804c[n >> 4] &= ~(1u << (n & 15));
     return 1;
 }
 
-/* NONMATCHING original computes the word index before the bit mask */
+
 int fn_0fbe_02e8(struct EmcState far *s)
 {
     int n;
 
     n = ARG(s, 0);
     if (n < 0) return 0;
-    return g_804c[n >> 4] & (1 << (n & 15)) ? 1 : 0;
+    return (g_804c[n >> 4] & (1u << (n & 15))) > 0 ? 1 : 0;
 }
 
 int fn_0fbe_0322(struct EmcState far *s)
@@ -1752,7 +1752,7 @@ int fn_0fbe_342b(struct EmcState far *s)
     return fn_154c_010f(ARG(s, 0), ARG(s, 1));
 }
 
-/* NONMATCHING original keeps a dead mov dx,ax after the rounding */
+
 int fn_0fbe_3457(struct EmcState far *s)
 {
     int v;
@@ -1763,7 +1763,8 @@ int fn_0fbe_3457(struct EmcState far *s)
         v = -v;
         if (v < 50) return 50;
         v += 99;
-        return v = v / 100 * 100;
+        v = v / 100 * 100;
+        return v;
     }
     for (p = f_2c0c_0000; *p; p++)
         if (*p >= v) return *p;
