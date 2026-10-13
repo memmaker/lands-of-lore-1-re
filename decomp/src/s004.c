@@ -160,7 +160,7 @@ int fn_070c_0322(int x, int y)
     return res;
 }
 
-/* NONMATCHING */
+
 int fn_070c_03b1(int x, int y)
 {
     int best, res;
@@ -179,7 +179,8 @@ int fn_070c_03b1(int x, int y)
                 res = i;
             }
         }
-    } while (++i < 4);
+        i++;
+    } while (i < 4);
     return res;
 }
 
@@ -264,7 +265,7 @@ int fn_070c_06a3(int att, int def, int base, int type, int mode)
     return v;
 }
 
-/* NONMATCHING */
+
 int fn_070c_0793(int who, int def, int mode)
 {
     struct Stats far *p;
@@ -273,7 +274,7 @@ int fn_070c_0793(int who, int def, int mode)
 
     p = fn_070c_01b6(who);
     if (who & 0x8000) ;
-    for (i = 0, sum = i; i < 8; i++)
+    for (sum = i = 0; i < 8; i++)
         sum += fn_070c_06a3(who, def, p->dmg[i], i, mode);
     return sum;
 }
