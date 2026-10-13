@@ -522,7 +522,8 @@ static int frame2(struct Monster far *m)
 }
 
 /* register/stack-slot choices differ; original bytes transplanted (with following statics) */
-/* NONMATCHING */
+/* C version: BCC 3.1 does not reproduce the original code from it (tools/inlasm.py) */
+#if 0
 int ovr_2cda_003e(struct Monster far *m, register int b)
 {
     int r;
@@ -536,7 +537,63 @@ int ovr_2cda_003e(struct Monster far *m, register int b)
     }
     return r;
 }
+#endif
+int ovr_2cda_003e(struct Monster far *m, register int b)
+{
+    _SI;   /* saved by the original */
+    asm mov si,[bp+0ah]
+    asm les bx,dword ptr [bp+6]
+    asm les bx,dword ptr es:[bx+21h]
+    asm mov al,es:[bx]
+    asm cbw
+    asm mov dx,seg f_2803_002c
+    asm db 8bh, 0d8h	/* mov bx,ax */
+    asm mov es,dx
+    asm db 26h, 8ah, 87h, 53h, 0	/* mov al,[es:bx+0x53] */
+    asm cbw
+    switch (_AX) {
+    case 0: goto L_002d;
+    case 1: goto L_003d;
+    case 2: goto L_0047;
+    case 3: goto L_0054;
+    default: goto L_005f;
+    }
+L_002d:
+    asm push si
+    asm db 66h	/* push dword [bp+0x6] */
+    asm push word ptr [bp+6]
+    ((void (far *)(void))frame0)();
+L_0036:
+    asm add sp,6
+L_0039:
+    asm db 8bh, 0c8h	/* mov cx,ax */
+    asm jmp L_005f
+L_003d:
+    asm db 66h	/* push dword [bp+0x6] */
+    asm push word ptr [bp+6]
+    ((void (far *)(void))frame1)();
+    asm jmp L_004f
+L_0047:
+    asm db 66h	/* push dword [bp+0x6] */
+    asm push word ptr [bp+6]
+    ((void (far *)(void))frame2)();
+L_004f:
+    asm add sp,4
+    asm jmp L_0039
+L_0054:
+    asm push si
+    asm db 66h	/* push dword [bp+0x6] */
+    asm push word ptr [bp+6]
+    ((void (far *)(void))frame3)();
+    asm jmp L_0036
+L_005f:
+    asm db 8bh, 0c1h	/* mov ax,cx */
+Lret:
+    ;
+}
 
+/* C version: BCC 3.1 does not reproduce the original code from it (tools/inlasm.py) */
+#if 0
 static void draw_monster(int mon)
 {
     struct Monster far *m;
@@ -619,7 +676,436 @@ static void draw_monster(int mon)
     h = g_3ffa / si;
     fn_1fd6_000a(g_4d72, shp, g_4000 + di, g_3ffe + h12, 0xd, 0x124, (char far *)tbl, col ? 1 : 0, w, h);
 }
+#endif
+static void draw_monster(int mon)
+{
+    char _l[296];
+    _SI;   /* saved by the original */
+    _DI;   /* saved by the original */
+    asm mov ax,[bp+6]
+    asm imul ax,ax,2eh
+    asm add ax,15fah
+    asm mov word ptr _l+294,seg f_2803_002c
+    asm mov word ptr _l+292,ax
+    asm les bx,dword ptr _l+292
+    asm mov al,es:[bx+18h]
+    asm cbw
+    asm mov bx,g_7fdf
+    asm shl bx,2
+    asm db 3, 0d8h	/* add bx,ax */
+    asm mov al,[bx+52fh]
+    asm cbw
+    asm db 8bh, 0f0h	/* mov si,ax */
+    asm and ax,0ffefh
+    asm push ax
+    asm db 66h	/* push dword [bp-0x4] */
+    asm push word ptr _l+292
+    ((void (far *)(void))ovr_2cda_003e)();
+    asm add sp,6
+    asm mov word ptr _l+274,ax
+    asm cmp word ptr _l+274,-1
+    asm jnz L_004d
+    asm db 0e9h, 0fbh, 1	/* jmp 0x248 */
+L_004d:
+    asm les bx,dword ptr _l+292
+    asm mov di,es:[bx+19h]
+    asm db 83h, 0e7h, 7	/* and di,0x7 */
+    asm les bx,dword ptr es:[bx+21h]
+    asm test word ptr es:[bx+3eh],200h
+    asm jz L_0068
+    asm mov ax,1
+    asm jmp L_006a
+L_0068:
+    asm db 33h, 0c0h	/* xor ax,ax */
+L_006a:
+    asm mov word ptr _l+270,ax
+    asm db 83h, 0e6h, 10h	/* and si,0x10 */
+    asm les bx,dword ptr _l+292
+    asm les bx,dword ptr es:[bx+21h]
+    asm mov al,es:[bx]
+    asm cbw
+    asm shl ax,6
+    asm mov dx,word ptr _l+274
+    asm shl dx,2
+    asm db 3, 0c2h	/* add ax,dx */
+    asm mov dx,seg f_2803_002c
+    asm db 8bh, 0d8h	/* mov bx,ax */
+    asm mov es,dx
+    asm mov ax,es:[bx+4cch]
+    asm mov dx,es:[bx+4cah]
+    asm mov word ptr _l+286,ax
+    asm mov word ptr _l+284,dx
+    asm les bx,dword ptr _l+292
+    asm les bx,dword ptr es:[bx+21h]
+    asm test word ptr es:[bx+3eh],800h
+    asm db 74h, 3	/* jz 0xaf */
+    asm db 83h, 0ceh, 20h	/* or si,0x20 */
+L_00af:
+    asm db 66h	/* push dword [bp-0xc] */
+    asm push word ptr _l+284
+    asm call far ptr fn_0845_04ec
+    asm add sp,4
+    asm mov word ptr _l+264,dx
+    asm mov word ptr _l+262,ax
+    asm db 0bh, 0ffh	/* or di,di */
+    asm db 74h, 43h	/* jz 0x108 */
+    asm les bx,dword ptr _l+292
+    asm les bx,dword ptr es:[bx+21h]
+    asm mov al,es:[bx]
+    asm cbw
+    asm shl ax,6
+    asm mov dx,word ptr _l+274
+    asm db 83h, 0e2h, 0fh	/* and dx,0xf */
+    asm shl dx,2
+    asm db 3, 0c2h	/* add ax,dx */
+    asm mov dx,seg f_2803_002c
+    asm db 8bh, 0d8h	/* mov bx,ax */
+    asm mov es,dx
+    asm mov ax,es:[bx+40ch]
+    asm mov dx,es:[bx+40ah]
+    asm mov word ptr _l+282,ax
+    asm mov word ptr _l+280,dx
+    asm les bx,dword ptr _l+262
+    asm mov al,es:[bx+0ah]
+    asm mov ah,0
+    asm db 8bh, 0d7h	/* mov dx,di */
+    asm dec dx
+    asm imul dx
+    asm add word ptr _l+280,ax
+    asm jmp L_0110
+L_0108:
+    asm db 66h, 0c7h, 46h, 0f0h, 0, 0, 0, 0	/* mov dword [bp-0x10],0x0 */
+L_0110:
+    asm push word ptr _l+270
+    asm push -1
+    asm mov ax,1
+    asm db 0bh, 0c6h	/* or ax,si */
+    asm push ax
+    asm db 66h	/* push dword 0x0 */
+    asm push 0
+    asm les bx,dword ptr _l+292
+    asm mov al,es:[bx+0bh]
+    asm cbw
+    asm shl ax,1
+    asm db 8bh, 0d8h	/* mov bx,ax */
+    asm mov al,[bx+510h]
+    asm cbw
+    asm mov bx,word ptr _l+292
+    asm mov dx,es:[bx+9]
+    asm db 3, 0d0h	/* add dx,ax */
+    asm push dx
+    asm mov al,es:[bx+0bh]
+    asm cbw
+    asm shl ax,1
+    asm db 8bh, 0d8h	/* mov bx,ax */
+    asm mov al,[bx+50fh]
+    asm cbw
+    asm mov bx,word ptr _l+292
+    asm mov dx,es:[bx+7]
+    asm db 3, 0d0h	/* add dx,ax */
+    asm push dx
+    asm db 66h	/* push dword [bp-0x10] */
+    asm push word ptr _l+280
+    asm db 66h	/* push dword [bp-0x22] */
+    asm push word ptr _l+262
+    ((void (far *)(void))draw_obj)();
+    asm add sp,16h
+    asm mov word ptr _l+260,dx
+    asm mov word ptr _l+258,ax
+    asm db 66h	/* push dword [bp-0x22] */
+    asm push word ptr _l+262
+    asm call far ptr fn_0845_0631
+    asm add sp,4
+    asm mov word ptr _l+276,0
+L_0177:
+    asm les bx,dword ptr _l+292
+    asm add bx,word ptr _l+276
+    asm mov al,es:[bx+2ah]
+    asm cbw
+    asm dec ax
+    asm mov word ptr _l+272,ax
+    asm cmp ax,0ffffh
+    asm jnz L_018e
+    asm jmp L_02d8
+L_018e:
+    asm les bx,dword ptr _l+292
+    asm les bx,dword ptr es:[bx+21h]
+    asm mov al,es:[bx]
+    asm cbw
+    asm shl ax,9
+    asm mov dx,word ptr _l+272
+    asm shl dx,7
+    asm db 3, 0c2h	/* add ax,dx */
+    asm mov dx,word ptr _l+274
+    asm shl dx,3
+    asm db 3, 0c2h	/* add ax,dx */
+    asm add ax,7672h
+    asm mov word ptr _l+290,ds
+    asm mov word ptr _l+288,ax
+    asm les bx,dword ptr _l+288
+    asm db 66h	/* push dword [es:bx] */
+    asm push word ptr es:[bx]
+    asm call far ptr fn_0845_04ec
+    asm add sp,4
+    asm mov word ptr _l+264,dx
+    asm mov word ptr _l+262,ax
+    asm les bx,dword ptr _l+288
+    asm db 66h	/* cmp dword [es:bx],0x0 */
+    asm cmp word ptr es:[bx],0
+    asm jz L_022d
+    asm push word ptr g_3ffc
+    asm push word ptr es:[bx+4]
+    asm call far ptr fn_1aff_0002
+    asm add sp,4
+    asm db 8bh, 0f8h	/* mov di,ax */
+    asm push word ptr g_3ffa
+    asm les bx,dword ptr _l+288
+    asm push word ptr es:[bx+6]
+    asm call far ptr fn_1aff_0002
+    asm add sp,4
+    asm db 0bh, 0f6h	/* or si,si */
+    asm jz L_020d
+    asm push word ptr g_3ffc
+    asm db 66h	/* push dword [bp-0x22] */
+    asm push word ptr _l+262
+    asm call far ptr fn_1fd1_0024
+    asm add sp,6
+L_020d:
+    asm db 66h	/* push dword [bp-0x26] */
+    asm push word ptr _l+258
+    asm mov ax,1
+    asm db 0bh, 0c6h	/* or ax,si */
+    asm push ax
+    asm push word ptr g_3ffe
+    asm push word ptr g_4000
+    asm db 66h	/* push dword 0x0 */
+    asm push 0
+    asm db 66h	/* push dword [bp-0x22] */
+    asm push word ptr _l+262
+    ((void (far *)(void))blit)();
+    asm add sp,12h
+L_022d:
+    asm db 66h	/* push dword [bp-0x22] */
+    asm push word ptr _l+262
+    asm call far ptr fn_0845_0631
+    asm add sp,4
+    asm inc word ptr _l+276
+    asm cmp word ptr _l+276,4
+    asm jnl L_0245
+    asm jmp L_0177
+L_0245:
+    asm jmp L_02d8
+L_0248:
+    asm les bx,dword ptr _l+292
+    asm les bx,dword ptr es:[bx+21h]
+    asm mov al,es:[bx]
+    asm cbw
+    asm shl ax,6
+    asm mov dx,seg f_2803_002c
+    asm db 8bh, 0d8h	/* mov bx,ax */
+    asm mov es,dx
+    asm mov ax,es:[bx+4cch]
+    asm mov dx,es:[bx+4cah]
+    asm mov word ptr _l+286,ax
+    asm mov word ptr _l+284,dx
+    asm push ax
+    asm push dx
+    asm call far ptr fn_0845_04ec
+    asm add sp,4
+    asm mov word ptr _l+264,dx
+    asm mov word ptr _l+262,ax
+    asm push word ptr _l+270
+    asm push dx
+    asm push ax
+    asm push ds
+    asm push 3ffah
+    asm push ds
+    asm push 3ffch
+    asm push ds
+    asm push 3ffeh
+    asm push ds
+    asm push 4000h
+    asm les bx,dword ptr _l+292
+    asm mov al,es:[bx+0bh]
+    asm cbw
+    asm shl ax,1
+    asm db 8bh, 0d8h	/* mov bx,ax */
+    asm mov al,[bx+510h]
+    asm cbw
+    asm mov bx,word ptr _l+292
+    asm mov dx,es:[bx+9]
+    asm db 3, 0d0h	/* add dx,ax */
+    asm push dx
+    asm mov al,es:[bx+0bh]
+    asm cbw
+    asm shl ax,1
+    asm db 8bh, 0d8h	/* mov bx,ax */
+    asm mov al,[bx+50fh]
+    asm cbw
+    asm mov bx,word ptr _l+292
+    asm mov dx,es:[bx+7]
+    asm db 3, 0d0h	/* add dx,ax */
+    asm push dx
+    ((void (far *)(void))ovr_2cda_0039)();
+    asm add sp,1ah
+    asm db 66h	/* push dword [bp-0x22] */
+    asm push word ptr _l+262
+    asm call far ptr fn_0845_0631
+    asm add sp,4
+L_02d8:
+    asm les bx,dword ptr _l+292
+    asm cmp word ptr es:[bx+1bh],0
+    asm jnz L_02e5
+    asm jmp Lret
+L_02e5:
+    asm db 66h	/* push dword [bp-0xc] */
+    asm push word ptr _l+284
+    asm call far ptr fn_0845_04ec
+    asm add sp,4
+    asm mov word ptr _l+264,dx
+    asm mov word ptr _l+262,ax
+    asm push word ptr g_3ffc
+    asm push dx
+    asm push ax
+    asm call far ptr fn_1fd1_0024
+    asm add sp,6
+    asm sar ax,1
+    asm db 8bh, 0f8h	/* mov di,ax */
+    asm push word ptr g_3ffa
+    asm db 66h	/* push dword [bp-0x22] */
+    asm push word ptr _l+262
+    asm call far ptr fn_1fd1_003d
+    asm add sp,6
+    asm sar ax,1
+    asm mov word ptr _l+278,ax
+    asm les bx,dword ptr _l+292
+    asm cmp byte ptr es:[bx+14h],0dh
+    asm jz L_0340
+    asm les bx,dword ptr es:[bx+21h]
+    asm mov ax,es:[bx+3ah]
+    asm les bx,dword ptr _l+292
+    asm mov bx,es:[bx+1bh]
+    asm and bx,7fffh
+    asm cwd
+    asm idiv bx
+    asm jmp L_034a
+L_0340:
+    asm les bx,dword ptr _l+292
+    asm mov al,es:[bx+15h]
+    asm cbw
+    asm shl ax,1
+L_034a:
+    asm db 8bh, 0f0h	/* mov si,ax */
+    asm mov ax,seg f_2803_002c
+    asm mov es,ax
+    asm db 66h	/* push dword [es:0xbe] */
+    asm push word ptr es:[0beh]
+    asm call far ptr fn_0845_04ec
+    asm add sp,4
+    asm mov word ptr _l+264,dx
+    asm mov word ptr _l+262,ax
+    asm les bx,dword ptr _l+292
+    asm les bx,dword ptr es:[bx+21h]
+    asm mov ax,es:[bx+3eh]
+    asm and ax,0c000h
+    asm cmp ax,4000h
+    asm jz L_0384
+    asm cmp ax,8000h
+    asm jz L_038b
+    asm cmp ax,0c000h
+    asm jz L_0392
+    asm jmp L_0399
+L_0384:
+    asm mov word ptr _l+256,3fh
+    asm jmp L_039e
+L_038b:
+    asm mov word ptr _l+256,0fh
+    asm jmp L_039e
+L_0392:
+    asm mov word ptr _l+256,4ah
+    asm jmp L_039e
+L_0399:
+    asm mov word ptr _l+256,0
+L_039e:
+    asm cmp word ptr _l+256,0
+    asm jz L_03d7
+    asm db 33h, 0c9h	/* xor cx,cx */
+L_03a6:
+    asm lea ax,word ptr _l
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm db 3, 0d8h	/* add bx,ax */
+    asm mov ss:[bx],cl
+    asm cmp cx,2
+    asm jl L_03d0
+    asm cmp cx,7
+    asm jg L_03d0
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm db 3, 0d8h	/* add bx,ax */
+    asm mov al,ss:[bx]
+    asm add al,byte ptr _l+256
+    asm lea dx,word ptr _l
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm db 3, 0dah	/* add bx,dx */
+    asm mov ss:[bx],al
+L_03d0:
+    asm inc cx
+    asm cmp cx,100h
+    asm jl L_03a6
+L_03d7:
+    asm les bx,dword ptr _l+292
+    asm mov al,es:[bx+11h]
+    asm cbw
+    asm db 3, 0f8h	/* add di,ax */
+    asm mov al,es:[bx+12h]
+    asm cbw
+    asm add word ptr _l+278,ax
+    asm cmp si,4
+    asm jng L_03f1
+    asm mov si,4
+L_03f1:
+    asm cmp si,1
+    asm jnl L_03f9
+    asm mov si,1
+L_03f9:
+    asm mov ax,g_3ffc
+    asm cwd
+    asm idiv si
+    asm mov word ptr _l+268,ax
+    asm mov ax,g_3ffa
+    asm cwd
+    asm idiv si
+    asm mov word ptr _l+266,ax
+    asm push ax
+    asm push word ptr _l+268
+    asm cmp word ptr _l+256,0
+    asm jz L_041a
+    asm mov ax,1
+    asm jmp L_041c
+L_041a:
+    asm db 33h, 0c0h	/* xor ax,ax */
+L_041c:
+    asm push ax
+    asm push ss
+    asm lea ax,word ptr _l
+    asm push ax
+    asm db 66h, 68h, 0dh, 0, 24h, 1	/* push dword 0x124000d */
+    asm mov ax,g_3ffe
+    asm add ax,word ptr _l+278
+    asm push ax
+    asm mov ax,g_4000
+    asm db 3, 0c7h	/* add ax,di */
+    asm push ax
+    asm db 66h	/* push dword [bp-0x22] */
+    asm push word ptr _l+262
+    asm push word ptr g_4d72
+    asm call far ptr fn_1fd6_000a
+    asm add sp,18h
+Lret:
+    ;
+}
 
+/* C version: BCC 3.1 does not reproduce the original code from it (tools/inlasm.py) */
+#if 0
 static void draw_block(int n)
 {
     struct Item far *it;
@@ -690,6 +1176,328 @@ static void draw_block(int n)
         }
         si = it->drawNext;
     }
+}
+#endif
+static void draw_block(int n)
+{
+    char _l[20];
+    _SI;   /* saved by the original */
+    _DI;   /* saved by the original */
+    asm mov bx,[bp+6]
+    asm shl bx,2
+    asm mov ax,[bx+4d86h]
+    asm mov dx,[bx+4d84h]
+    asm mov word ptr _l+2,ax
+    asm mov word ptr _l,dx
+    asm les bx,dword ptr _l
+    asm mov si,es:[bx+4]
+    asm push si
+    asm call far ptr fn_080e_000b
+    asm pop cx
+    asm mov word ptr _l+14,dx
+    asm mov word ptr _l+12,ax
+    asm les bx,dword ptr _l
+    asm mov al,es:[bx+8]
+    asm cbw
+    asm cmp ax,g_7fdf
+    asm jz L_008b
+    asm mov word ptr es:[bx+6],0
+    asm db 0a0h, 0dfh, 7fh	/* mov al,[0x7fdf] */
+    asm mov es:[bx+8],al
+    asm jmp L_0087
+L_004d:
+    asm push si
+    asm call far ptr fn_080e_000b
+    asm pop cx
+    asm mov word ptr _l+14,dx
+    asm mov word ptr _l+12,ax
+    asm push 1
+    asm mov bx,[bp+6]
+    asm shl bx,2
+    asm db 66h	/* push dword [bx+0x4d84] */
+    asm push word ptr [bx+4d84h]
+    asm push si
+    asm push word ptr g_7fdf
+    asm call far ptr fn_080e_0245
+    asm add sp,0ah
+    asm push si
+    asm call far ptr fn_080e_000b
+    asm pop cx
+    asm mov word ptr _l+14,dx
+    asm mov word ptr _l+12,ax
+    asm les bx,dword ptr _l+12
+    asm mov si,es:[bx]
+L_0087:
+    asm db 0bh, 0f6h	/* or si,si */
+    asm jnz L_004d
+L_008b:
+    asm les bx,dword ptr _l
+    asm mov si,es:[bx+6]
+    asm db 0e9h, 0a6h, 2	/* jmp 0x33b */
+L_0095:
+    asm test si,8000h
+    asm jz L_00bd
+    asm and si,7fffh
+    asm cmp word ptr [bp+6],0fh
+    asm jnl L_00ab
+    asm push si
+    ((void (far *)(void))draw_monster)();
+    asm pop cx
+L_00ab:
+    asm db 8bh, 0deh	/* mov bx,si */
+    asm imul bx,bx,2eh
+    asm mov ax,seg f_2803_002c
+    asm mov es,ax
+    asm mov si,es:[bx+15fch]
+    asm db 0e9h, 7eh, 2	/* jmp 0x33b */
+L_00bd:
+    asm db 8bh, 0c6h	/* mov ax,si */
+    asm shl ax,4
+    asm add ax,1cfdh
+    asm mov word ptr _l+18,seg f_2803_002c
+    asm mov word ptr _l+16,ax
+    asm db 66h, 0c7h, 46h, 0f0h, 0, 0, 0, 0	/* mov dword [bp-0x10],0x0 */
+    asm db 8bh, 0c6h	/* mov ax,si */
+    asm shl ax,4
+    asm add ax,1cfdh
+    asm mov word ptr _l+18,seg f_2803_002c
+    asm mov word ptr _l+16,ax
+    asm db 8bh, 0deh	/* mov bx,si */
+    asm db 83h, 0e3h, 7	/* and bx,0x7 */
+    asm mov al,[bx+53fh]
+    asm cbw
+    asm shl ax,1
+    asm mov word ptr _l+10,ax
+    asm db 8bh, 0deh	/* mov bx,si */
+    asm sar bx,1
+    asm db 83h, 0e3h, 7	/* and bx,0x7 */
+    asm mov al,[bx+53fh]
+    asm cbw
+    asm add ax,5
+    asm mov word ptr _l+8,ax
+    asm les bx,dword ptr _l+16
+    asm cmp byte ptr es:[bx+4],2
+    asm jc L_0123
+    asm cmp byte ptr es:[bx+4],2
+    asm jnc L_011a
+    asm db 0e9h, 1ah, 2	/* jmp 0x334 */
+L_011a:
+    asm cmp word ptr [bp+6],0fh
+    asm jl L_0123
+    asm db 0e9h, 11h, 2	/* jmp 0x334 */
+L_0123:
+    asm les bx,dword ptr _l+16
+    asm cmp byte ptr es:[bx+4],2
+    asm jc L_013a
+    asm mov al,es:[bx+4]
+    asm mov ah,0
+    asm dec ax
+    asm imul ax,ax,6
+    asm sub word ptr _l+8,ax
+L_013a:
+    asm db 33h, 0ffh	/* xor di,di */
+    asm les bx,dword ptr _l+16
+    asm mov ax,es:[bx+0ch]
+    asm imul ax,ax,0dh
+    asm les bx,dword ptr g_7fb2
+    asm db 3, 0d8h	/* add bx,ax */
+    asm test word ptr es:[bx+3],1000h
+    asm jnz L_0157
+    asm db 0e9h, 27h, 1	/* jmp 0x27e */
+L_0157:
+    asm les bx,dword ptr _l+16
+    asm test word ptr es:[bx+0eh],0c000h
+    asm jz L_0165
+    asm db 0e9h, 19h, 1	/* jmp 0x27e */
+L_0165:
+    asm mov ax,es:[bx+0ch]
+    asm imul ax,ax,0dh
+    asm les bx,dword ptr g_7fb2
+    asm db 3, 0d8h	/* add bx,ax */
+    asm mov al,es:[bx+2]
+    asm mov ah,0
+    asm db 8bh, 0c8h	/* mov cx,ax */
+    asm les bx,dword ptr _l+16
+    asm mov ax,es:[bx+0ch]
+    asm imul ax,ax,0dh
+    asm les bx,dword ptr g_7fb2
+    asm db 3, 0d8h	/* add bx,ax */
+    asm test word ptr es:[bx+3],800h
+    asm jz L_0195
+    asm mov cx,7
+L_0195:
+    asm db 33h, 0d2h	/* xor dx,dx */
+L_0197:
+    asm db 8bh, 0dah	/* mov bx,dx */
+    asm imul bx,bx,11h
+    asm cmp byte ptr [bx+4dcch],0
+    asm jz L_01ae
+    asm db 8bh, 0dah	/* mov bx,dx */
+    asm imul bx,bx,11h
+    asm cmp [bx+4dd0h],si
+    asm jz L_01b4
+L_01ae:
+    asm inc dx
+    asm cmp dx,8
+    asm jl L_0197
+L_01b4:
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm imul bx,bx,0ah
+    asm mov ax,seg f_24dc_0000
+    asm mov es,ax
+    asm cmp word ptr es:[bx+8ah],0
+    asm jz L_01e5
+    asm les bx,dword ptr _l+16
+    asm mov ax,es:[bx+7]
+    asm xor ax,es:[bx+9]
+    asm test ax,20h
+    asm jz L_01e5
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm imul bx,bx,0ah
+    asm mov ax,seg f_24dc_0000
+    asm mov es,ax
+    asm or di,es:[bx+8ah]
+L_01e5:
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm imul bx,bx,0ah
+    asm mov ax,seg f_24dc_0000
+    asm mov es,ax
+    asm or di,es:[bx+88h]
+    asm cmp dx,8
+    asm db 74h, 71h	/* jz 0x26a */
+    asm db 8bh, 0dah	/* mov bx,dx */
+    asm imul bx,bx,11h
+    asm mov al,[bx+4dd7h]
+    asm cbw
+    asm sar ax,1
+    asm mov si,g_7fdf
+    asm db 2bh, 0f0h	/* sub si,ax */
+    switch ((int)_SI) {
+    case -3: goto L_022d;
+    case -2: goto L_0243;
+    case -1: goto L_022f;
+    case 0: goto L_021c;
+    case 1: goto L_022d;
+    case 2: goto L_0243;
+    case 3: goto L_022f;
+    default: goto L_0252;
+    }
+L_021c:
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm imul bx,bx,0ah
+    asm mov ax,seg f_24dc_0000
+    asm mov es,ax
+    asm mov si,es:[bx+84h]
+    asm db 0ebh, 25h	/* jmp 0x252 */
+L_022d:
+    asm db 0ebh, 3	/* jmp 0x232 */
+L_022f:
+    asm db 83h, 0cfh, 10h	/* or di,0x10 */
+L_0232:
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm imul bx,bx,0ah
+    asm mov ax,seg f_24dc_0000
+    asm mov es,ax
+    asm mov si,es:[bx+86h]
+    asm jmp L_0252
+L_0243:
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm imul bx,bx,0ah
+    asm mov ax,seg f_24dc_0000
+    asm mov es,ax
+    asm mov si,es:[bx+82h]
+L_0252:
+    asm db 8bh, 0deh	/* mov bx,si */
+    asm shl bx,2
+    asm db 66h	/* push dword [bx+0x4e54] */
+    asm push word ptr [bx+4e54h]
+    asm call far ptr fn_0845_04ec
+    asm add sp,4
+    asm mov word ptr _l+6,dx
+    asm mov word ptr _l+4,ax
+L_026a:
+    asm db 66h	/* push dword [bp-0x10] */
+    asm push word ptr _l+4
+    asm call far ptr fn_1f36_0224
+    asm add sp,4
+    asm sar ax,2
+    asm add word ptr _l+8,ax
+    asm db 0ebh, 7dh	/* jmp 0x2fb */
+L_027e:
+    asm les bx,dword ptr _l+16
+    asm mov ax,es:[bx+0ch]
+    asm imul ax,ax,0dh
+    asm les bx,dword ptr g_7fb2
+    asm db 3, 0d8h	/* add bx,ax */
+    asm test word ptr es:[bx+3],40h
+    asm jz L_02be
+    asm les bx,dword ptr _l+16
+    asm mov ax,es:[bx+0ch]
+    asm imul ax,ax,0dh
+    asm les bx,dword ptr g_7fb2
+    asm db 3, 0d8h	/* add bx,ax */
+    asm mov al,es:[bx+2]
+    asm mov ah,0
+    asm shl ax,2
+    asm mov dx,seg f_2803_002c
+    asm db 8bh, 0d8h	/* mov bx,ax */
+    asm mov es,dx
+    asm db 66h	/* push dword [es:bx+0xa6] */
+    asm push word ptr es:[bx+0a6h]
+    asm db 0ebh, 2fh	/* jmp 0x2ed */
+L_02be:
+    asm les bx,dword ptr _l+16
+    asm mov ax,es:[bx+0ch]
+    asm imul ax,ax,0dh
+    asm les bx,dword ptr g_7fb2
+    asm db 3, 0d8h	/* add bx,ax */
+    asm mov al,es:[bx+2]
+    asm mov ah,0
+    asm shl ax,1
+    asm mov dx,seg f_27b1_0000
+    asm db 8bh, 0d8h	/* mov bx,ax */
+    asm mov es,dx
+    asm db 26h, 8ah, 87h, 4ch, 0	/* mov al,[es:bx+0x4c] */
+    asm cbw
+    asm shl ax,2
+    asm db 8bh, 0d8h	/* mov bx,ax */
+    asm db 66h	/* push dword [bx+0x7c92] */
+    asm push word ptr [bx+7c92h]
+L_02ed:
+    asm call far ptr fn_0845_04ec
+    asm add sp,4
+    asm mov word ptr _l+6,dx
+    asm mov word ptr _l+4,ax
+L_02fb:
+    asm db 66h	/* cmp dword [bp-0x10],0x0 */
+    asm cmp word ptr _l+4,0
+    asm jz L_0334
+    asm db 66h, 68h, 0ffh, 0ffh, 0, 0	/* push dword 0xffff */
+    asm push di
+    asm push word ptr _l+8
+    asm push word ptr _l+10
+    asm les bx,dword ptr _l+16
+    asm push word ptr es:[bx+9]
+    asm push word ptr es:[bx+7]
+    asm db 66h	/* push dword 0x0 */
+    asm push 0
+    asm db 66h	/* push dword [bp-0x10] */
+    asm push word ptr _l+4
+    ((void (far *)(void))draw_obj)();
+    asm add sp,16h
+    asm db 66h	/* push dword [bp-0x10] */
+    asm push word ptr _l+4
+    asm call far ptr fn_0845_0631
+    asm add sp,4
+L_0334:
+    asm les bx,dword ptr _l+16
+    asm mov si,es:[bx+2]
+L_033b:
+    asm db 0bh, 0f6h	/* or si,si */
+    asm jz Lret
+    asm jmp L_0095
+Lret:
+    ;
 }
 
 /* register/stack-slot choices differ; original bytes transplanted (with following statics) */

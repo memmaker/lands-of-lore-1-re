@@ -46,8 +46,8 @@ def disasm(b):
 DEF = re.compile(r'^(?!typedef|extern)[A-Za-z_][^;=(]*?\b([A-Za-z_]\w*)\s*\([^;]*\)\s*$')
 
 
-def extract(mod, fn):
-    m = omf.modules(os.path.join(ROOT, 'run/m/%s/%s.OBJ' % (mod, mod.upper())))[0]
+def extract(mod, fn, obj=None):
+    m = omf.modules(obj or os.path.join(ROOT, 'run/m/%s/%s.OBJ' % (mod, mod.upper())))[0]
     ci = [i for i, s in enumerate(m['segs']) if s and s.get('cls') == 'CODE'][0]
     seg = m['segs'][ci]
     pubs = {o: n for n, si, o in m['pubs'] if si == ci}
@@ -60,6 +60,11 @@ def extract(mod, fn):
         if d[q] == 0x0e and d[q + 1] == 0xe8 and not mk[q + 2]:
             starts.add((q + 4 + int.from_bytes(d[q + 2:q + 4], 'little', signed=True)) & 0xffff)
     lines = open(os.path.join(ROOT, 'src', mod + '.c')).read().split('\n')
+    skip = False   # drop the C versions kept in #if 0
+    for k, l in enumerate(lines):
+        if l.startswith('#if 0'): skip = True
+        elif skip and l.startswith('#endif'): skip = False; lines[k] = ''
+        if skip: lines[k] = ''
     defs = [DEF.match(l).group(1) for k, l in enumerate(lines[:-1]) if DEF.match(l) and lines[k + 1].startswith('{')]
     starts = sorted(o for o in starts if o < len(d))
     if len(starts) == len(defs):
@@ -159,7 +164,7 @@ def generate(code, mask, ext, offs, pubs, selfcall, declared, seg_name, dbset, l
         mask_ = None
         if body[i][2].startswith('and bx,'): mask_ = int(body[i][2].split(',')[1], 0); i -= 1
         ms = re.match(r'mov bx,(\w\w|\[bp-0x([0-9a-f]+)\])$', body[i][2])
-        src = ('*(int *)(_l + %d)' % (N - int(ms.group(2), 16))) if ms.group(2) else '_' + ms.group(1).upper()
+        src = ('*(int *)(_l + %d)' % (N - int(ms.group(2), 16))) if ms.group(2) else '(int)_' + ms.group(1).upper()
         expr = '%s & 0x%x' % (src, mask_) if mask_ is not None else src
         lines_ = ['    switch (%s) {' % expr]
         for k in range(n + 1):
@@ -224,7 +229,12 @@ def generate(code, mask, ext, offs, pubs, selfcall, declared, seg_name, dbset, l
 
 def splice(src, fn, N, regs, out):
     lines = src.split('\n')
-    _, _, head, s, en = [x for x in split.functions(lines) if x[0] == fn][0]
+    fs = [x for x in split.functions(lines) if x[0] == fn]
+    if fs: _, _, head, s, en = fs[0]
+    else:   # static function without an address name
+        s = [k for k, l in enumerate(lines[:-1]) if DEF.match(l) and DEF.match(l).group(1) == fn and lines[k + 1].startswith('{')][0]
+        head = lines[s]; en = s + 1
+        while not lines[en].startswith('}'): en += 1
     p = s - 1
     while p >= 0 and lines[p].strip() == '': p -= 1
     if 'NONMATCHING' in lines[p]: del lines[p]; s -= 1; en -= 1
@@ -241,7 +251,8 @@ def main():
     path = os.path.join(ROOT, 'src', mod + '.c')
     src = open(path).read()
     subprocess.run([os.path.join(ROOT, 'tools/mc.sh'), mod], capture_output=True)
-    code, mask, ext, offs, pubs, lo, selfcall, segdata = extract(mod, fn)
+    # INLASM_ORIG: an OBJ with the original bytes, for statics that were transplanted with a converted function
+    code, mask, ext, offs, pubs, lo, selfcall, segdata = extract(mod, fn, os.environ.get('INLASM_ORIG'))
     hdrs = src + ''.join(open(os.path.join(ROOT, 'src', h)).read() for h in re.findall(r'#include "([^"]+)"', src)
                          if os.path.exists(os.path.join(ROOT, 'src', h)))
     declared = lambda nm: re.search(r'\b%s\b' % re.escape(nm), hdrs) is not None
@@ -270,7 +281,7 @@ def main():
         diff = [q for q in diff if not any(s0 <= q < e0 for s0, e0 in sw)] + [q for q in diff if any(s0 <= q < e0 for s0, e0 in sw)]
         if not diff and len(oc) == len(code):   # far-call rewrite in overlays as a difference)
             line = ['_%s: OK' % fn]
-        elif line:
+        else:   # statics have no cmpobj line
             line = ['_%s: diff at +%x' % (fn, diff[0] if diff else min(len(oc), len(code)))]
         if line and ': OK' in line[0]:
             print('%s: OK after %d rounds, %d instructions, %d as raw bytes%s' % (
