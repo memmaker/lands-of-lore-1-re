@@ -667,7 +667,7 @@ int fn_0845_1044(int a, int b)
     return (int)(((long)b << 8) / a);
 }
 
-/* NONMATCHING */
+
 int fn_0845_105c(int a, int b, unsigned long t, long total)
 {
     char far *pa;
@@ -682,7 +682,7 @@ int fn_0845_105c(int a, int b, unsigned long t, long total)
     pa = (char far *)&g_2fac[a * 3];
     pb = (char far *)&g_2fac[b * 3];
     pc = (char far *)g_540e + a * 3;
-    for (i = 0, changed = i; i < 3; i++, pa++, pb++, pc++) {
+    for (changed = i = 0; i < 3; i++, pa++, pb++, pc++) {
         if (t < total) {
             v = (*pb & 0x3f) - (*pa & 0x3f);
             if (v) changed = 1;
