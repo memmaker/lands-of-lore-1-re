@@ -834,7 +834,7 @@ void ovr_2cda_004d(void)
 }
 
 /* register/stack-slot choices differ; original bytes transplanted (with following statics) */
-/* NONMATCHING */
+
 void ovr_2cda_0052(void)
 {
     int sgn;
@@ -852,7 +852,8 @@ void ovr_2cda_0052(void)
     else dx = (g_7fdf << 6) - g_7fe1;
     if (dx <= -0x80) dx += 0x100;
     if (dx >= 0x80) dx -= 0x100;
-    g_06d7 += dx >> 2;
+    dx >>= 2;
+    g_06d7 += dx;
     g_06d7 = g_06d7 < 0x18 ? g_06d7 : 0x18;
     g_06d7 = g_06d7 > -0x18 ? g_06d7 : -0x18;
     g_7fe1 += g_06d7;
