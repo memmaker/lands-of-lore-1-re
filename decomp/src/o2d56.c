@@ -858,7 +858,8 @@ char far *ovr_2d56_007f(int id)
     return fn_0845_06f8(id);
 }
 
-/* NONMATCHING */
+/* C version: BCC 3.1 does not reproduce the original code from it (tools/inlasm.py) */
+#if 0
 int ovr_2d56_0084(struct Btn far *b)
 {
     int id, run, old, nw;
@@ -905,6 +906,136 @@ int ovr_2d56_0084(struct Btn far *b)
     }
     ovr_2d56_0052(&M.m[6]);
     return -1;
+}
+#endif
+int ovr_2d56_0084(struct Btn far *b)
+{
+    char _l[4];
+    _SI;   /* saved by the original */
+    _DI;   /* saved by the original */
+    asm mov al,g_81ff
+    asm cbw
+    asm db 0bh, 0c0h	/* or ax,ax */
+    asm jnz L_0015
+    asm mov byte ptr g_81fe,1
+L_0015:
+    asm push seg f_2612_0000
+    asm push 276h
+    ((void (far *)(void))ovr_2d56_004d)();
+    asm add sp,4
+    asm push seg f_2612_0000
+    asm push 276h
+    ((void (far *)(void))ovr_2d56_0057)();
+    asm add sp,4
+    asm mov di,1
+    asm db 0e9h, 0e4h, 0	/* jmp 0x119 */
+L_0035:
+    asm db 66h	/* push dword [0x4b60] */
+    asm push word ptr g_4b60
+    asm call far ptr fn_163d_0039
+    asm add sp,4
+    asm db 8bh, 0f0h	/* mov si,ax */
+    asm test si,8000h
+    asm jnz L_004d
+    asm db 0e9h, 0c7h, 0	/* jmp 0x114 */
+L_004d:
+    asm and ax,7fffh
+    asm push ax
+    asm db 66h	/* push dword [0x4b60] */
+    asm push word ptr g_4b60
+    asm call far ptr fn_20bf_00dd
+    asm add sp,6
+    asm mov [bp+8],dx
+    asm mov [bp+6],ax
+    switch (_SI & 0x7fff) {
+    case 1: goto L_007a;
+    case 2: goto L_00ad;
+    case 3: goto L_00b4;
+    case 4: goto L_00bb;
+    case 5: goto L_00cf;
+    case 6: goto L_00f8;
+    default: goto L_00fa;
+    }
+L_0073:
+L_007a:
+    asm call far ptr fn_0845_1036
+    asm db 8bh, 0d0h	/* mov dx,ax */
+    asm mov word ptr _l+2,ax
+    asm inc dx
+    asm db 8bh, 0c2h	/* mov ax,dx */
+    asm cmp ax,2
+    asm jng L_008e
+    asm db 33h, 0d2h	/* xor dx,dx */
+L_008e:
+    asm mov word ptr _l,dx
+    asm shl dx,4
+    asm db 83h, 26h, 0dah, 7fh, 0fh	/* and word [0x7fda],0xf */
+    asm or g_7fda,dx
+    asm push word ptr _l
+    asm push word ptr _l+2
+    ((void (far *)(void))ovr_2d56_003e)();
+    asm add sp,4
+    asm db 0ebh, 4dh	/* jmp 0xfa */
+L_00ad:
+    asm db 83h, 36h, 0dah, 7fh, 8	/* xor word [0x7fda],0x8 */
+    asm db 0ebh, 46h	/* jmp 0xfa */
+L_00b4:
+    asm db 83h, 36h, 0dah, 7fh, 4	/* xor word [0x7fda],0x4 */
+    asm jmp L_00fa
+L_00bb:
+    asm cmp byte ptr g_81fd,0
+    asm jz L_00c8
+    asm dec byte ptr g_81fd
+    asm jmp L_00fa
+L_00c8:
+    asm mov byte ptr g_81fd,2
+    asm jmp L_00fa
+L_00cf:
+    asm mov al,g_81ff
+    asm cbw
+    asm db 0bh, 0c0h	/* or ax,ax */
+    asm jz L_00de
+    asm cmp word ptr g_3749,0
+    asm jnz L_00e5
+L_00de:
+    asm mov byte ptr g_81fe,1
+    asm jmp L_00f1
+L_00e5:
+    asm mov al,g_81fe
+    asm cbw
+    asm neg ax
+    asm db 1bh, 0c0h	/* sbb ax,ax */
+    asm inc ax
+    asm mov g_81fe,al
+L_00f1:
+    asm call far ptr fn_0845_1605
+    asm jmp L_00fa
+L_00f8:
+    asm db 33h, 0ffh	/* xor di,di */
+L_00fa:
+    asm push 0
+    asm db 66h	/* push dword [bp+0x6] */
+    asm push word ptr [bp+6]
+    asm call far ptr fn_20bf_010c
+    asm add sp,6
+    asm db 66h	/* push dword [bp+0x6] */
+    asm push word ptr [bp+6]
+    asm call far ptr fn_163d_05cc
+    asm add sp,4
+L_0114:
+    asm call far ptr fn_0845_093a
+L_0119:
+    asm db 0bh, 0ffh	/* or di,di */
+    asm jz L_0120
+    asm jmp L_0035
+L_0120:
+    asm push seg f_2612_0000
+    asm push 276h
+    ((void (far *)(void))ovr_2d56_0052)();
+    asm add sp,4
+    asm mov ax,0ffffh
+Lret:
+    ;
 }
 
 int ovr_2d56_0089(struct Btn far *b)

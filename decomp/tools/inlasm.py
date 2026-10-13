@@ -91,7 +91,7 @@ def extract(mod, fn):
                     v = int.from_bytes(d[f.off:f.off + 2], 'little')
                     if f.dpos is not None: v += int.from_bytes(f.raw[f.dpos:f.dpos + 2], 'little')
                     selfcall[f.off - lo] = (v & 0xffff) - lo
-    return code, seg['mask'][lo:hi], ext, offs, {o - lo: n for o, n in pubs.items()}, lo, selfcall
+    return code, seg['mask'][lo:hi], ext, offs, {o - lo: n for o, n in pubs.items()}, lo, selfcall, bytes(d)
 
 
 # push cs/call near into the module's own segment is a C statement: BASM gives `call near ptr f` a segment-base
@@ -101,7 +101,7 @@ def extract(mod, fn):
 CALL = '    ((void (far *)(void))%s)();'
 
 
-def generate(code, mask, ext, offs, pubs, selfcall, declared, seg_name, dbset):
+def generate(code, mask, ext, offs, pubs, selfcall, declared, seg_name, dbset, lo=0, segdata=b''):
     ins = disasm(code)
     assert ins[0][1] == b'\x55' and ins[1][1] == b'\x8b\xec', 'no standard frame'
     k = 2; N = 0
@@ -136,11 +136,46 @@ def generate(code, mask, ext, offs, pubs, selfcall, declared, seg_name, dbset):
                 c2 = re.sub(r'\b_l\b', sz + ' ptr _l', c2, count=1)
             ct = c2
         return ct
+    # switch dispatch (mov bx,SRC [and bx,M] [dec bx|sub bx,K] cmp bx,N ja def|jna ok+jmp def shl bx,1
+    # jmp cs:[bx+T]) becomes a C switch: BCC emits the same dispatch and the table after the epilogue
+    global SWITCHES
+    switches = SWITCHES = {}   # first instruction address -> (last address, C lines)
+    for j, (a, b, t) in enumerate(body):
+        mt = re.match(r'jmp word near \[cs:bx\+0x([0-9a-f]+)\]$', t)
+        if not mt: continue
+        T = int(mt.group(1), 16); i = j - 1
+        assert body[i][2] == 'shl bx,1'; i -= 1
+        if body[i][2].startswith('jmp'):
+            dflt = int(body[i][2].split()[-1], 16); i -= 1
+            assert re.match(r'jna|jbe', body[i][2])
+        else:
+            assert re.match(r'ja\b|jnbe', body[i][2]); dflt = int(body[i][2].split()[-1], 16)
+        i -= 1
+        n = int(re.match(r'cmp bx,(0x[0-9a-f]+|\d+)$', body[i][2]).group(1), 0); i -= 1
+        base = 0
+        if body[i][2] == 'dec bx': base = 1; i -= 1
+        elif body[i][2].startswith('sub bx,'):
+            v = int(body[i][2].split(',')[1], 0); base = v - (1 << 64) if v >= 1 << 63 else v; i -= 1
+        mask_ = None
+        if body[i][2].startswith('and bx,'): mask_ = int(body[i][2].split(',')[1], 0); i -= 1
+        ms = re.match(r'mov bx,(\w\w|\[bp-0x([0-9a-f]+)\])$', body[i][2])
+        src = ('*(int *)(_l + %d)' % (N - int(ms.group(2), 16))) if ms.group(2) else '_' + ms.group(1).upper()
+        expr = '%s & 0x%x' % (src, mask_) if mask_ is not None else src
+        lines_ = ['    switch (%s) {' % expr]
+        for k in range(n + 1):
+            tg = int.from_bytes(segdata[T + 2 * k:T + 2 * k + 2], 'little') - lo
+            labels.add(tg); lines_.append('    case %d: goto L_%04x;' % (k + base, tg))
+        labels.add(dflt); lines_ += ['    default: goto L_%04x;' % dflt, '    }']
+        switches[body[i][0]] = (a, lines_)
     out = []   # (address or None, text)
     pushcs = {body[i][0] for i in range(len(body) - 1) if body[i][1] == b'\x0e' and body[i + 1][1][0] == 0xe8}
     for a, b, t in body:
         if a in labels: out.append((None, 'L_%04x:' % a))
         if a in pushcs: continue   # part of the C call that follows
+        if a in switches:
+            skip_to, sl = switches[a]
+            out += [(a, x) for x in sl]
+        if any(s0 <= a <= e0 for s0, (e0, _) in switches.items()): continue
         fx = [q for q in range(a, a + len(b)) if mask[q]]
         mm = re.match(r'(j\w+|loop\w*|jcxz)\s+(short |near )?(0x[0-9a-f]+)$', t)
         if a in dbset and not fx:
@@ -206,7 +241,7 @@ def main():
     path = os.path.join(ROOT, 'src', mod + '.c')
     src = open(path).read()
     subprocess.run([os.path.join(ROOT, 'tools/mc.sh'), mod], capture_output=True)
-    code, mask, ext, offs, pubs, lo, selfcall = extract(mod, fn)
+    code, mask, ext, offs, pubs, lo, selfcall, segdata = extract(mod, fn)
     hdrs = src + ''.join(open(os.path.join(ROOT, 'src', h)).read() for h in re.findall(r'#include "([^"]+)"', src)
                          if os.path.exists(os.path.join(ROOT, 'src', h)))
     declared = lambda nm: re.search(r'\b%s\b' % re.escape(nm), hdrs) is not None
@@ -218,7 +253,7 @@ def main():
         return alt.group(1)
     dbset = set()
     for it in range(400):
-        N, regs, body, out, tail = generate(code, mask, ext, offs, pubs, selfcall, declared, seg_name, dbset)
+        N, regs, body, out, tail = generate(code, mask, ext, offs, pubs, selfcall, declared, seg_name, dbset, lo, segdata)
         text, first = splice(src, fn, N, [{0x56: 'SI', 0x57: 'DI'}[r[0]] for r in regs], out)
         open(path, 'w').write(text)
         res = subprocess.run([os.path.join(ROOT, 'tools/mc.sh'), mod], capture_output=True, text=True).stdout
@@ -231,6 +266,8 @@ def main():
         line = [l for l in res.split('\n') if l.startswith('_%s:' % fn)]
         oc, om = extract(mod, fn)[:2]   # compare the OBJ bytes, fixup bytes excluded (cmpobj reports TLINK's
         diff = [q for q in range(min(len(oc), len(code))) if oc[q] != code[q] and not om[q] and not mask[q]]
+        sw = [(s0, e0 + 5) for s0, (e0, _) in SWITCHES.items()]   # dispatch bytes follow from the rest
+        diff = [q for q in diff if not any(s0 <= q < e0 for s0, e0 in sw)] + [q for q in diff if any(s0 <= q < e0 for s0, e0 in sw)]
         if not diff and len(oc) == len(code):   # far-call rewrite in overlays as a difference)
             line = ['_%s: OK' % fn]
         elif line:
