@@ -262,13 +262,16 @@ def owner(sym):
     return None
 
 
+RALIAS = {v.encode(): k.encode() for k, v in ALIAS.items()}   # real name -> address name for sorting
+
+
 def pubsort(buf):
     """overlay OBJ: _ovr_ PUBDEFs by descending stub offset (TLINK builds the stub table in reverse PUBDEF order)"""
     recs = []; i = 0
     while i < len(buf):
         k = struct.unpack_from('<H', buf, i + 1)[0]; recs.append(buf[i:i + 3 + k]); i += 3 + k
     idx = [k for k, r in enumerate(recs) if r[0] == 0x90]
-    for k, r in zip(idx, sorted((recs[k] for k in idx), key=lambda r: r[6:6 + r[5]], reverse=True)): recs[k] = r
+    for k, r in zip(idx, sorted((recs[k] for k in idx), key=lambda r: RALIAS.get(r[6:6 + r[5]], r[6:6 + r[5]]), reverse=True)): recs[k] = r
     return b''.join(recs)
 
 
