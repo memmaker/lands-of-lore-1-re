@@ -86,7 +86,7 @@ def extract(mod, fn, obj=None):
     ext = {o - lo: n for o, n in seg.get('ext', {}).items() if lo <= o < hi}
     offs = {o - lo for o in seg.get('off', {}) if lo <= o < hi}
     # far pointers into the own segment (same-segment far calls): target = data word + fixup displacement
-    raw = open(os.path.join(ROOT, 'run/m/%s/%s.OBJ' % (mod, mod.upper())), 'rb').read(); last = None
+    raw = open(obj or os.path.join(ROOT, 'run/m/%s/%s.OBJ' % (mod, mod.upper())), 'rb').read(); last = None
     for rt, b in objfix.records(raw):
         if rt == 0xa0:
             si, p = objfix.idx(b, 0); last = (si, int.from_bytes(b[p:p + 2], 'little'))
@@ -148,7 +148,9 @@ def generate(code, mask, ext, offs, pubs, selfcall, declared, seg_name, dbset, l
     for j, (a, b, t) in enumerate(body):
         mt = re.match(r'jmp word near \[cs:bx\+0x([0-9a-f]+)\]$', t)
         if not mt: continue
-        T = int(mt.group(1), 16); i = j - 1
+        # table address and entries are segment offsets: the module may start inside its segment
+        mb = re.search(r'_([0-9a-f]{4})$', FN_NAME); sb = (int(mb.group(1), 16) - lo) if mb else 0
+        T = int(mt.group(1), 16) - sb; i = j - 1
         assert body[i][2] == 'shl bx,1'; i -= 1
         if body[i][2].startswith('jmp'):
             dflt = int(body[i][2].split()[-1], 16); i -= 1
@@ -168,7 +170,7 @@ def generate(code, mask, ext, offs, pubs, selfcall, declared, seg_name, dbset, l
         expr = '%s & 0x%x' % (src, mask_) if mask_ is not None else src
         lines_ = ['    switch (%s) {' % expr]
         for k in range(n + 1):
-            tg = int.from_bytes(segdata[T + 2 * k:T + 2 * k + 2], 'little') - lo
+            tg = int.from_bytes(segdata[T + 2 * k:T + 2 * k + 2], 'little') - sb - lo
             labels.add(tg); lines_.append('    case %d: goto L_%04x;' % (k + base, tg))
         labels.add(dflt); lines_ += ['    default: goto L_%04x;' % dflt, '    }']
         switches[body[i][0]] = (a, lines_)
@@ -247,7 +249,8 @@ def splice(src, fn, N, regs, out):
 
 
 def main():
-    mod, fn = sys.argv[1], sys.argv[2]
+    global FN_NAME
+    mod, fn = sys.argv[1], sys.argv[2]; FN_NAME = fn
     path = os.path.join(ROOT, 'src', mod + '.c')
     src = open(path).read()
     subprocess.run([os.path.join(ROOT, 'tools/mc.sh'), mod], capture_output=True)
