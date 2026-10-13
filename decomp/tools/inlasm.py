@@ -64,6 +64,17 @@ def extract(mod, fn):
     starts = sorted(o for o in starts if o < len(d))
     if len(starts) == len(defs):
         for o, n in zip(starts, defs): pubs.setdefault(o, '_' + n)
+    else:   # pair group by group between the public functions (a call target may be no function start)
+        at = {n: o for o, n in pubs.items()}
+        grp, prev = [], 0
+        for n in defs + [None]:
+            if n is None or '_' + n in at:
+                end = at['_' + n] if n else len(d)
+                ss = [o for o in starts if prev < o < end or (o == prev == 0 and '_' + (defs[0]) not in at)]
+                if len(ss) == len(grp):
+                    for o, g in zip(ss, grp): pubs.setdefault(o, '_' + g)
+                grp, prev = [], end
+            else: grp.append(n)
     lo = [o for o, n in pubs.items() if n == '_' + fn][0]
     hi = min([o for o in pubs if o > lo] + [len(seg['data'])])
     code = bytes(seg['data'][lo:hi])
