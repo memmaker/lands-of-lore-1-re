@@ -878,19 +878,21 @@ void ovr_2cda_0057(register int page)
 }
 
 /* register/stack-slot choices differ; original bytes transplanted (with following statics) */
-/* NONMATCHING */
+
 int ovr_2cda_005c(register int page)
 {
     void far *shp;
     void far *buf;
 
-    if (!g_4bd0.p) return 0;
-    buf = fn_215f_001d(page);
-    fn_19c9_0730(buf);
-    shp = fn_0845_04ec(g_4bd0.p);
-    fn_1fd6_000a(page, shp, g_4bd0.a, g_4bd0.b, 2, 0);
-    fn_19c9_075b(buf, g_4edc);
-    return 1;
+    if (g_4bd0.p) {
+        buf = fn_215f_001d(page);
+        fn_19c9_0730(buf);
+        shp = fn_0845_04ec(g_4bd0.p);
+        fn_1fd6_000a(page, shp, g_4bd0.a, g_4bd0.b, 2, 0);
+        fn_19c9_075b(buf, g_4edc);
+        return 1;
+    }
+    return 0;
 }
 
 /* register/stack-slot choices differ; original bytes transplanted (with following statics) */
