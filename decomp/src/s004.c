@@ -40,14 +40,21 @@ void fn_070c_00cf(int who, int cls, long exp);
 
 unsigned char g_1f16[3][4] = { { 0x80 }, { 0x40, 0xc0 }, { 0x40, 0x80, 0xc0 } }   /* x of each member by party size */;
 
-/* NONMATCHING */
+
 int fn_070c_000a(int who)
 {
-    if (!(who & 0x8000))
-        return fn_1aff_0420(fn_1aff_0420(f_2803_362d[who].w37 + f_2803_362d[who].w4c,
-                                         f_2803_362d[who].st.atk->w4), f_2803_362d[who].w48);
-    who &= 0x7fff;
-    return fn_1aff_0420(f_2803_15fa[who].type->w38, f_2803_15fa[who].type->st.atk->dmgMul);
+    int v;
+
+    if (!(who & 0x8000)) {
+        v = f_2803_362d[who].w37 + f_2803_362d[who].w4c;
+        v = fn_1aff_0420(v, f_2803_362d[who].st.atk->w4);
+        v = fn_1aff_0420(v, f_2803_362d[who].w48);
+    } else {
+        who &= 0x7fff;
+        v = f_2803_15fa[who].type->w38;
+        v = fn_1aff_0420(v, f_2803_15fa[who].type->w06);
+    }
+    return v;
 }
 
 void fn_070c_009f(int v)

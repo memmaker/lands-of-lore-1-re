@@ -43,7 +43,9 @@ struct Char {                /* 0x82 bytes, f_2803_362d[4] */
 struct MonType {
     char c00;
     char size;               /* +01 radius in 1/256 block */
-    char pad02[0x12];
+    char pad02[4];
+    int w06;                 /* +06 */
+    char pad08[0xc];
     struct Stats st;         /* +14 */
     int w38;                 /* +38 */
     int maxHp;               /* +3a */
