@@ -57,7 +57,8 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
   - [x] s033 sound effects file loader (1/1, assembler module)
   - [x] s034 file layer over loose files and PAK archives (13/13)
   - [x] s035 (7/7, file directory index)
-  - [ ] s036–s047 game modules (12 left)
+  - [x] s036 (18/18, memory stubs + DGROUP 2ab2-2b30)
+  - [ ] s037–s047 game modules (11 left)
   - [ ] s049–s149 WW library (~100 small modules, maybe TASM)
   - [ ] 80 overlays (objfix needs overlay support)
 - [ ] Data/BSS modules generated as readable C
