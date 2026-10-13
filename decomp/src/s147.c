@@ -340,13 +340,37 @@ int fn_2365_0afc(struct blk far *b, unsigned long a)
 }
 
 /* original loads the segment with `mov edx,[bp-2]` (66 prefix) where BCC emits `mov dx,[bp-2]` */
-/* NONMATCHING */
+/* C version: BCC 3.1 does not reproduce the original code from it (tools/inlasm.py) */
+#if 0
 void far *fn_2365_0b36(register int idx, unsigned long off)
 {
     long t = off - g_af6c[idx].base;
 
     ((unsigned char *)&t)[3] |= 0xf0 | idx;
     return (void far *)t;
+}
+#endif
+void far *fn_2365_0b36(register int idx, unsigned long off)
+{
+    char _l[4];
+    asm mov cx,[bp+6]
+    asm db 8bh, 0d9h	/* mov bx,cx */
+    asm imul bx,bx,0eh
+    asm db 66h	/* mov eax,[bp+0x8] */
+    asm mov ax,[bp+8]
+    asm db 66h	/* sub eax,[bx-0x5092] */
+    asm sub ax,[bx-5092h]
+    asm db 66h	/* mov [bp-0x4],eax */
+    asm mov word ptr _l,ax
+    asm mov al,0f0h
+    asm db 0ah, 0c1h	/* or al,cl */
+    asm or byte ptr _l+3,al
+    asm db 66h	/* mov edx,[bp-0x2] */
+    asm mov dx,word ptr _l+2
+    asm mov ax,word ptr _l
+    asm jmp short Lret
+Lret:
+    ;
 }
 
 int fn_2365_0b63(void far *p)
