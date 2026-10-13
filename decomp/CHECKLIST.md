@@ -65,7 +65,8 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
   - [x] s041 (1/1, null handler), s042 (2/2, palette blend remaps), assembler
   - [x] s043 (2/2, assembler screen helpers)
   - [x] s044 (55/55, assembler AIL gateway)
-  - [ ] s045–s047 game modules (3 left)
+  - [x] s045 (3/3, assembler PCM helpers)
+  - [ ] s046–s047 game modules (2 left)
   - [ ] s049–s149 WW library (~100 small modules, maybe TASM)
   - [ ] 80 overlays (objfix needs overlay support)
 - [ ] Data/BSS modules generated as readable C
