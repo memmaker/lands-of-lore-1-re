@@ -238,8 +238,10 @@ void fn_13e8_0358(int block, int dir, int delta)
     }
 }
 
-/* NONMATCHING original keeps block in si, mask/index in di */
-void fn_13e8_03e9(int block, int delta)
+
+void fn_13e8_03e9(block, delta)
+register int block;
+int delta;
 {
     char w;
     int free;
@@ -250,7 +252,8 @@ void fn_13e8_03e9(int block, int delta)
     free = found = -1;
     side = (g_531e[WALL(block, 0)] & 8) ? 0 : 1;
     w = WALL(block, side);
-    if (g_2849[delta] & g_531e[w]) return;
+    i = g_2849[delta];
+    if (i & g_531e[w]) return;
     for (i = 0; i < 3; i++) {
         if (g_4ed0[i].block == block) {
             found = i;
@@ -259,7 +262,8 @@ void fn_13e8_03e9(int block, int delta)
         if (g_4ed0[i].block == 0 && free == -1) free = i;
     }
     if (found == -1 && free == -1) {
-        while (!(g_2849[delta] & g_531e[w])) w += delta;
+        i = g_2849[delta];
+        while (!(i & g_531e[w])) w += delta;
         WALL(block, side) = w;
         WALL(block, side ^ 2) = w;
         fn_0845_046c(block);
@@ -269,7 +273,9 @@ void fn_13e8_03e9(int block, int delta)
     g_4ed0[found].block = block;
     g_4ed0[found].delta = delta;
     g_4ed0[found].dir = side;
-    if (g_2849[-delta] & g_531e[w]) {
+    i = -delta;
+    i = g_2849[i];
+    if (i & g_531e[w]) {
         WALL(block, side) += delta;
         WALL(block, side ^ 2) += delta;
         if (delta == -1) i = 0x20;
