@@ -19,6 +19,8 @@ void fn_067a_0401(long v);
 void fn_1ef2_001c(void far *pal);
 void fn_1ef2_0075(void far *pal, int t, long a);
 
+/* 32-bit subtraction codegen differs (sub/sbb operand order); original bytes transplanted */
+/* NONMATCHING */
 unsigned char far *ovr_2cf7_0025(unsigned char far *dst, unsigned char far *a, unsigned char far *b, int n)
 {
     int acc;

@@ -71,6 +71,52 @@ def parse_fixupp(d, seg, base):
 FLUSH_AT_END = False   # the original compiler kept filling the 1024-byte buffer across functions (s001 reloc order)
 
 
+def orig_relocs(mod):
+    """the original EXE's relocation positions inside MOD's code, in table order (None if unknown)"""
+    try:
+        import layout, mkblob, ovr
+        if mod in dict(layout.OVR):
+            return list(ovr.overlays()[dict(layout.OVR)[mod]]['relocs'])
+        sseg, smx, _, smn = mkblob.st[dict(layout.ROOT)[mod]]; base = sseg * 16 + smn   # module code starts at smn
+        return [r - base for r in mkblob.relocs if base <= r < sseg * 16 + smx]
+    except Exception:
+        return None
+
+
+def reloc_order_cuts(mod, chunks, code_fx, n):
+    """BCC does not always fill a record to 1024 bytes (it cuts before an item that would cross), so the plain
+    1024-byte cuts can put relocations in a different record than the original. TLINK emits each record's
+    relocations in descending order, so the original's table order gives the record grouping of its relocations:
+    move cuts back (never forward, records stay <= 1024) until every descending run is one record."""
+    orl = orig_relocs(mod)
+    if not orl: return chunks
+    runs = [[orl[0]]]
+    for r in orl[1:]:
+        if r < runs[-1][-1]: runs[-1].append(r)
+        else: runs.append([r])
+    fxs = sorted((o, o + SIZE.get(f.loc, 2)) for o, f in code_fx)
+    def fstart(r):
+        for o, e in fxs:
+            if o <= r < e: return o
+        return r
+    spans = [(fstart(min(R)), max(R)) for R in runs]   # a run's record must hold [lo, hi]
+    out = []; cstart = 0
+    while cstart < n:
+        c = min(cstart + 1024, n)
+        while c < n:
+            c0 = c
+            for o, e in fxs:   # never split a fixup
+                if o < c < e: c = o
+            for lo, hi in spans:
+                if lo < c <= hi and lo > cstart: c = lo        # run straddles the cut: whole run to the next
+            ins = [lo for lo, hi in spans if cstart <= lo and hi < c]
+            if len(ins) > 1: c = sorted(ins)[1]                # two runs in one record: cut between them
+            if c == c0: break
+        if c <= cstart: c = min(cstart + 1024, n)
+        out.append((cstart, c)); cstart = c
+    return out
+
+
 def main():
     path, mod = sys.argv[1], sys.argv[2].lower()
     transplant = sys.argv[3:]
@@ -133,6 +179,7 @@ def main():
 
     edits = []   # (old lo, old hi, new bytes, new fixups [(new rel off, b0, raw-builder)])
     # 2. transplants
+    smap = {}   # OBJ static start inside a transplant -> (range start, orig offset in range)
     o2obj = {}   # orig function offset -> OBJ offset (targets of restored same-segment far calls)
     if transplant:
         import re, mkblob, layout, lolcfg, ovr
@@ -215,6 +262,17 @@ def main():
                     elif sym.startswith('__seg_'):
                         i2 = dict(layout.ROOT)[sym[6:]]; sym = '_fn_%04x_%04x' % (st[i2][0], st[i2][3])
                     nf.append((r, 'extbase', sym)); struct.pack_into('<H', ob, r, 0)
+            # statics swallowed by the range: calls into them from outside must hit their original positions
+            os_ = [o for o in ost if lo_obj < o < hi_obj]
+            if os_:
+                ws = set()
+                for q in range(1, seg_end - 4):
+                    if oimg[base + q] == 0x0e and oimg[base + q + 1] == 0xe8 and oimg[base + q - 1] != 0x90:
+                        t = (q + 4 + struct.unpack_from('<h', oimg, base + q + 2)[0]) & 0xffff
+                        if olo < t < ohi: ws.add(t)
+                ws = sorted(ws)
+                if len(ws) == len(os_):
+                    for a, b in zip(os_, ws): smap[a] = (lo_obj, b - olo)
             edits.append((lo_obj, hi_obj, bytes(ob), nf, True))
     # 1. ENTER sites (outside transplanted ranges)
     for c in fstarts:
@@ -253,7 +311,8 @@ def main():
         t = (q + 4 + struct.unpack_from('<h', img, q + 2)[0]) & 0xffff
         if t not in fset or any(lo <= q < hi for lo, hi, _, _, _ in edits): continue
         nq = newoff(q + 1)
-        struct.pack_into('<h', nimg, nq + 1, (newoff(t) - (nq + 3) + 0x8000) % 0x10000 - 0x8000)
+        nt = newoff(smap[t][0]) + smap[t][1] if t in smap else newoff(t)
+        struct.pack_into('<h', nimg, nq + 1, (nt - (nq + 3) + 0x8000) % 0x10000 - 0x8000)
     # extra EXTDEFs for transplanted fixups
     newext = []
     def ext(sym):
@@ -313,11 +372,8 @@ def main():
         if FLUSH_AT_END and flushed and fe > cstart:
             chunks.append((cstart, fe)); cstart = fe
     if cstart < len(nimg): chunks.append((cstart, len(nimg)))
-    if len(nimg) == len(img) and not FLUSH_AT_END:
-        # nothing moved: BCC's own record boundaries (it also never splits an instruction, e.g. 0x3f9) are right
-        rc = sorted(set(rawcuts)) + [len(nimg)]
-        if all(not (o < c < o + SIZE.get(f.loc, 2)) for c in rc for o, f in code_fx):
-            chunks = list(zip(rc[:-1], rc[1:]))
+    if not tasm:
+        chunks = reloc_order_cuts(mod, chunks, code_fx, len(nimg))
     # emit
     out = bytearray(); done_code = False; segcount = 0; pubk = {}
     for k, (t, d) in enumerate(recs):

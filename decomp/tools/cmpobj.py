@@ -31,8 +31,8 @@ for si, s in enumerate(m['segs']):
     i = 0
     while i < len(d):
         if k[i] == 2:
-            f = [(po, pn) for po, pn in pubs if po <= i]
-            mm = f and orig_off(f[-1][1])
+            f = [(po, pn) for po, pn in pubs if po <= i] or pubs[:1]   # static before the first public: its delta
+            mm = orig_off(f[-1][1]) if f else None
             delta = mm - f[-1][0] if mm is not None else slack
             struct.pack_into('<H', d, i, (struct.unpack_from('<H', d, i)[0] + delta) & 0xffff); i += 2
         else: i += 1
