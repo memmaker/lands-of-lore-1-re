@@ -81,3 +81,10 @@ Every fact below was needed to get the relinked MAIN.EXE byte-identical:
 - `ternary` as a call argument computes into ax then pushes; the original `push 3 / push 4` form is if/else with two full calls.
 - A char table indexed from 1 may start inside the previous variable (g_2480 = g_2481-1): define the real bytes and `#define` the base.
 - `c = (c & 0xff) | (n << 8)` on a char compiles to `and byte,0xff; shl al,8; or` (an original bug, kept).
+
+### s029
+- `#pragma option -O-b` / `-Ob` works *between functions*: switch jump optimisation off for one function only (s029
+  fn_16cf_057a keeps the dead `jmp` after `if (c->state) return x; break;`).
+- `(unsigned long)p - 4` gives `sub eax,4`; `(long)p - 4` gives `add eax,-4`.
+- A `k = i + 1` temp in a block gives `mov dx,di; inc dx` and indexes with `[bx+base]`; `a[i + 1]` folds the +1
+  into the displacement.

@@ -49,25 +49,9 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
   - [x] s024 paragraph heap allocator (11/11)
   - [x] s025 GUI button list processing (5/5)
   - [x] s026 sound driver switches (4/4, TASM module: ascending relocation order)
-  - [x] s027, s028 empty (no code)
-  - [x] s029 digital sound mixer (14/14)
-  - [x] s030 music driver front end (7/7, assembler module)
-  - [x] s031 music file loader (1/1, assembler module)
-  - [x] s032 sound effects front end (4/4)
-  - [x] s033 sound effects file loader (1/1, assembler module)
-  - [x] s034 file layer over loose files and PAK archives (13/13)
-  - [x] s035 (7/7, file directory index)
-  - [x] s036 (18/18, memory stubs + DGROUP 2ab2-2b30)
-  - [x] s037 empty (no code)
-  - [x] s038 (25/25, assembler graphics helpers, tools/asmgen.py)
-  - [x] s039 (1/1, assembler direction lookup)
-  - [x] s040 (12/12, assembler math/tile helpers + DGROUP 2b30-2e40)
-  - [x] s041 (1/1, null handler), s042 (2/2, palette blend remaps), assembler
-  - [x] s043 (2/2, assembler screen helpers)
-  - [x] s044 (55/55, assembler AIL gateway)
-  - [x] s045 (3/3, assembler PCM helpers)
-  - [x] s046 (12/12, assembler mouse interface, org-ordered source)
-  - [x] s047 (1/1, assembler CPU detection)
+  - [x] s027/s028 empty code segments (data-only modules)
+  - [x] s029 digital sound effect channels (13/14)
+  - [ ] s030–s047 game modules (18 left)
   - [ ] s049–s149 WW library (~100 small modules, maybe TASM)
   - [ ] 80 overlays (objfix needs overlay support)
 - [ ] Data/BSS modules generated as readable C
@@ -87,3 +71,8 @@ Targets: `MAIN.EXE` (md5 263998ec…, 356928 bytes: 248896 root + 108032 FBOV ov
 - [ ] COVER.PNG, wasm build
 - [ ] Register in goplay games.js + deploy.sh, local test, publish, live check
 - [ ] Notes updated (~/notes, goplay README games table)
+
+## Status (full recompilation)
+- `bash tools/relink.sh all` = MATCH (356928 bytes) after clean rebuild of every module.
+- Every module is built from src/ (o2db0 enabled by the mkblob pubsort + cmpobj `_main` alias fix).
+- NONMATCHING (original bytes transplanted): s115 fn_203b_02dc, s147 fn_2365_0b36, o2cf7 0025, o2dfd 002a, o2cda 003e/0043/0048/0052/005c/0061/0066/006b, o2d56 007a/007f/0084.

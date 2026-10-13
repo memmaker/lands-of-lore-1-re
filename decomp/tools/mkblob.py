@@ -74,7 +74,7 @@ def target(v, off_word, ctx):
         return ('base', 'ext', '_ovr_%04x_0020' % v)   # bare `seg stub` (no offset word before it)
     if v in seg_mod:
         m = seg_mod[v]
-        return ('base', 'ext', '__seg_' + m if m.startswith('f') else seg_sym.get(m, '__seg_' + m))
+        return ('base', 'ext', seg_sym.get(m, '__seg_' + m))
     raise Exception('unknown target seg %04x in %s' % (v, ctx))
 
 
@@ -265,13 +265,16 @@ def owner(sym):
     return None
 
 
+RALIAS = {v.encode(): k.encode() for k, v in ALIAS.items()}   # real name -> address name for sorting
+
+
 def pubsort(buf):
     """overlay OBJ: _ovr_ PUBDEFs by descending stub offset (TLINK builds the stub table in reverse PUBDEF order)"""
     recs = []; i = 0
     while i < len(buf):
         k = struct.unpack_from('<H', buf, i + 1)[0]; recs.append(buf[i:i + 3 + k]); i += 3 + k
     idx = [k for k, r in enumerate(recs) if r[0] == 0x90]
-    for k, r in zip(idx, sorted((recs[k] for k in idx), key=lambda r: r[6:6 + r[5]], reverse=True)): recs[k] = r
+    for k, r in zip(idx, sorted((recs[k] for k in idx), key=lambda r: RALIAS.get(r[6:6 + r[5]], r[6:6 + r[5]]), reverse=True)): recs[k] = r
     return b''.join(recs)
 
 
@@ -299,6 +302,8 @@ def main():
         defined |= {q[0] for q in mod['pubs']}
         imported |= set(mod['exts'])
         cp = [q[0] for q in mod['pubs'] if q[1] in code]
+        if n in dict(layout.FAR):   # data-only far module: any public of its F###_FAR segment stands in for __seg_
+            cp = [q[0] for q in mod['pubs'] if mod['segs'][q[1]].get('name') == 'F%03d_FAR' % dict(layout.FAR)[n]]
         if cp and n not in seg_sym: seg_sym[n] = cp[0]
     for sym in sorted(imported - defined):
         o = owner(sym)

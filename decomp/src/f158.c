@@ -1,0 +1,7 @@
+/* f158: far data segment 2504 (segment table 158, 4 bytes), no relocations.
+   Placed in F158_FAR (class FAR_DATA) (code segment _TEXT: no empty F###_TEXT); one variable per address other modules use. */
+#pragma option -zEF158_FAR -zFFAR_DATA -zC_TEXT
+
+unsigned char far f_2504_0000[4] = {
+    0x05, 0x06, 0x04, 0x06
+};

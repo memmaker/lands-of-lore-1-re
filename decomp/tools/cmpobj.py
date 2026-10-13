@@ -4,11 +4,13 @@ Mask 1 = external fixup (ignored); mask 2 = offset into own segment (compared af
 Offset fixups to _g_XXXX are checked against DGROUP XXXX; with env DSBASE=hex also those into the module's own _DATA."""
 import sys, struct, re; sys.path.insert(0, __file__.rsplit('/', 1)[0])
 from omf import modules
-NAMED = {'_main': '0003'}  # functions whose name cannot carry the orig offset
+NAMED = {}  # functions whose name cannot carry the orig offset
+REAL = {'_main': '_ovr_2db0_002a'}  # RTL-required names -> address names
 def orig_off(name):
     """orig offset of a function from its name: fn_SSSS_OOOO / loc_SSSS_OOOO -> OOOO; ovr_SSSS_OOOO -> overlay code
     offset of stub entry OOOO (tools/ovr.py); NAMED for the rest. None if unknown."""
     from names import orig as _o; name = _o(name)
+    name = REAL.get(name, name)
     if name in NAMED: return int(NAMED[name], 16)
     mm = re.match(r'[_@](fn|loc|ovr)_([0-9a-f]{4})_([0-9a-f]{4})(\$.*)?$', name)
     if not mm: return None
@@ -31,8 +33,8 @@ for si, s in enumerate(m['segs']):
     i = 0
     while i < len(d):
         if k[i] == 2:
-            f = [(po, pn) for po, pn in pubs if po <= i]
-            mm = f and orig_off(f[-1][1])
+            f = [(po, pn) for po, pn in pubs if po <= i] or pubs[:1]   # static before the first public: its delta
+            mm = orig_off(f[-1][1]) if f else None
             delta = mm - f[-1][0] if mm is not None else slack
             struct.pack_into('<H', d, i, (struct.unpack_from('<H', d, i)[0] + delta) & 0xffff); i += 2
         else: i += 1
@@ -96,3 +98,11 @@ if DSBASE is not None:   # own _DATA bytes (globals + pooled strings) vs DGROUP;
         ref = img[lolcfg.DS + DSBASE:lolcfg.DS + DSBASE + len(s['data'])]
         bad = [i for i in range(len(ref)) if not s['mask'][i] and s['data'][i] != ref[i]]
         print(f'_DATA {DSBASE:04x}-{DSBASE + len(ref):04x}: ' + ('OK' if not bad else f'diff at DS {DSBASE + bad[0]:04x} ({len(bad)} bytes)'))
+for s in m['segs'][1:]:   # far data segments F###_FAR (data-only far modules) vs the original segment's bytes
+    mf = re.match(r'F(\d{3})_FAR$', s.get('name') or '')
+    if not mf or not s['data']: continue
+    from ovr import segtable
+    base = segtable()[int(mf.group(1))][0] * 16
+    ref = img[base:base + len(s['data'])]
+    bad = [i for i in range(len(ref)) if not s['mask'][i] and s['data'][i] != ref[i]]
+    print(f'{s["name"]} ({len(ref)} bytes): ' + ('OK' if not bad else f'diff at +{bad[0]:x} ({len(bad)} bytes)'))
