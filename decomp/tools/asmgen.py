@@ -73,11 +73,13 @@ def conv(t):
 
 
 exts, out, fixlab = set(), [], set()
-def emit(s): out.append(s)
+cura = [0]
+def emit(s): out.append((cura[0], s))
 
 def dbrange(i, end, data=img, rl=rel, selfseg=seg, lbl=None):
     lbl = labels if lbl is None else lbl
     while i < end:
+        cura[0] = i
         if i + 2 in rl and rl[i + 2] == selfseg:
             emit('\tdd\tL_%04x' % struct.unpack_from('<H', data, i)[0]); i += 4; continue
         if i + 2 in rl:
@@ -103,8 +105,11 @@ isl = sorted(islands)
 for a, b, t in ins:
     while isl and isl[0][0] < a:
         dbrange(*isl.pop(0))
+    cura[0] = a - 1
     if a in procs:
         if cur is not None: emit('%s\tendp\n' % cur)
+    cura[0] = a
+    if a in procs:
         cur = '_fn_%04x_%04x' % (seg, a)
         emit('%s\tproc\t%s' % (cur, 'near' if a in nearset else 'far'))
     elif a in labels: emit('L_%04x:' % a)
@@ -127,7 +132,7 @@ for a, b, t in ins:
         emit('\tdb\t' + ', '.join(num(c) for c in b) + '\t; RELOC ' + t)
     elif m and b[0] != 0x9a:
         tgt = int(m.group(3), 16); op = m.group(1)
-        if op == 'call': kind = ''
+        if op == 'call': kind = 'near ptr ' if tgt in procs and tgt not in nearset else ''
         elif len(b) == 2: kind = 'short '
         else: kind = 'near ptr ' if op != 'jmp' or len(b) == 3 else ''
         emit('\t%s\t%s%s' % (op, kind, ('_fn_%04x_%04x' % (seg, tgt)) if tgt in procs else 'L_%04x' % tgt))
@@ -152,6 +157,7 @@ for a, b, t in ins:
             ct = ct[:md.start()] + '%s ptr _g_%04x' % (sz, v) + ct[md.end():]
         p = ct.split(None, 1)
         emit('\t' + p[0] + ('\t' + p[1] if len(p) > 1 else ''))
+cura[0] = size
 if cur is not None: emit('%s\tendp' % cur)
 
 if name in layout.DATA:
@@ -174,9 +180,13 @@ print("_DATA\tsegment word public use16 'DATA'\n_DATA\tends\n_BSS\tsegment word 
 for x in sorted(exts): print('\textrn\t' + x)
 if dlines is not None:
     print("\n_DATA\tsegment word public use16 'DATA'")
-    print('\n'.join(dlines)); print('_DATA\tends')
+    print('\n'.join(x for a, x in dlines)); print('_DATA\tends')
 print('\n%s_TEXT\tsegment byte public use16 \'CODE\'' % U)
 pubs = sorted(procs)
 for k in range(0, len(pubs), 4): print('\tpublic\t' + ', '.join('_fn_%04x_%04x' % (seg, p) for p in pubs[k:k + 4]))
-print('\n'.join(out))
+order = [tuple(int(x, 16) for x in r.split('-')) for r in opt.get('--order', '').split(',') if r]
+if not order: order = [(0, size + 1)]
+for k, (lo, hi) in enumerate(order):   # source order of address ranges [lo, hi) (reproduces the original fixup order)
+    if len(order) > 1: print('\torg\t%s' % num(lo))
+    print('\n'.join(x for a, x in out if lo <= a < hi))
 print('%s_TEXT\tends\n\tend' % U)
