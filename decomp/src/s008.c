@@ -57,7 +57,7 @@ void fn_130a_0605(void);
 int fn_14b3_01fa(int n);
 void fn_14b3_0284(char far *s);
 void fn_14b3_0122(int n);
-void fn_1ef2_002f(unsigned char far *pal, int i, unsigned char far *rgb);
+void fn_1ef2_002f(void far *pal, int i, void far *rgb);
 void fn_1ef2_0075(unsigned char far *pal, int delay, long a);
 void fn_0bbc_070e(int a, int b);
 void fn_0bbc_07ef(void);
@@ -153,13 +153,13 @@ void fn_0845_00ac(int x, int y, int val, int val2, int max, int w, int h, int co
     }
 }
 
-/* NONMATCHING */
+
 void fn_0845_01c4(register unsigned flags, char far *fmt, ...)
 {
     va_list ap;
     int old;
     char buf[0xf0];
-    unsigned char pal[0x300];
+    struct { unsigned char r, g, b; } pal[0x100];
     int color;
 
     fn_1ebc_00e7();
@@ -171,7 +171,7 @@ void fn_0845_01c4(register unsigned flags, char far *fmt, ...)
     else {
         old = fn_14b3_01fa(3);
         memcpy(pal, g_2fac, 0x300);
-        fn_1ef2_002f(pal, 0xc0, &pal[color * 3]);
+        fn_1ef2_002f((unsigned char far *)pal, 0xc0, &pal[color]);
         color = 0xc0;
         fn_0bbc_070e(11, 1);
     }
@@ -210,11 +210,12 @@ void fn_0845_035b(unsigned char far *src, int lvl, int idx)
     g_20d5 = 0;
 }
 
-/* NONMATCHING */
+
 int fn_0845_038e(int x, int y, int x1, int y1, int x2, int y2)
 {
     if (x < x1 || x > x2) return 0;
-    return y < y1 || y > y2 ? 0 : 1;
+    if (y < y1 || y > y2) return 0;
+    return 1;
 }
 
 int fn_0845_03b4(int x1, int y1, int x2, int y2)
@@ -692,7 +693,7 @@ int fn_0845_105c(int a, int b, unsigned long t, long total)
     return changed;
 }
 
-/* NONMATCHING */
+
 void fn_0845_114d(int id, int flag)
 {
     int old;
@@ -703,7 +704,7 @@ void fn_0845_114d(int id, int flag)
     }
     if (flag) {
         fn_130a_0784();
-        if (!f_2803_0044) {
+        if (f_2803_0044 == 0) {
             fn_1ebc_00e7();
             old = fn_14b3_01fa(3);
             fn_1ebc_00fe();
@@ -714,7 +715,7 @@ void fn_0845_114d(int id, int flag)
     }
 }
 
-/* NONMATCHING */
+
 int fn_0845_11b7(void)
 {
     int old;
@@ -722,7 +723,7 @@ int fn_0845_11b7(void)
 
     if (!g_20f6) return 0;
     r = fn_0845_105c(0xc0, 0xfc, g_384c - g_4bc8, 0x3cL);
-    if (!r && !f_2803_0044) {
+    if (!r && f_2803_0044 == 0) {
         old = fn_14b3_01fa(3);
         fn_1ebc_00e7();
         fn_14b3_0122(old);
