@@ -234,7 +234,7 @@ void fn_070c_0664(int who, int how)
     g_20d1 = how;
 }
 
-/* NONMATCHING */
+
 int fn_070c_06a3(int att, int def, int base, int type, int mode)
 {
     struct Stats far *pa;
@@ -251,10 +251,13 @@ int fn_070c_06a3(int att, int def, int base, int type, int mode)
     if (!(att & 0x8000)) {
         if (!(v = fn_1aff_0420(v, f_2803_362d[att].w46))) return 0;
     }
-    v = fn_1aff_03fd(v, (type & 0x80) ? pd->w22 : pd->res[type]);
+    if (type & 0x80) v = fn_1aff_03fd(v, pd->w22);
+    else v = fn_1aff_03fd(v, pd->res[type]);
     if (mode != 2 && v) {
-        t = (fn_070c_000a(def) << 7) / v;
-        v = fn_1aff_03fd(v, 0x100 - (t > 0xd9 ? 0xd9 : t));
+        t = fn_070c_000a(def);
+        t = (t << 7) / v;
+        t = t > 0xd9 ? 0xd9 : t;
+        v = fn_1aff_03fd(v, 0x100 - t);
         if (v < 2) v = 2;
     }
     if (v == 1) v = 2;
