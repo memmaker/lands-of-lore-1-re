@@ -324,7 +324,7 @@ int fn_0fbe_03fc(struct EmcState far *s)
     return it;
 }
 
-/* NONMATCHING original shares only the case 10 tail with cases 11-13 */
+
 int fn_0fbe_04a8(struct EmcState far *s)
 {
     struct ItemType far *t;
@@ -348,7 +348,7 @@ int fn_0fbe_04a8(struct EmcState far *s)
     case 9: r = t->w5; break;
     case 10: r = t->script; break;
     case 11: case 12: case 13: r = (&t->w8)[ARG(s, 1) - 11]; break;
-    case 17: r = (t->c9 << 8) | t->w8; break;
+    case 17: r = t->c9; r = (r << 8) | t->w8; break;
     case 14: r = t->wb; break;
     case 15: r = it->flags & 0x1fff; break;
     default: r = -1; break;
