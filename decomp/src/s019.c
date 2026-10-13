@@ -606,7 +606,7 @@ int fn_0fbe_0dd3(struct EmcState far *s)
     return r;
 }
 
-/* NONMATCHING original keeps the index in cx instead of a stack slot */
+
 int fn_0fbe_0e81(struct EmcState far *s)
 {
     int v;
@@ -615,8 +615,8 @@ int fn_0fbe_0e81(struct EmcState far *s)
     i = ARG(s, 1);
     v = ARG(s, 2);
     switch (ARG(s, 0)) {
-    case 12: g_7fde = v; break;
-    case 11: g_7fdd = v; break;
+    case 12: g_7fde = i; break;
+    case 11: g_7fdd = i; break;
     case 0:
         g_7fd0 = v;
         fn_1aff_030e(&g_7fd2, &g_7fd4, g_7fd0, 0x80, 0x80);
