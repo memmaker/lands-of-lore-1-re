@@ -430,7 +430,8 @@ int fn_057f_0887(int far *p)
     return 1;
 }
 
-/* NONMATCHING */
+
+#pragma option -Ob
 int fn_057f_08cd(int far *p)
 {
     switch (*p) {
@@ -459,9 +460,12 @@ int fn_057f_08cd(int far *p)
         fn_1ef2_0075(g_540e, 10, 0);
         g_20d5 = 0;
         break;
+    default:
+        break;
     }
     return 1;
 }
+#pragma option -O-b
 
 int fn_057f_099a(int far *p)
 {
