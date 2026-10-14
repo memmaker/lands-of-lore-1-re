@@ -4,3 +4,6 @@ run/
 toolchain/
 ghidra/
 *.pyc
+lands/*.EXE
+lands/proj/
+lands/headless.log
