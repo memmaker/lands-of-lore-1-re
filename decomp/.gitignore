@@ -7,3 +7,6 @@ ghidra/
 lands/*.EXE
 lands/proj/
 lands/headless.log
+lands/fproj/
+lands/finale_headless.log
+lands/*.TDS

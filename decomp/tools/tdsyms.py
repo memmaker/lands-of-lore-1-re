@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Print the Turbo Debugger symbols appended to a Borland EXE: seg:off class name."""
+"""Print the Turbo Debugger symbols appended to a Borland EXE, or of a .TDS file: seg:off class name."""
 import struct, sys
 d = open(sys.argv[1], 'rb').read()
-e = struct.unpack_from('<HHH', d, 2)
-img = (e[1] - (e[0] != 0)) * 512 + e[0]
+if d[:2] == b'\xfb\x52':  # a separate .TDS file
+    img = 0
+else:
+    e = struct.unpack_from('<HHH', d, 2)
+    img = (e[1] - (e[0] != 0)) * 512 + e[0]
 t = d[img:]
 assert t[:2] == b'\xfb\x52'
 pool_size, = struct.unpack_from('<I', t, 4)
